@@ -16,8 +16,8 @@ include_directories(${Protobuf_INCLUDE_DIR})
 add_library(fdbg SHARED
 		machine.c
 		machine.h
-		fdbg/libfdbg/server.cc
-		fdbg/libfdbg/server.hh
+		fdbg/libfdbg/connection.cc
+		fdbg/libfdbg/connection.hh
 		${PROTO_HEADER} ${PROTO_SRC}
 )
 
