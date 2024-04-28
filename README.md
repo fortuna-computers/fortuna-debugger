@@ -1,17 +1,17 @@
 # fortuna-debugger
-Fortuna Debugger is a set of 3 different tools that, toghether, provide debugging capability to any custom computer:
 
-```mermaid
-graph LR
+Fortuna Debugger is a set of tools for computer designers that, toghether, provide debugging capability to any custom computer.
 
-  subgraph Computer
-    fdbg[debugger\nfirmware]
-  end
+The user needs to provide custom code that will:
 
-  subgraph PC
-    libfdbg.so <--> Debugger
-    libfdbg.so <--> Emulator
-  end
+* Describe the computer (CPU, registers, etc)
+* Run a compiler and interpret its results
+* Emulate the computer
+* Execute operations in a microcontroller installed in the computer, to obtain the state of the computer (registers, program counter, memory, etc).
 
-  fdbg <--> libfdbg.so
-```
+Once the above is provided by the user, the following tools are made available to the user:
+
+* A **debugger** that:
+  * Connects to the computer firmware (via serial) and provide **onboard real-time debugging ability**
+  * Connects to an **emulator** to facilitate software development
+* A library (`libfdbg.so`) that allows the user to write its own programs to run onboard (like test suites, for example).
