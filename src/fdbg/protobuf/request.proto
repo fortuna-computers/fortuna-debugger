@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message RequestHello {
+  uint32 id = 1;
+}
+
+message Request {
+  oneof request {
+    RequestHello hello = 1;
+  }
+}
