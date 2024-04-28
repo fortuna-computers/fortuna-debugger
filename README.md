@@ -15,3 +15,5 @@ Once the above is provided by the user, the following tools are made available t
   * Connects to the computer firmware (via serial) and provide **onboard real-time debugging ability**
   * Connects to an **emulator** to facilitate software development
 * A library (`libfdbg.so`) that allows the user to write its own programs to run onboard (like test suites, for example).
+
+A sample implementation is provided for running an emulator version of the [CHIP-8](https://chip-8.github.io/) on a Raspberry Pi Pico.
