@@ -14,7 +14,7 @@ namespace fdbg {
 
 class DebuggerClient : public Serial {
 public:
-    explicit DebuggerClient(const char* port, uint32_t baudrate=115200);
+    void connect(const char* port, uint32_t baudrate=115200);
 
     std::optional<ToDebugger> receive() const { return receive_message<ToDebugger>(); }
 

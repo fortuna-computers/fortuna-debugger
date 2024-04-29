@@ -96,6 +96,9 @@ set(IMGUI_SRC
 		fdbg/contrib/imgui/backends/imgui_impl_glfw.cpp
 		fdbg/contrib/imgui/backends/imgui_impl_opengl3.cpp
 		fdbg/contrib/glad/src/gl.c
+		fdbg/debugger/windows/window.hh
+		fdbg/debugger/windows/demo.cc
+		fdbg/debugger/windows/demo.hh
 )
 
 add_executable(f-debugger

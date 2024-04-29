@@ -1,5 +1,8 @@
 #include "fdbg.hh"
 
+#include <memory>
+#include <vector>
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
@@ -9,7 +12,13 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
 
-int main()
+#include "windows/window.hh"
+#include "windows/demo.hh"
+
+static GLFWwindow* window = nullptr;
+static std::vector<std::unique_ptr<Window>> windows;
+
+static void initialize_ui()
 {
     // initialize
     if (!glfwInit())
@@ -28,7 +37,7 @@ int main()
     std::string glsl_version = "#version 150";
 
     // create window
-    GLFWwindow* window = glfwCreateWindow(1200, 800, "Fortuna debugger", nullptr, nullptr);
+    window = glfwCreateWindow(1200, 800, "Fortuna debugger", nullptr, nullptr);
 
     // setup OpenGL
     glfwMakeContextCurrent(window);
@@ -48,30 +57,10 @@ int main()
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
     ImGui::StyleColorsDark();
     io_->KeyRepeatRate = 0.1f;
+}
 
-    // main loop
-    while (!glfwWindowShouldClose(window)) {
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // TODO - draw
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window);
-
-        glfwPollEvents();
-
-        // TODO - check for keypresses
-
-        // TODO - yield
-    }
-
+static void destroy_ui()
+{
     // terminate
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -80,6 +69,41 @@ int main()
     if (window)
         glfwDestroyWindow(window);
     glfwTerminate();
+}
+
+static void loop_cycle()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    for (auto const& w: windows)
+        w->draw();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwSwapBuffers(window);
+
+    glfwPollEvents();
+}
+
+int main()
+{
+    fdbg::DebuggerClient client;
+
+    windows.push_back(std::make_unique<Demo>(client));
+
+    initialize_ui();
+
+    // main loop
+    while (!glfwWindowShouldClose(window)) {
+        loop_cycle();
+    }
+
+    destroy_ui();
 
     /*
     fdbg::DebuggerClient client("/dev/ttys001");

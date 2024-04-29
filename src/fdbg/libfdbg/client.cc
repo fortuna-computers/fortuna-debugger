@@ -24,7 +24,7 @@ using hrc = std::chrono::high_resolution_clock;
 
 namespace fdbg {
 
-DebuggerClient::DebuggerClient(char const *port, uint32_t baudrate)
+void DebuggerClient::connect(char const *port, uint32_t baudrate)
 {
     fd_ = open(port, O_RDWR);
     if (fd_ < 0)
