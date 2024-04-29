@@ -66,6 +66,22 @@ protobuf_generate(TARGET fdbg
 # emulator
 #
 
+add_executable(f-emulator
+		${IMGUI_SRC}
+		fdbg/emulator/main.cc
+		fdbg/emulator/emulator_cb.h
+		emulation.c
+		emulation.h
+)
+
+target_compile_options(f-emulator PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD2)
+
+target_link_libraries(f-emulator fdbg)
+
+#
+# debugger
+#
+
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -82,26 +98,11 @@ set(IMGUI_SRC
 		fdbg/contrib/glad/src/gl.c
 )
 
-add_executable(f-emulator
-		${IMGUI_SRC}
-		fdbg/emulator/main.cc
-		fdbg/emulator/emulator_cb.h
-		emulation.c
-		emulation.h
-)
-
-target_compile_options(f-emulator PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD2)
-
-target_link_libraries(f-emulator fdbg glfw) # "-framework Cocoa" "-framework OpenGL" "-framework IOKit")
-
-#
-# debugger
-#
-
 add_executable(f-debugger
 		fdbg/debugger/main.cc
+		${IMGUI_SRC}
 )
 
 target_include_directories(f-debugger PUBLIC fdbg/libfdbg)
 
-target_link_libraries(f-debugger fdbg)
+target_link_libraries(f-debugger fdbg glfw)
