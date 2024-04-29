@@ -14,6 +14,16 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${Protobuf_INCLUDE_DIR})
 
 #
+# Clone submodules
+#
+add_custom_target(submodule ALL
+		DEPENDS submodule)
+add_custom_command(OUTPUT submodule
+		PRE_BUILD
+		COMMAND test -e ${CMAKE_SOURCE_DIR}/src/fdbg/contrib/imgui/imgui.h || git submodule update --init --remote --recursive
+		COMMENT "Checking if submodule update is required...")
+
+#
 # libfdbg.so
 #
 
@@ -47,16 +57,38 @@ protobuf_generate(TARGET fdbg
 # emulator
 #
 
+add_subdirectory(fdbg/contrib/glfw)
+
+set(IMGUI_SRC
+		fdbg/contrib/imgui/imgui.cpp
+		fdbg/contrib/imgui/imgui_demo.cpp
+		fdbg/contrib/imgui/imgui_draw.cpp
+		fdbg/contrib/imgui/imgui_tables.cpp
+		fdbg/contrib/imgui/imgui_widgets.cpp
+		fdbg/contrib/imgui/backends/imgui_impl_glfw.cpp
+		fdbg/contrib/imgui/backends/imgui_impl_opengl3.cpp
+		fdbg/contrib/glad/src/gl.c
+)
+
 add_executable(f-emulator
+		${IMGUI_SRC}
 		fdbg/emulator/main.cc
 		fdbg/emulator/emulator_cb.h
 		emulation.c
 		emulation.h
 )
 
-target_include_directories(f-emulator PUBLIC fdbg/libfdbg)
+target_compile_options(f-emulator PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD2)
 
-target_link_libraries(f-emulator fdbg)
+target_include_directories(f-emulator PUBLIC
+		fdbg/libfdbg
+		fdbg/contrib/glad/include
+		fdbg/contrib/glfw/include
+		fdbg/contrib/imgui
+		fdbg/contrib/imgui/backends
+)
+
+target_link_libraries(f-emulator fdbg glfw)
 
 #
 # debugger

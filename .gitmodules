@@ -1,0 +1,7 @@
+[submodule "src/fdbg/contrib/imgui"]
+	path = src/fdbg/contrib/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "src/fdbg/contrib/glfw"]
+	path = src/fdbg/contrib/glfw
+	url = https://github.com/glfw/glfw.git
