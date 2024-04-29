@@ -13,12 +13,25 @@ find_package(Protobuf CONFIG REQUIRED)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${Protobuf_INCLUDE_DIR})
 
+#
+# libfdbg.so
+#
+
 add_library(fdbg SHARED
+		${PROTO_HEADER} ${PROTO_SRC}
 		machine.c
 		machine.h
-		fdbg/libfdbg/connection.cc
-		fdbg/libfdbg/connection.hh
-		${PROTO_HEADER} ${PROTO_SRC}
+		fdbg/libfdbg/fdbg.hh
+		fdbg/libfdbg/client.cc
+		fdbg/libfdbg/client.hh
+		fdbg/libfdbg/client.cc
+		fdbg/libfdbg/client.hh
+		fdbg/libfdbg/exceptions.hh
+		fdbg/libfdbg/server.cc
+		fdbg/libfdbg/server.hh
+		fdbg/libfdbg/serial.cc
+		fdbg/libfdbg/serial.hh
+		fdbg/libfdbg/serial.inl
 )
 
 target_link_libraries(fdbg
@@ -27,5 +40,29 @@ target_link_libraries(fdbg
 
 protobuf_generate(TARGET fdbg
 		LANGUAGE cpp
-		PROTOS fdbg/protobuf/request.proto fdbg/protobuf/response.proto
+		PROTOS fdbg/protobuf/to-computer.proto fdbg/protobuf/to-debugger.proto
 )
+
+#
+# emulator
+#
+
+add_executable(f-emulator
+		fdbg/emulator/main.cc
+)
+
+target_include_directories(f-emulator PUBLIC fdbg/libfdbg)
+
+target_link_libraries(f-emulator fdbg)
+
+#
+# debugger
+#
+
+add_executable(f-debugger
+		fdbg/debugger/main.cc
+)
+
+target_include_directories(f-debugger PUBLIC fdbg/libfdbg)
+
+target_link_libraries(f-debugger fdbg)

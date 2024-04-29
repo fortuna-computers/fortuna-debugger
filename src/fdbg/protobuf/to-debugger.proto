@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message AckResponse {
+  uint32 id = 1;
+}
+
+message ToDebugger {
+  oneof message {
+    AckResponse ack_response = 1;
+  }
+}
