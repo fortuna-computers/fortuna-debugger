@@ -1,6 +1,7 @@
 #include "serial.hh"
 
 #include <cerrno>
+#include <cstring>
 #include <unistd.h>
 
 #include <stdexcept>
