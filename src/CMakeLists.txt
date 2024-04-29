@@ -9,9 +9,18 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Protobuf CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${Protobuf_INCLUDE_DIR})
+include_directories(
+		${Protobuf_INCLUDE_DIR}
+		${CMAKE_CURRENT_BINARY_DIR}
+		fdbg/libfdbg
+		fdbg/contrib/glad/include
+		fdbg/contrib/glfw/include
+		fdbg/contrib/imgui
+		fdbg/contrib/imgui/backends
+)
+
 
 #
 # Clone submodules
@@ -57,6 +66,9 @@ protobuf_generate(TARGET fdbg
 # emulator
 #
 
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(fdbg/contrib/glfw)
 
 set(IMGUI_SRC
@@ -80,15 +92,7 @@ add_executable(f-emulator
 
 target_compile_options(f-emulator PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD2)
 
-target_include_directories(f-emulator PUBLIC
-		fdbg/libfdbg
-		fdbg/contrib/glad/include
-		fdbg/contrib/glfw/include
-		fdbg/contrib/imgui
-		fdbg/contrib/imgui/backends
-)
-
-target_link_libraries(f-emulator fdbg glfw)
+target_link_libraries(f-emulator fdbg glfw) # "-framework Cocoa" "-framework OpenGL" "-framework IOKit")
 
 #
 # debugger
