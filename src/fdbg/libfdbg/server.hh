@@ -18,6 +18,7 @@ public:
     std::optional<ToComputer> receive() const { return receive_message<ToComputer>(); }
 
     void send_ack_response(uint32_t id) const;
+    void send_write_memory_confirmation(bool ok, uint64_t first_failed_pos) const;
 
 private:
     void send(ToDebugger const& msg) const { send_message(msg); }

@@ -37,4 +37,17 @@ void ComputerServer::send_ack_response(uint32_t id) const
     send(msg);
 }
 
+void ComputerServer::send_write_memory_confirmation(bool ok, uint64_t first_failed_pos) const
+{
+    ToDebugger msg;
+
+    auto write_memory_conf = new WriteMemoryConfirmation();
+    write_memory_conf->set_error(!ok);
+    if (!ok)
+        write_memory_conf->set_first_failed_pos(first_failed_pos);
+    msg.set_allocated_write_memory_confirmation(write_memory_conf);
+
+    send(msg);
+}
+
 }
