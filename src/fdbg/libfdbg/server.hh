@@ -2,6 +2,9 @@
 #define SERVER_HH_
 
 #include <cstdint>
+
+#include <vector>
+
 #include "serial.hh"
 
 #include "fdbg/protobuf/to-debugger.pb.h"
@@ -19,6 +22,7 @@ public:
 
     void send_ack_response(uint32_t id) const;
     void send_write_memory_confirmation(bool ok, uint64_t first_failed_pos) const;
+    void send_memory_update(uint64_t pos, std::vector<uint8_t> const& bytes) const;
 
 private:
     void send(ToDebugger const& msg) const { send_message(msg); }

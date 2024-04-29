@@ -50,4 +50,16 @@ void ComputerServer::send_write_memory_confirmation(bool ok, uint64_t first_fail
     send(msg);
 }
 
+void ComputerServer::send_memory_update(uint64_t pos, std::vector<uint8_t> const& bytes) const
+{
+    ToDebugger msg;
+
+    auto memory_update = new MemoryUpdate();
+    memory_update->set_initial_pos(pos);
+    memory_update->set_bytes(bytes.data(), bytes.size());
+    msg.set_allocated_memory_update(memory_update);
+
+    send(msg);
+}
+
 }

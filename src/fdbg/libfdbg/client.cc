@@ -50,7 +50,7 @@ ToDebugger DebuggerClient::wait_for_response(std::function<bool(ToDebugger const
     }
 }
 
-void DebuggerClient::ack(uint32_t id) const
+void DebuggerClient::ack_sync(uint32_t id) const
 {
     ToComputer msg;
 
@@ -63,7 +63,7 @@ void DebuggerClient::ack(uint32_t id) const
         throw InvalidId();
 }
 
-void DebuggerClient::write_memory(uint64_t pos, std::vector<uint8_t> const& area, bool async) const
+void DebuggerClient::write_memory(uint64_t pos, std::vector<uint8_t> const& area) const
 {
     ToComputer msg;
 
@@ -72,12 +72,27 @@ void DebuggerClient::write_memory(uint64_t pos, std::vector<uint8_t> const& area
     write_memory->set_bytes(area.data(), area.size());
 
     send(msg);
+}
 
-    if (!async) {
-        auto response = wait_for_response([](ToDebugger const& msg) { return msg.has_write_memory_confirmation(); });
-        if (response.write_memory_confirmation().error())
-            throw WriteMemoryValidationError(response.write_memory_confirmation().first_failed_pos());
-    }
+void DebuggerClient::write_memory_sync(uint64_t pos, std::vector<uint8_t> const& area) const
+{
+    write_memory(pos, area);
+
+    auto response = wait_for_response([](ToDebugger const& msg) { return msg.has_write_memory_confirmation(); });
+    if (response.write_memory_confirmation().error())
+        throw WriteMemoryValidationError(response.write_memory_confirmation().first_failed_pos());
+}
+
+void DebuggerClient::read_memory_request(uint64_t pos, uint16_t sz) const
+{
+    ToComputer msg;
+
+    auto read_memory = new ReadMemory();
+    read_memory->set_initial_addr(pos);
+    read_memory->set_sz(sz);
+    msg.set_allocated_read_memory(read_memory);
+
+    send(msg);
 }
 
 }

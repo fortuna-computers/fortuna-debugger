@@ -9,7 +9,7 @@ message WriteMemoryConfirmation {
   uint64 first_failed_pos = 2;
 }
 
-message MemoryArea {
+message MemoryUpdate {
   uint64 initial_pos = 1;
   bytes  bytes       = 2;
 };
@@ -18,6 +18,6 @@ message ToDebugger {
   oneof message {
     AckResponse             ack_response              = 1;
     WriteMemoryConfirmation write_memory_confirmation = 2;
-    MemoryArea              memory_area               = 3;
+    MemoryUpdate            memory_update             = 3;
   }
 }
