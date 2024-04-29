@@ -33,6 +33,23 @@ DebuggerClient::DebuggerClient(char const *port, uint32_t baudrate)
     configure_terminal_settings(baudrate);
 }
 
+ToDebugger DebuggerClient::wait_for_response(std::function<bool(ToDebugger const& msg)> check_function) const
+{
+    std::optional<ToDebugger> response;
+
+    auto initial_time = hrc::now();
+    for (;;) {
+        response = receive();
+        if (!response)
+            std::this_thread::sleep_for(1ms);
+        else if (check_function(response.value()))
+            return response.value();
+
+        if (hrc::now() > initial_time + 2s)
+            throw Timeout();
+    }
+}
+
 void DebuggerClient::ack(uint32_t id) const
 {
     ToComputer msg;
@@ -41,21 +58,26 @@ void DebuggerClient::ack(uint32_t id) const
 
     send(msg);
 
-    std::optional<ToDebugger> response;
-    auto initial_time = hrc::now();
-    for (;;) {
-        response = receive();
-        if (!response)
-            std::this_thread::sleep_for(1ms);
-        else if (response.value().has_ack_response())
-            break;
-
-        if (hrc::now() > initial_time + 2s)
-            throw Timeout();
-    }
-
-    if (response->ack_response().id() != id)
+    auto response = wait_for_response([](ToDebugger const& msg) { return msg.has_ack_response(); });
+    if (response.ack_response().id() != id)
         throw InvalidId();
+}
+
+void DebuggerClient::write_memory(uint64_t pos, std::vector<uint8_t> const& area, bool async) const
+{
+    ToComputer msg;
+
+    auto write_memory = new WriteMemory();
+    write_memory->set_initial_addr(pos);
+    write_memory->set_bytes(area.data(), area.size());
+
+    send(msg);
+
+    if (!async) {
+        auto response = wait_for_response([](ToDebugger const& msg) { return msg.has_write_memory_confirmation(); });
+        if (response.write_memory_confirmation().error())
+            throw WriteMemoryValidationError(response.write_memory_confirmation().first_failed_pos());
+    }
 }
 
 }

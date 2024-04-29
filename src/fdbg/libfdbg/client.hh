@@ -2,6 +2,9 @@
 #define CLIENT_HH_
 
 #include <cstdint>
+
+#include <functional>
+
 #include "serial.hh"
 
 #include "fdbg/protobuf/to-computer.pb.h"
@@ -16,9 +19,12 @@ public:
     std::optional<ToDebugger> receive() const { return receive_message<ToDebugger>(); }
 
     void ack(uint32_t id) const;
+    void write_memory(uint64_t pos, std::vector<uint8_t> const& area, bool async=false) const;
 
 private:
     void send(ToComputer const& msg) const { send_message(msg); }
+
+    ToDebugger wait_for_response(std::function<bool(ToDebugger const& msg)> check_function) const;
 };
 
 }
