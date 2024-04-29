@@ -21,7 +21,7 @@ A sample implementation is provided for running an emulator version of the [CHIP
 ## Implementing a new architecture
 
 1. Fork the repository, or add as a submodule in another project.
-2. Implement all functions descibed in the headers in directory `src/`.
+2. Implement all functions in files `src/machine.c` (machine characteristics) and `src/emulation.c` (emulation behaviour).
      - Avoid changing the contents of directory `src/fdbg/`, as it contains the main emulator/debugger/firmware code provided by the project.
 3. Run the CMake build in the top directory. This will generate the debugger, emulator and library.
       ```sh

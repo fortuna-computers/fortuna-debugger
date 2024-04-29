@@ -1,6 +1,11 @@
 #include "machine.h"
 
-uint16_t machine_id()
+MachineCharacteristics* machine_characteristics()
 {
-    return 0x4bf8;
+    static MachineCharacteristics mc = {
+            .id = 0x8f42,
+            .total_actual_memory = 4096,
+            .total_mappable_memory = 4096,
+    };
+    return &mc;
 }

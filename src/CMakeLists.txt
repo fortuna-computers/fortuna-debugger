@@ -49,6 +49,9 @@ protobuf_generate(TARGET fdbg
 
 add_executable(f-emulator
 		fdbg/emulator/main.cc
+		fdbg/emulator/emulator_cb.h
+		emulation.c
+		emulation.h
 )
 
 target_include_directories(f-emulator PUBLIC fdbg/libfdbg)
