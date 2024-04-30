@@ -5,10 +5,10 @@
 
 class Demo : public Window {
 public:
-    explicit Demo(fdbg::DebuggerClient& client) : Window(client) {}
+    using Window::Window;
 
     void draw() override;
-    std::string name() const override { return "demo_window"; }
+    std::string name() const override { return "demo"; }
 };
 
 #endif //DEMO_HH_

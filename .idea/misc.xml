@@ -3,4 +3,10 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/sample-chip8">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
+  <component name="CidrRootsConfiguration">
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/sample-chip8/fdbg/contrib" />
+      <file path="$PROJECT_DIR$/src/fdbg/contrib" />
+    </libraryRoots>
+  </component>
 </project>

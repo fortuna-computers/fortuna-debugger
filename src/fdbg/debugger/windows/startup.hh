@@ -5,9 +5,11 @@
 
 class Startup : public Window {
 public:
+    using Window::Window;
+
     void draw() override;
 
-    std::string name() const override { return "Initialization"; }
+    std::string name() const override { return "startup"; }
 };
 
 #endif //STARTUP_HH_

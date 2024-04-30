@@ -11,6 +11,7 @@
 
 #include "windows/window.hh"
 #include "windows/demo.hh"
+#include "windows/startup.hh"
 
 UI::UI(fdbg::DebuggerClient &client)
     : client_(client)
@@ -32,27 +33,30 @@ UI::UI(fdbg::DebuggerClient &client)
     std::string glsl_version = "#version 150";
 
     // create window
-    window_ = glfwCreateWindow(1200, 800, "Fortuna debugger", nullptr, nullptr);
+    glfw_window_ = glfwCreateWindow(1200, 800, "Fortuna debugger", nullptr, nullptr);
 
     // setup OpenGL
-    glfwMakeContextCurrent(window_);
+    glfwMakeContextCurrent(glfw_window_);
     if (!gladLoadGL(glfwGetProcAddress))
         throw std::runtime_error("Could not initialize GLAD.");
     glClearColor(0, 0, 0, 1.0f);
 
     // configure GLFW
     glfwSwapInterval(1);
-    glfwSetFramebufferSizeCallback(window_, [](GLFWwindow*, int width, int height) { glViewport(0, 0, width, height); });
+    glfwSetFramebufferSizeCallback(glfw_window_, [](GLFWwindow*, int width, int height) { glViewport(0, 0, width, height); });
 
     // configure ImGui
     IMGUI_CHECKVERSION();
     ImGuiContext* context = ImGui::CreateContext();
     ImGuiIO* io_ = &ImGui::GetIO();
-    ImGui_ImplGlfw_InitForOpenGL(window_, true);
+    ImGui_ImplGlfw_InitForOpenGL(glfw_window_, true);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
     ImGui::StyleColorsDark();
     io_->KeyRepeatRate = 0.1f;
 
+    // add windows
+    add_window<Demo>(true);
+    add_window<Startup>(true);
 }
 
 UI::~UI()
@@ -62,14 +66,14 @@ UI::~UI()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    if (window_)
-        glfwDestroyWindow(window_);
+    if (glfw_window_)
+        glfwDestroyWindow(glfw_window_);
     glfwTerminate();
 }
 
 void UI::run()
 {
-    while (!glfwWindowShouldClose(window_)) {
+    while (!glfwWindowShouldClose(glfw_window_)) {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -77,14 +81,23 @@ void UI::run()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        //for (auto const& w: windows)
-        //    w->draw();
+        for (auto const& [_, w]: windows_)
+            w->draw();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window_);
+        glfwSwapBuffers(glfw_window_);
 
         glfwPollEvents();
     }
+}
+
+fdbg::DebuggerClient& UI::client() const
+{
+    return client_;
+}
+
+void UI::set_window_visible(std::string const& name, bool visible)
+{
 }

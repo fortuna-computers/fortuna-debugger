@@ -5,7 +5,7 @@
 
 class Window {
 public:
-    explicit Window(fdbg::DebuggerClient& client) : client_(client) {}
+    explicit Window(class UIInterface& ui, bool visible=false) : ui_(ui), visible_(visible) {}
     virtual ~Window() = default;
 
     [[nodiscard]] bool visible() const { return visible_; }
@@ -17,8 +17,8 @@ public:
     [[nodiscard]] virtual std::string name() const = 0;
 
 protected:
-    fdbg::DebuggerClient client_;
-    bool visible_ = false;
+    class UIInterface& ui_;
+    bool visible_;
 
     static const int PageUp = 0x10a;
     static const int PageDown = 0x10b;
