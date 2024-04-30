@@ -96,14 +96,18 @@ set(IMGUI_SRC
 		fdbg/contrib/imgui/backends/imgui_impl_glfw.cpp
 		fdbg/contrib/imgui/backends/imgui_impl_opengl3.cpp
 		fdbg/contrib/glad/src/gl.c
-		fdbg/debugger/windows/window.hh
-		fdbg/debugger/windows/demo.cc
-		fdbg/debugger/windows/demo.hh
 )
 
 add_executable(f-debugger
-		fdbg/debugger/main.cc
 		${IMGUI_SRC}
+		fdbg/debugger/main.cc
+		fdbg/debugger/ui.cc
+		fdbg/debugger/ui.hh
+		fdbg/debugger/windows/window.hh
+		fdbg/debugger/windows/demo.cc
+		fdbg/debugger/windows/demo.hh
+		fdbg/debugger/windows/startup.cc
+		fdbg/debugger/windows/startup.hh
 )
 
 target_include_directories(f-debugger PUBLIC fdbg/libfdbg)
