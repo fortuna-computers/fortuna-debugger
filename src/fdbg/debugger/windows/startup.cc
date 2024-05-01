@@ -2,11 +2,55 @@
 
 #include <imgui.h>
 
+#include "../ui.hh"
+
+Startup::Startup(UIInterface& ui, bool visible)
+    : Window(ui, visible)
+{
+    if (ui.config().get("Connection type") == "hardware")
+        connection_type = CT_SERIAL;
+
+    strncpy(serial_port_, ui.config().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
+
+    auto baud = ui.config().get("Baud rate");
+    if (!baud.empty()) {
+        baud_rate_ = strtoul(baud.c_str(), nullptr, 10);
+    }
+}
+
+void Startup::save_config()
+{
+    ui_.config().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
+    ui_.config().set("Serial port", serial_port_);
+    ui_.config().set("Baud rate", std::to_string(baud_rate_));
+    ui_.config().save();
+}
+
 void Startup::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(600, 82));
+    ImGui::SetNextWindowSize(ImVec2(400, 150));
     ImGui::Begin("Welcome to Fortuna debugger", nullptr, ImGuiWindowFlags_NoResize);
 
+    ImGui::Text("Select connection type");
+    ImGui::RadioButton("Emulator", (int*) &connection_type, CT_EMULATOR); ImGui::SameLine();
+    ImGui::RadioButton("Real hardware (serial)", (int*) &connection_type, CT_SERIAL);
+
+    if (connection_type == CT_SERIAL) {
+        ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_));
+        ImGui::InputInt("Baud rate", &baud_rate_, 0);
+    }
+
+    if (ImGui::Button("Connect")) {
+        save_config();
+        if (connection_type == CT_EMULATOR) {
+            std::string port = ui_.client().start_emulator();
+            ui_.client().connect(port, fdbg::DebuggerClient::EMULATOR_BAUD);
+        } else {
+            ui_.client().connect(serial_port_, baud_rate_);
+        }
+        ui_.client().set_debugging_level(fdbg::DebuggingLevel::DEBUG);
+        // TODO - send ack
+    }
 
     ImGui::End();
 }

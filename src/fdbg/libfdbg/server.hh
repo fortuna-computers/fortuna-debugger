@@ -17,6 +17,7 @@ public:
     explicit ComputerServer(uint32_t baudrate=115200);
 
     std::string const &port() const { return port_; }
+    void write_port();
 
     std::optional<ToComputer> receive() const { return receive_message<ToComputer>(); }
 

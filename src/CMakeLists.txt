@@ -96,6 +96,8 @@ set(IMGUI_SRC
 		fdbg/contrib/imgui/backends/imgui_impl_glfw.cpp
 		fdbg/contrib/imgui/backends/imgui_impl_opengl3.cpp
 		fdbg/contrib/glad/src/gl.c
+		fdbg/debugger/config.cc
+		fdbg/debugger/config.hh
 )
 
 add_executable(f-debugger

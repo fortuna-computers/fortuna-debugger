@@ -13,6 +13,7 @@ int main()
 {
     fdbg::ComputerServer server;
     server.set_debugging_level(fdbg::DebuggingLevel::TRACE);
+    server.write_port();
 
     for (;;) {
         auto omsg = server.receive();

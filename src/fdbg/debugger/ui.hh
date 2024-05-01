@@ -5,13 +5,16 @@
 #include <memory>
 #include <string>
 
+#include "config.hh"
 #include "fdbg.hh"
 #include "windows/window.hh"
 
 class UIInterface {
 public:
     virtual fdbg::DebuggerClient& client() const = 0;
-    virtual void set_window_visible(std::string const& name, bool visible) = 0;
+    virtual void                  set_window_visible(std::string const& name, bool visible) = 0;
+    virtual Config&               config() = 0;
+
 protected:
     UIInterface() = default;
 };
@@ -23,7 +26,9 @@ public:
 
     void run();
 
-    fdbg::DebuggerClient& client() const override;
+    fdbg::DebuggerClient& client() const override { return client_; }
+    Config&               config() override { return config_; }
+
     void set_window_visible(std::string const& name, bool visible) override;
 
 private:
@@ -35,6 +40,7 @@ private:
 
     fdbg::DebuggerClient&                          client_;
     struct GLFWwindow*                             glfw_window_ = nullptr;
+    Config                                         config_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
 };
 

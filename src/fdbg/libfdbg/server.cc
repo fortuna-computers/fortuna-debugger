@@ -10,6 +10,11 @@
 #include <string>
 using namespace std::string_literals;
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 namespace fdbg {
 
 ComputerServer::ComputerServer(uint32_t baudrate)
@@ -24,6 +29,17 @@ ComputerServer::ComputerServer(uint32_t baudrate)
     port_ = serial_port;
 
     configure_terminal_settings(baudrate);
+}
+
+void ComputerServer::write_port()
+{
+    std::string filename = std::string(getenv("TMPDIR")) + "/f-emulator";
+
+    FILE* f = fopen(filename.c_str(), "w");
+    if (!f)
+        throw std::runtime_error("Could not open file "s + filename + ": " + strerror(errno));
+    fprintf(f, "%s", port_.c_str());
+    fclose(f);
 }
 
 void ComputerServer::send_ack_response(uint32_t id) const

@@ -54,6 +54,9 @@ UI::UI(fdbg::DebuggerClient &client)
     ImGui::StyleColorsDark();
     io_->KeyRepeatRate = 0.1f;
 
+    // .ini config
+    config_.initialize(context);
+
     // add windows
     add_window<Demo>(true);
     add_window<Startup>(true);
@@ -93,11 +96,7 @@ void UI::run()
     }
 }
 
-fdbg::DebuggerClient& UI::client() const
-{
-    return client_;
-}
-
 void UI::set_window_visible(std::string const& name, bool visible)
 {
+    windows_.at(name)->set_visible(visible);
 }
