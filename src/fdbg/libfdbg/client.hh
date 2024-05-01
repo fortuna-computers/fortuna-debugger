@@ -17,7 +17,6 @@ public:
     static const int EMULATOR_BAUD = 921600;
 
     void        connect(std::string const& port, uint32_t baudrate=115200);
-    std::string start_emulator(std::string const& path=".");
 
     std::optional<ToDebugger> receive() const { return receive_message<ToDebugger>(); }
 

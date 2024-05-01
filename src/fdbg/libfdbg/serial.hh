@@ -18,7 +18,7 @@ public:
 protected:
     Serial() = default;
 
-    void configure_terminal_settings(uint32_t baud);
+    void configure_terminal_settings(uint32_t baud) const;
 
     template <typename T> void             send_message(T const& msg) const;
     template <typename T> std::optional<T> receive_message() const;

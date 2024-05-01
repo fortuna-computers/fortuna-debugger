@@ -4,6 +4,10 @@
 
 #include "../ui.hh"
 
+extern "C" {
+#include "machine.h"
+}
+
 Startup::Startup(UIInterface& ui, bool visible)
     : Window(ui, visible)
 {
@@ -40,16 +44,18 @@ void Startup::draw()
         ImGui::InputInt("Baud rate", &baud_rate_, 0);
     }
 
+    // TODO - check for errors
     if (ImGui::Button("Connect")) {
         save_config();
         if (connection_type == CT_EMULATOR) {
-            std::string port = ui_.client().start_emulator();
+            std::string port = ui_.emulator().init();
+            ui_.emulator().run_as_thread();
             ui_.client().connect(port, fdbg::DebuggerClient::EMULATOR_BAUD);
         } else {
             ui_.client().connect(serial_port_, baud_rate_);
         }
-        ui_.client().set_debugging_level(fdbg::DebuggingLevel::DEBUG);
-        // TODO - send ack
+        ui_.client().set_debugging_level(fdbg::DebuggingLevel::TRACE); // TODO
+        ui_.client().ack_sync(machine_characteristics()->id);
     }
 
     ImGui::End();

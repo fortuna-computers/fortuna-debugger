@@ -50,37 +50,6 @@ ToDebugger DebuggerClient::wait_for_response(std::function<bool(ToDebugger const
     }
 }
 
-std::string DebuggerClient::start_emulator(std::string const& path)
-{
-    if (fork() == 0) {
-        execl((path + "/f-emulator").c_str(), "f-emulator", nullptr);
-        printf("Emulator killed!\n");
-        abort();
-    } else {
-        std::this_thread::sleep_for(200ms);
-        return read_port_from_emulator();
-    }
-}
-
-std::string DebuggerClient::read_port_from_emulator() const
-{
-    std::string filename = std::string(getenv("TMPDIR")) + "/f-emulator";
-
-    FILE* f = fopen(filename.c_str(), "r");
-    char buffer[128];
-    size_t i = 0;
-
-    char c;
-    do {
-        c = fgetc(f);
-        buffer[i++] = c;
-    } while (c != EOF);
-    fclose(f);
-
-    buffer[i++] = 0;
-    return buffer;
-}
-
 void DebuggerClient::ack_sync(uint32_t id) const
 {
     ToComputer msg;

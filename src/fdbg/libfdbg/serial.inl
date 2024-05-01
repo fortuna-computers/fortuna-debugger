@@ -47,7 +47,7 @@ std::optional<T> Serial::receive_message() const
     ssize_t r = read(fd_, &sz, 2);
     if (r == 0)
         return {};
-    else if (r == -1)
+    else if (r == -1 && errno != EAGAIN)
         throw std::runtime_error("Error reading from serial: "s + strerror(errno));
 
     if (debugging_level_ == DebuggingLevel::TRACE)

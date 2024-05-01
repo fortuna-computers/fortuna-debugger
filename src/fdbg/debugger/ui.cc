@@ -13,8 +13,7 @@
 #include "windows/demo.hh"
 #include "windows/startup.hh"
 
-UI::UI(fdbg::DebuggerClient &client)
-    : client_(client)
+UI::UI()
 {
     // initialize
     if (!glfwInit())
@@ -72,6 +71,8 @@ UI::~UI()
     if (glfw_window_)
         glfwDestroyWindow(glfw_window_);
     glfwTerminate();
+
+    emulator_.kill();
 }
 
 void UI::run()

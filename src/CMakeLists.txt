@@ -14,6 +14,7 @@ find_package(OpenGL REQUIRED)
 include_directories(
 		${Protobuf_INCLUDE_DIR}
 		${CMAKE_CURRENT_BINARY_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}
 		fdbg/libfdbg
 		fdbg/contrib/glad/include
 		fdbg/contrib/glfw/include
@@ -63,22 +64,6 @@ protobuf_generate(TARGET fdbg
 )
 
 #
-# emulator
-#
-
-add_executable(f-emulator
-		${IMGUI_SRC}
-		fdbg/emulator/main.cc
-		fdbg/emulator/emulator_cb.h
-		emulation.c
-		emulation.h
-)
-
-target_compile_options(f-emulator PUBLIC -DIMGUI_IMPL_OPENGL_LOADER_GLAD2)
-
-target_link_libraries(f-emulator fdbg)
-
-#
 # debugger
 #
 
@@ -96,8 +81,6 @@ set(IMGUI_SRC
 		fdbg/contrib/imgui/backends/imgui_impl_glfw.cpp
 		fdbg/contrib/imgui/backends/imgui_impl_opengl3.cpp
 		fdbg/contrib/glad/src/gl.c
-		fdbg/debugger/config.cc
-		fdbg/debugger/config.hh
 )
 
 add_executable(f-debugger
@@ -110,6 +93,10 @@ add_executable(f-debugger
 		fdbg/debugger/windows/demo.hh
 		fdbg/debugger/windows/startup.cc
 		fdbg/debugger/windows/startup.hh
+		fdbg/debugger/config.cc
+		fdbg/debugger/config.hh
+		fdbg/debugger/emulator/emulator.cc
+		fdbg/debugger/emulator/emulator.hh
 )
 
 target_include_directories(f-debugger PUBLIC fdbg/libfdbg)
