@@ -25,7 +25,7 @@ if platform.system() == "Darwin":
         usb_id, product_id, vendor_id, serial_port = line.split(",")
         found = False
         if product_id == p_product_id and vendor_id == p_vendor_id:
-            print(serial_port)
+            print(serial_port, end="")
             sys.exit(0)
     print("Device not found")
     sys.exit(1)
@@ -42,7 +42,7 @@ elif platform.system() == "Linux":
                 vendor_id = re.search("""ID_VENDOR_ID='(....)""", vrs).group(1)
                 product_id = re.search("""ID_MODEL_ID='(....)""", vrs).group(1)
                 if product_id == p_product_id and vendor_id == p_vendor_id:
-                    print("/dev/" + devname)
+                    print("/dev/" + devname, end="")
                     sys.exit(0)
 
     print("Device not found")
