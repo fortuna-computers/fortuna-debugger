@@ -8,6 +8,8 @@ extern "C" {
 #include "machine.h"
 }
 
+#include "../exceptions/exceptions.hh"
+
 Startup::Startup(UIInterface& ui, bool visible)
     : Window(ui, visible)
 {
@@ -26,7 +28,7 @@ void Startup::save_config()
 
 void Startup::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(400, 150));
+    ImGui::SetNextWindowSize(ImVec2(550, 150));
     ImGui::Begin("Welcome to Fortuna debugger", nullptr, ImGuiWindowFlags_NoResize);
 
     ImGui::Text("Select connection type");
@@ -34,7 +36,15 @@ void Startup::draw()
     ImGui::RadioButton("Real hardware (serial)", (int*) &connection_type, CT_SERIAL);
 
     if (connection_type == CT_SERIAL) {
-        ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_));
+        ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
+        if (ImGui::Button("Autodetect")) {
+            try {
+                std::string port = fdbg::DebuggerClient::auto_detect_port();
+                strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
+            } catch (std::exception& e) {
+                throw DebuggerError(e.what());
+            }
+        }
         ImGui::InputInt("Baud rate", &baud_rate_, 0);
     }
 

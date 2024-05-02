@@ -13,4 +13,9 @@
 
 #define UART_BAUD_RATE 115200   // Baud rate of the microcontroller
 
+// These are optional variables that will help the debugger to automatically find the serial port if connected via USB.
+// Always use 4-digit hex (ex. "080a").
+#define MICROCONTROLLER_VENDOR_ID  "0000"
+#define MICROCONTROLLER_PRODUCT_ID "0000"
+
 #endif //MACHINE_H_

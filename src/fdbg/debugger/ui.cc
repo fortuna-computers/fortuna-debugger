@@ -13,6 +13,7 @@
 #include "windows/demo.hh"
 #include "windows/messagebox.hh"
 #include "windows/startup.hh"
+#include "exceptions/exceptions.hh"
 
 UI::UI()
 {
@@ -91,6 +92,9 @@ void UI::run()
             if (w->visible()) {
                 try {
                     w->draw();
+                } catch (DebuggerError& e) {
+                    ImGui::End();
+                    ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::Error, e.what());
                 } catch (std::exception& e) {
                     ImGui::End();
                     ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::FatalError, e.what());

@@ -18,6 +18,7 @@
 - [x] Initial ack
   - [x] Treat errors
 - [ ] Connect to real hardware
+  - [x] Auto-detect serial port
   - [ ] Start real hardware CHIP-8 project
 
 # RAM

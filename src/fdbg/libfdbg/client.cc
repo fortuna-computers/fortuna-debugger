@@ -18,6 +18,8 @@
 
 #include "exceptions.hh"
 
+#include "machine.h"
+
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 using hrc = std::chrono::high_resolution_clock;
@@ -31,6 +33,21 @@ void DebuggerClient::connect(std::string const& port, uint32_t baudrate)
         throw std::runtime_error("Could not open serial port "s + port);
 
     configure_terminal_settings(baudrate);
+}
+
+std::string DebuggerClient::auto_detect_port()
+{
+    char port[512];
+
+    FILE* fp = popen(("./findserial.py "s + MICROCONTROLLER_VENDOR_ID + " " + MICROCONTROLLER_PRODUCT_ID).c_str(), "r");
+    if (!fp)
+        throw std::runtime_error("Could not find auto-detect script");
+
+    fgets(port, sizeof(port), fp);
+    if (pclose(fp) != 0)
+        throw std::runtime_error("Auto-detect unsuccessful");
+
+    return port;
 }
 
 ToDebugger DebuggerClient::wait_for_response(std::function<bool(ToDebugger const& msg)> check_function) const

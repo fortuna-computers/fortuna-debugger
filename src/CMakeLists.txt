@@ -97,8 +97,11 @@ add_executable(f-debugger
 		fdbg/debugger/config.hh
 		fdbg/debugger/emulator/emulator.cc
 		fdbg/debugger/emulator/emulator.hh
+		fdbg/debugger/exceptions/exceptions.hh
 )
 
 target_include_directories(f-debugger PUBLIC fdbg/libfdbg)
 
 target_link_libraries(f-debugger fdbg glfw)
+
+configure_file(fdbg/scripts/findserial.py . USE_SOURCE_PERMISSIONS COPYONLY)

@@ -14,8 +14,6 @@ namespace fdbg {
 
 class DebuggerClient : public Serial {
 public:
-    static const int EMULATOR_BAUD = 921600;
-
     void        connect(std::string const& port, uint32_t baudrate=115200);
 
     std::optional<ToDebugger> receive() const { return receive_message<ToDebugger>(); }
@@ -24,6 +22,10 @@ public:
     void write_memory(uint64_t pos, std::vector<uint8_t> const& area) const;
     void write_memory_sync(uint64_t pos, std::vector<uint8_t> const& area) const;
     void read_memory_request(uint64_t pos, uint16_t sz) const;
+
+    static const int EMULATOR_BAUD = 921600;
+
+    static std::string auto_detect_port();
 
 private:
     void send(ToComputer const& msg) const { send_message(msg); }
