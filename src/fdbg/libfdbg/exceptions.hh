@@ -9,7 +9,7 @@ public:
 
 class Timeout : public std::runtime_error {
 public:
-    Timeout() : std::runtime_error("Communication timed out") {}
+    Timeout() : std::runtime_error("Communication timed out while waiting for computer to respond") {}
 };
 
 class WriteMemoryValidationError : public std::runtime_error {

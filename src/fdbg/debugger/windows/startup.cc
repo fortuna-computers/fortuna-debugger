@@ -38,12 +38,8 @@ void Startup::draw()
     if (connection_type == CT_SERIAL) {
         ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
         if (ImGui::Button("Autodetect")) {
-            try {
-                std::string port = fdbg::DebuggerClient::auto_detect_port();
-                strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
-            } catch (std::exception& e) {
-                throw DebuggerError(e.what());
-            }
+            std::string port = fdbg::DebuggerClient::auto_detect_port();
+            strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
         }
         ImGui::InputInt("Baud rate", &baud_rate_, 0);
     }

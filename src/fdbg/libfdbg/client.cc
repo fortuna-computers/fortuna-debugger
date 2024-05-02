@@ -30,7 +30,7 @@ void DebuggerClient::connect(std::string const& port, uint32_t baudrate)
 {
     fd_ = open(port.c_str(), O_RDWR);
     if (fd_ < 0)
-        throw std::runtime_error("Could not open serial port "s + port);
+        throw std::runtime_error("Could not open serial port "s + port + ": " + strerror(errno));
 
     configure_terminal_settings(baudrate);
 }
