@@ -1,5 +1,11 @@
 #include "microcontroller.h"
 
+void uart_init_()
+{
+    // initialize the UART hardware
+#error Implement this method
+}
+
 bool uart_ready()
 {
     // return true if there's a byte waiting to be received in UART

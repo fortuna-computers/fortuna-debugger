@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+void    uart_init_();
 bool    uart_ready();
 void    uart_send_byte(uint8_t byte);
 uint8_t uart_receive_byte();

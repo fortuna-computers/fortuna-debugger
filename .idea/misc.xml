@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/sample-chip8">
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/sample-chip8/pico-pi/firmware">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
   <component name="CidrRootsConfiguration">
     <libraryRoots>
+      <file path="$USER_HOME$/pico/pico-sdk" />
       <file path="$PROJECT_DIR$/sample-chip8/fdbg/contrib" />
       <file path="$PROJECT_DIR$/src/fdbg/contrib" />
     </libraryRoots>

@@ -2,13 +2,16 @@ cmake_minimum_required(VERSION 3.13)
 
 include(pico_sdk_import.cmake)
 
-project(my-project C CXX ASM)
+project(chip8 C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
+FILE(GLOB MicrocontrollerSources ../../fdbg/microcontroller/*.[ch])
+
 add_executable(${CMAKE_PROJECT_NAME}
-		src/main.c
+		${MicrocontrollerSources}
+		../../microcontroller.c
 )
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME}
