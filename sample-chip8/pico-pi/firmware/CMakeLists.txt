@@ -9,6 +9,8 @@ pico_sdk_init()
 
 FILE(GLOB MicrocontrollerSources ../../fdbg/microcontroller/*.[ch])
 
+include_directories(../../fdbg/microcontroller)
+
 add_executable(${CMAKE_PROJECT_NAME}
 		${MicrocontrollerSources}
 		../../microcontroller.h

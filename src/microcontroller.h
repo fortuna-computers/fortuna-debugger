@@ -4,9 +4,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-void    microcontroller_init();
-bool    uart_ready();
-void    uart_send_byte(uint8_t byte);
-uint8_t uart_receive_byte();
+#define UART_NO_DATA ((uint16_t) -1)
+
+void     microcontroller_init();
+void     uart_send_byte(uint8_t byte);
+uint16_t uart_receive_byte();
 
 #endif //MICROCONTROLLER_H_

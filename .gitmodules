@@ -5,3 +5,6 @@
 [submodule "src/fdbg/contrib/glfw"]
 	path = src/fdbg/contrib/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "src/fdbg/contrib/nanopb"]
+	path = src/fdbg/contrib/nanopb
+	url = https://github.com/nanopb/nanopb.git

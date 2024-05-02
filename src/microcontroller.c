@@ -6,20 +6,15 @@ void microcontroller_init()
 #error Implement this method
 }
 
-bool uart_ready()
-{
-    // return true if there's a byte waiting to be received in UART
-#error Implement this method
-}
-
 void uart_send_byte(uint8_t byte)
 {
     // send a byte via UART
 #error Implement this method
 }
 
-uint8_t uart_receive_byte()
+uint16_t uart_receive_byte()
 {
-    // receive a byte via UART
+    // asyncronously receive a byte via UART, return UART_NO_DATA if data is not available
 #error Implement this method
+    return UART_NO_DATA;
 }
