@@ -11,6 +11,7 @@ FILE(GLOB MicrocontrollerSources ../../fdbg/microcontroller/*.[ch])
 
 add_executable(${CMAKE_PROJECT_NAME}
 		${MicrocontrollerSources}
+		../../microcontroller.h
 		../../microcontroller.c
 )
 

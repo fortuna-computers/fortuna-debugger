@@ -1,4 +1,12 @@
+#include "../../microcontroller.h"
+
 int main()
 {
-    for (;;);
+    microcontroller_init();
+
+    for (;;) {
+        if (uart_ready()) {
+            // TODO
+        }
+    }
 }
