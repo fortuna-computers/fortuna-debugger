@@ -3,6 +3,8 @@
 
 #include "window.hh"
 
+#include "machine.h"
+
 class Startup : public Window {
 public:
     explicit Startup(class UIInterface& ui, bool visible=false);
@@ -17,7 +19,7 @@ private:
     enum ConnectionType { CT_EMULATOR, CT_SERIAL } connection_type = CT_EMULATOR;
     bool real_hardware_ = false;
     char serial_port_[128] { 0 };
-    int baud_rate_ = 115200;
+    int baud_rate_ = UART_BAUD_RATE;
 };
 
 #endif //STARTUP_HH_

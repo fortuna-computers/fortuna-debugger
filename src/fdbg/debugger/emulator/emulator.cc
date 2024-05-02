@@ -23,7 +23,7 @@ void Emulator::run_as_thread()
 
             if (omsg) {
                 if (omsg->has_ack()) {
-                    server_.send_ack_response(machine_characteristics()->id);
+                    server_.send_ack_response(MACHINE_ID);
                 }
 
                 /*

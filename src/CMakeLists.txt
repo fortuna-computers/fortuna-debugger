@@ -39,8 +39,6 @@ add_custom_command(OUTPUT submodule
 
 add_library(fdbg SHARED
 		${PROTO_HEADER} ${PROTO_SRC}
-		machine.c
-		machine.h
 		fdbg/libfdbg/fdbg.hh
 		fdbg/libfdbg/client.cc
 		fdbg/libfdbg/client.hh

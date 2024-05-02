@@ -1,6 +1,6 @@
 #include "microcontroller.h"
 
-void uart_init_()
+void microcontroller_init()
 {
     // initialize the UART hardware
 #error Implement this method

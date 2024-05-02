@@ -14,14 +14,17 @@ Once the above is provided by the user, the following tools are made available t
 * A **debugger** that:
   * Connects to the computer firmware (via serial) and provide **onboard real-time debugging ability**
   * Connects to an **emulator** to facilitate software development
-* A library (`libfdbg.so`) that allows the user to write its own programs to run onboard (like test suites, for example).
+* A **library** (`libfdbg.so`) that allows the user to write its own programs to run onboard (like test suites, for example).
 
 A sample implementation is provided for running an emulator version of the [CHIP-8](https://chip-8.github.io/) on a Raspberry Pi Pico.
 
 ## Implementing a new architecture
 
-1. Fork the repository, or add as a submodule in another project.
-2. Implement all functions in files `src/machine.c` (machine characteristics) and `src/emulation.c` (emulation behaviour).
+1. Fork the repository, or add as a submodule in another project. Remove the directory `sample-chip8` (or use it as a sample).
+2. Update the following files:
+     - `src/machine.h`: machine characteristics
+     - `src/emulation.cc`: emulator code
+     - `src/compiler.cc`: compilation code (call the compiler and interpret its results)
      - Avoid changing the contents of directory `src/fdbg/`, as it contains the main emulator/debugger/firmware code provided by the project.
 3. Run the CMake build in the top directory. This will generate the debugger, emulator and library.
       ```sh
@@ -30,4 +33,5 @@ A sample implementation is provided for running an emulator version of the [CHIP
       cmake ..
       make
       ```
-4. The firmware build (such as a Makefile) needs to be provided by the user. This build will need to compile the files in `src/*` and `src/fdbg/firmware/*`, and upload it to the microcontroller.
+4. Update the `src/microcontroller.c` with the microcontroller specific code (such as initialization, UART, etc).
+     - The firmware build (such as a Makefile) needs to be provided by the user. This build will need to compile the files in `src/microcontroller.c` and `src/fdbg/firmware/*`, and upload it to the microcontroller.

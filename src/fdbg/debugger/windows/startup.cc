@@ -15,18 +15,12 @@ Startup::Startup(UIInterface& ui, bool visible)
         connection_type = CT_SERIAL;
 
     strncpy(serial_port_, ui.config().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
-
-    auto baud = ui.config().get("Baud rate");
-    if (!baud.empty()) {
-        baud_rate_ = strtoul(baud.c_str(), nullptr, 10);
-    }
 }
 
 void Startup::save_config()
 {
     ui_.config().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
     ui_.config().set("Serial port", serial_port_);
-    ui_.config().set("Baud rate", std::to_string(baud_rate_));
     ui_.config().save();
 }
 
@@ -55,7 +49,7 @@ void Startup::draw()
             ui_.client().connect(serial_port_, baud_rate_);
         }
         ui_.client().set_debugging_level(fdbg::DebuggingLevel::TRACE); // TODO
-        ui_.client().ack_sync(machine_characteristics()->id);
+        ui_.client().ack_sync(MACHINE_ID);
         visible_ = false;
     }
 
