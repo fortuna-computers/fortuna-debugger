@@ -1,0 +1,1 @@
+This directory contains the circuit and firmware to be uploaded to the Pico.
