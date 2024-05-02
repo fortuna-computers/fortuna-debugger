@@ -56,6 +56,7 @@ void Startup::draw()
         }
         ui_.client().set_debugging_level(fdbg::DebuggingLevel::TRACE); // TODO
         ui_.client().ack_sync(machine_characteristics()->id);
+        visible_ = false;
     }
 
     ImGui::End();

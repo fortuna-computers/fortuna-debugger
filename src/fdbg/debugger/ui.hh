@@ -36,9 +36,11 @@ public:
 
 private:
     template <typename W>
-    void add_window(bool visible=false) {
+    std::string add_window(bool visible=false) {
         auto w = std::make_unique<W>(*this, visible);
-        windows_[w->name()] = std::move(w);
+        std::string key = w->name();
+        windows_[key] = std::move(w);
+        return key;
     }
 
     fdbg::DebuggerClient                           client_;
@@ -46,6 +48,7 @@ private:
     struct GLFWwindow*                             glfw_window_ = nullptr;
     Config                                         config_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
+    std::string                                    msg_box_key_;
 };
 
 #endif //UI_HH_

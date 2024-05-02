@@ -11,6 +11,7 @@
 
 #include "windows/window.hh"
 #include "windows/demo.hh"
+#include "windows/messagebox.hh"
 #include "windows/startup.hh"
 
 UI::UI()
@@ -59,6 +60,7 @@ UI::UI()
     // add windows
     add_window<Demo>(true);
     add_window<Startup>(true);
+    msg_box_key_ = add_window<MessageBox>();
 }
 
 UI::~UI()
@@ -85,8 +87,16 @@ void UI::run()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        for (auto const& [_, w]: windows_)
-            w->draw();
+        for (auto const& [_, w]: windows_) {
+            if (w->visible()) {
+                try {
+                    w->draw();
+                } catch (std::exception& e) {
+                    ImGui::End();
+                    ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::FatalError, e.what());
+                }
+            }
+        }
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

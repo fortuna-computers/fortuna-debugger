@@ -15,8 +15,9 @@
 - [ ] Initial debugger
   - [x] OpenGL and UI
   - [x] Initial startup screen (emulator or serial)
-    - [ ] Run emulator (as thread)
-  - [ ] Initial ack
+    - [x] Run emulator (as thread)
+  - [x] Initial ack
+    - [x] Treat errors
   - [ ] Connect to real hardware
     - [ ] Start real hardware CHIP-8 project
 

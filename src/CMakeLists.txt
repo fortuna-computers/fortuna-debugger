@@ -91,6 +91,8 @@ add_executable(f-debugger
 		fdbg/debugger/windows/window.hh
 		fdbg/debugger/windows/demo.cc
 		fdbg/debugger/windows/demo.hh
+		fdbg/debugger/windows/messagebox.cc
+		fdbg/debugger/windows/messagebox.hh
 		fdbg/debugger/windows/startup.cc
 		fdbg/debugger/windows/startup.hh
 		fdbg/debugger/config.cc
