@@ -28,11 +28,12 @@ set(NANOPB_SRC_ROOT_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/contrib/nanopb")
 set(CMAKE_MODULE_PATH ${NANOPB_SRC_ROOT_FOLDER}/extra)
 
 find_package(Nanopb REQUIRED)
-find_package(Protobuf CONFIG REQUIRED)
+find_package(Protobuf REQUIRED)
+find_package(absl REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include_directories(
-        ${Protobuf_INCLUDE_DIR}
+        ${Protobuf_INCLUDE_DIRS}
         ${NANOPB_INCLUDE_DIRS}
 )
 
@@ -74,7 +75,7 @@ add_library(fdbg-client STATIC
         library/client/libfdbg-client.cc
         library/client/libfdbg-client.hh)
 
-target_link_libraries(fdbg-client PUBLIC protobuf::libprotobuf)
+target_link_libraries(fdbg-client PUBLIC ${Protobuf_LIBRARIES})
 
 protobuf_generate(TARGET fdbg-client
         LANGUAGE cpp
@@ -86,8 +87,8 @@ protobuf_generate(TARGET fdbg-client
 #
 
 add_executable(test-library library/test/test-library.cc)
-target_link_libraries(test-library fdbg-client fdbg-server_static)
-add_test(NAME "Test library"
+target_link_libraries(test-library PUBLIC fdbg-client fdbg-server_static protobuf::libprotobuf-lite absl::log_internal_check_op)
+add_test(name "test library"
          COMMAND test-library)
 
 #
@@ -132,10 +133,11 @@ add_executable(f-debugger
 target_include_directories(f-debugger PUBLIC
         contrib/glad/include
         contrib/imgui
+        contrib/imgui/backends
         ${Protobuf_INCLUDE_DIRS}
 )
 
-target_link_libraries(f-debugger fdbg-server_static glfw)
+target_link_libraries(f-debugger PUBLIC fdbg-client fdbg-server_static glfw protobuf::libprotobuf-lite absl::log_internal_check_op)
 
 #
 # scripts

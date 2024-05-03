@@ -5,7 +5,7 @@
 #include "../ui.hh"
 
 extern "C" {
-#include "machine.h"
+#include "user/machine.h"
 }
 
 #include "../exceptions/exceptions.hh"
@@ -38,7 +38,7 @@ void Startup::draw()
     if (connection_type == CT_SERIAL) {
         ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
         if (ImGui::Button("Autodetect")) {
-            std::string port = fdbg::DebuggerClient::auto_detect_port();
+            std::string port = FdbgClient::autodetect_usb_serial_port(MICROCONTROLLER_VENDOR_ID, MICROCONTROLLER_PRODUCT_ID);
             strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
         }
         ImGui::InputInt("Baud rate", &baud_rate_, 0);
@@ -50,11 +50,11 @@ void Startup::draw()
         if (connection_type == CT_EMULATOR) {
             std::string port = ui_.emulator().init();
             ui_.emulator().run_as_thread();
-            ui_.client().connect(port, fdbg::DebuggerClient::EMULATOR_BAUD);
+            ui_.client().connect(port, EMULATOR_BAUD_RATE);
         } else {
             ui_.client().connect(serial_port_, baud_rate_);
         }
-        ui_.client().set_debugging_level(fdbg::DebuggingLevel::TRACE); // TODO
+        ui_.client().set_debugging_level(DebuggingLevel::TRACE); // TODO
         ui_.client().ack_sync(MACHINE_ID);
         visible_ = false;
     }

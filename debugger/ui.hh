@@ -28,9 +28,9 @@ public:
 
     void run();
 
-    fdbg::DebuggerClient& client() override { return client_; }
-    Emulator&             emulator() override { return emulator_; }
-    Config&               config() override { return config_; }
+    FdbgClient& client() override { return client_; }
+    Emulator&   emulator() override { return emulator_; }
+    Config&     config() override { return config_; }
 
     void set_window_visible(std::string const& name, bool visible) override;
 
@@ -43,7 +43,7 @@ private:
         return key;
     }
 
-    fdbg::DebuggerClient                           client_;
+    FdbgClient                                     client_;
     Emulator                                       emulator_;
     struct GLFWwindow*                             glfw_window_ = nullptr;
     Config                                         config_;
