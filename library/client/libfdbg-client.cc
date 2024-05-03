@@ -59,7 +59,7 @@ void FdbgClient::send_message(fdbg::ToComputer const &msg) const
 
     uint8_t sz[2] = { static_cast<uint8_t>((message.length() >> 8) & 0xff), static_cast<uint8_t>(message.length() & 0xff) };
 
-    if (message.size() > 0xffff)
+    if (message.size() > MAX_MESSAGE_SZ)
         throw std::runtime_error("Message too large: "s + msg.DebugString());
 
     if (debugging_level_ != DebuggingLevel::NORMAL) {

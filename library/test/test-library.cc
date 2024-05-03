@@ -12,19 +12,28 @@ using namespace std::chrono_literals;
 int main()
 {
     bool server_running = true;
+    const uint16_t MACHINE_ID = 0x1234;
 
     // start and run server
 
-    FdbgServer* server = fdbg_server_init_pc(EMULATOR_BAUD_RATE);
+    FdbgServer* server = fdbg_server_init_pc(MACHINE_ID, EMULATOR_BAUD_RATE);
     std::string port = fdbg_server_serial_port(server);
-    printf("Server listening in port '%s'.\n", port.c_str());
+    printf("Server started and listening in port '%s'.\n", port.c_str());
+
+    std::this_thread::sleep_for(100ms);
 
     std::thread t([&server_running, &server](){
 
         while (server_running) {
+            if (fdbg_server_next(server, nullptr) != 0) {
+                fprintf(stderr, "server: error reading data\n");
+                exit(1);
+            }
         }
 
         fdbg_server_free(server);
+
+        printf("Server finalized.\n");
     });
 
     std::this_thread::sleep_for(100ms);
@@ -32,11 +41,15 @@ int main()
     // start and run client
 
     {
+        printf("Client started.\n");
+
         FdbgClient client;
         client.set_debugging_level(DebuggingLevel::DEBUG);
         client.connect(port, EMULATOR_BAUD_RATE);
 
-        // TODO...
+        client.ack_sync(MACHINE_ID);
+
+        printf("Client finalized.\n");
     }
 
     // finalize

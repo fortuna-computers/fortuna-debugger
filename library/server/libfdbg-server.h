@@ -21,13 +21,17 @@ typedef struct FdbgServerIOCallbacks {
     void     (*write_byte)(FdbgServer* server, uint8_t byte);
 } FdbgServerIOCallbacks;
 
-FdbgServer* fdbg_server_init(FdbgServerIOCallbacks cb);
+typedef struct FdbgServerEvents {
+} FdbgServerEvents;
+
+FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
 void        fdbg_server_free(FdbgServer* server);
 
+int         fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
 #ifndef MICROCONTROLLER
 
-FdbgServer* fdbg_server_init_pc(uint32_t baud);
+FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud);
 const char* fdbg_server_serial_port(FdbgServer* server);
 
 #endif
