@@ -6,6 +6,9 @@
 
 #include "../common/common.h"
 
+#include "to-debugger.pb.h"
+#include "to-computer.pb.h"
+
 // runs either in the emulator or the computer
 
 #define SERIAL_ERROR   0xfffe

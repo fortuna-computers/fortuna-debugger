@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package fdbg.server;
+
 message Ack {}
 
 message WriteMemory {

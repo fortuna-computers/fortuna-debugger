@@ -19,8 +19,6 @@ typedef struct FdbgServer {
 #endif
 } FdbgServer;
 
-#include "to-debugger.pb.h"
-
 FdbgServer* fdbg_server_init(FdbgServerIOCallbacks cb)
 {
     FdbgServer* server = calloc(1, sizeof(FdbgServer));

@@ -1,9 +1,10 @@
-#include <stdio.h>
+#include <cstdio>
 
 extern "C" {
-#include "libfdbg-client.h"
 #include "libfdbg-server.h"
 }
+
+#include "libfdbg-client.hh"
 
 #include <thread>
 using namespace std::chrono_literals;
@@ -30,10 +31,13 @@ int main()
 
     // start and run client
 
-    FdbgClient* client = fdbg_client_init_pc(port.c_str(), EMULATOR_BAUD_RATE);
-    fdbg_client_set_debugging_level(client, DL_TRACE);
+    {
+        FdbgClient client;
+        client.set_debugging_level(DebuggingLevel::DEBUG);
+        client.connect(port, EMULATOR_BAUD_RATE);
 
-    fdbg_client_free(client);
+        // TODO...
+    }
 
     // finalize
     server_running = false;
