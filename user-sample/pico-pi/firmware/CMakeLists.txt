@@ -2,19 +2,22 @@ cmake_minimum_required(VERSION 3.13)
 
 include(pico_sdk_import.cmake)
 
+# configuration
+
 project(chip8 C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+
 pico_sdk_init()
 
-FILE(GLOB MicrocontrollerSources ../../fdbg/microcontroller/*.[ch])
+include_directories(contrib/nanopb)
 
-include_directories(../../fdbg/microcontroller)
+# read file list
+
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/microcontroller/FILELIST MicrocontrollerSources)
 
 add_executable(${CMAKE_PROJECT_NAME}
 		${MicrocontrollerSources}
-		../../microcontroller.h
-		../../microcontroller.c
 )
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME}
