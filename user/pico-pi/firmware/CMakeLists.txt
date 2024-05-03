@@ -10,7 +10,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 
-include_directories(contrib/nanopb)
+include_directories(
+		${CMAKE_CURRENT_SOURCE_DIR}/contrib/nanopb
+		${CMAKE_CURRENT_SOURCE_DIR}/library/server
+		${CMAKE_CURRENT_SOURCE_DIR}/microcontroller
+		${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_definitions(-DMICROCONTROLLER=1)
 
 # read file list
 
@@ -18,6 +25,7 @@ file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/microcontroller/FILELIST Microcontrolle
 
 add_executable(${CMAKE_PROJECT_NAME}
 		${MicrocontrollerSources}
+		src/microcontroller.c
 )
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME}

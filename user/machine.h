@@ -3,19 +3,11 @@
 
 #include <stdint.h>
 
-#error Define the values below
+#define MACHINE_ID            0x3b48
+#define TOTAL_MAPPABLE_MEMORY (4 * 1024)
+#define TOTAL_ACTUAL_MEMORY   (4 * 1024)
+#define UART_BAUD_RATE        115200
+#define MICROCONTROLLER_VENDOR_ID  "2e8a"
+#define MICROCONTROLLER_PRODUCT_ID "000a"
 
-#define MACHINE_ID 0x0000       // Id that uniquely identifies the machine. This is used by the debugger
-                                //    to check if the debugger is connected to the right device.
-#define TOTAL_MAPPABLE_MEMORY   // Total memory that is theoretically accessible by the CPU. Memory access
-                                //    to these addresses should never fail.
-#define TOTAL_ACTUAL_MEMORY     // Total RAM memory. Used by the emulator to allocate the memory on the PC.
-
-#define UART_BAUD_RATE 115200   // Baud rate of the microcontroller
-
-// These are optional variables that will help the debugger to automatically find the serial port if connected via USB.
-// Always use 4-digit hex (ex. "080a").
-#define MICROCONTROLLER_VENDOR_ID  "0000"
-#define MICROCONTROLLER_PRODUCT_ID "0000"
-
-#endif //MACHINE_H_
+#endif //_MACHINE_H_

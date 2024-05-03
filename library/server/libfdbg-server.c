@@ -1,17 +1,20 @@
 #include "libfdbg-server.h"
 
-#if __APPLE__
-#  include <util.h>
-#else
-#  include <pty.h>
+#ifndef MICROCONTROLLER
+#  if __APPLE__
+#    include <util.h>
+#  else
+#    include <pty.h>
+#  endif
+
+#  include <errno.h>
+#  include <stdio.h>
+#  include <unistd.h>
+
+#  include "../common/terminal.h"
 #endif
 
-#include <errno.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-
-#include "../common/terminal.h"
 
 #include "to-computer.pb.h"
 #include "to-debugger.pb.h"
@@ -37,7 +40,9 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
 
 void fdbg_server_free(FdbgServer* server)
 {
+#ifndef MICROCONTROLLER
     close(server->fd);
+#endif
     free(server);
 }
 

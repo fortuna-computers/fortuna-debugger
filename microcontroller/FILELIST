@@ -12,3 +12,6 @@ contrib/nanopb/pb_decode.h
 contrib/nanopb/pb_decode.c
 contrib/nanopb/pb_encode.h
 contrib/nanopb/pb_encode.c
+library/common/common.h
+library/server/libfdbg-server.h
+library/server/libfdbg-server.c

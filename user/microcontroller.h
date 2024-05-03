@@ -4,10 +4,12 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "libfdbg-server.h"
+
 #define UART_NO_DATA ((uint16_t) -1)
 
 void     microcontroller_init();
-void     uart_send_byte(uint8_t byte);
-uint16_t uart_receive_byte();
+void     uart_write_byte(FdbgServer* server, uint8_t byte);
+uint16_t uart_read_byte_async(FdbgServer* server);
 
 #endif //MICROCONTROLLER_H_
