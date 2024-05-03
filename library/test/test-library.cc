@@ -14,8 +14,7 @@ int main()
 
     // start and run server
 
-    FdbgServer* server = fdbg_server_init(EMULATOR_BAUD_RATE);
-    fdbg_server_set_debugging_level(server, DL_TRACE);
+    FdbgServer* server = fdbg_server_init_pc(EMULATOR_BAUD_RATE);
     std::string port = fdbg_server_serial_port(server);
     printf("Server listening in port '%s'.\n", port.c_str());
 
@@ -32,6 +31,7 @@ int main()
     // start and run client
 
     FdbgClient* client = fdbg_client_init(port.c_str(), EMULATOR_BAUD_RATE);
+    fdbg_client_set_debugging_level(client, DL_TRACE);
 
     fdbg_client_free(client);
 

@@ -12,14 +12,48 @@
 #include "../common/terminal.h"
 
 typedef struct FdbgServer {
-    int            fd;
-    char           port[256];
-    DebuggingLevel debugging_level;
+    FdbgServerIOCallbacks io_callbacks;
+#ifndef MICROCONTROLLER
+    int  fd;
+    char port[256];
+#endif
 } FdbgServer;
 
 #include "to-debugger.pb.h"
 
-FdbgServer* fdbg_server_init(uint32_t baud)
+FdbgServer* fdbg_server_init(FdbgServerIOCallbacks cb)
+{
+    FdbgServer* server = calloc(1, sizeof(FdbgServer));
+    server->io_callbacks = cb;
+    return server;
+}
+
+void fdbg_server_free(FdbgServer* server)
+{
+    close(server->fd);
+    free(server);
+}
+
+#ifndef MICROCONTROLLER
+
+static uint16_t read_byte_async_pc(FdbgServer* server)
+{
+    uint8_t byte;
+    ssize_t r = read(server->fd, &byte, 1);
+    if (r == 0)
+        return SERIAL_NO_DATA;
+    else if (r < 0)
+        return SERIAL_ERROR;
+    else
+        return byte;
+}
+
+static void write_byte_pc(FdbgServer* server, uint8_t data)
+{
+    write(server->fd, &data, 1);
+}
+
+FdbgServer* fdbg_server_init_pc(uint32_t baud)
 {
     int fd, slave_fd;
 
@@ -31,17 +65,10 @@ FdbgServer* fdbg_server_init(uint32_t baud)
     if (configure_terminal_settings(fd, baud) < 0)
         return NULL;
 
-    FdbgServer* server = calloc(1, sizeof(FdbgServer));
+    FdbgServer* server = fdbg_server_init((FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
     server->fd = fd;
-    strncpy(server->port, serial_port, sizeof server->port);
-    server->debugging_level = DL_NORMAL;
+    snprintf(serial_port, sizeof server->port, "%s", serial_port);
     return server;
-}
-
-void fdbg_server_free(FdbgServer* server)
-{
-    close(server->fd);
-    free(server);
 }
 
 const char* fdbg_server_serial_port(FdbgServer* server)
@@ -49,7 +76,4 @@ const char* fdbg_server_serial_port(FdbgServer* server)
     return server->port;
 }
 
-void fdbg_server_set_debugging_level(FdbgServer* server, DebuggingLevel d)
-{
-    server->debugging_level = d;
-}
+#endif

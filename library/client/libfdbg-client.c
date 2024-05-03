@@ -10,6 +10,7 @@
 
 typedef struct FdbgClient {
     int fd;
+    DebuggingLevel debugging_level;
 } FdbgClient;
 
 FdbgClient* fdbg_client_init(const char* serial_port, uint32_t baud)
@@ -22,6 +23,7 @@ FdbgClient* fdbg_client_init(const char* serial_port, uint32_t baud)
 
     FdbgClient* client = calloc(1, sizeof(FdbgClient));
     client->fd = fd;
+    client->debugging_level = DL_NORMAL;
     return client;
 }
 
@@ -31,7 +33,12 @@ void fdbg_client_free(FdbgClient* client)
     free(client);
 }
 
-int fdbg_auto_detect_port(const char* vendor_id, const char* product_id, char* result, size_t result_sz)
+void fdbg_client_set_debugging_level(FdbgClient* client, DebuggingLevel d)
+{
+    client->debugging_level = d;
+}
+
+int fdbg_client_auto_detect_port(const char* vendor_id, const char* product_id, char* result, size_t result_sz)
 {
     char port[512];
 
