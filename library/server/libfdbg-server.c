@@ -44,12 +44,12 @@ void fdbg_server_free(FdbgServer* server)
     free(server);
 }
 
-const char* fdbg_serial_port(FdbgServer* server)
+const char* fdbg_server_serial_port(FdbgServer* server)
 {
     return server->port;
 }
 
-void fdbg_set_debugging_level(FdbgServer* server, DebuggingLevel d)
+void fdbg_server_set_debugging_level(FdbgServer* server, DebuggingLevel d)
 {
     server->debugging_level = d;
 }

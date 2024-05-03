@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "../common/common.h"
+
 typedef struct FdbgClient FdbgClient;
 
 FdbgClient* fdbg_client_init(const char* serial_port, uint32_t baud);
