@@ -41,30 +41,26 @@ include_directories(
 # libfdbg-server (C)
 #
 
-nanopb_generate_cpp(TARGET proto ${PROTOS})
+nanopb_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTOS})
 
 set(fdbg-server_src
         library/server/libfdbg-server.c
         library/server/libfdbg-server.h
         library/common/terminal.c
         library/common/terminal.h
-        library/common/common.h)
-
-set_source_files_properties(library/server/libfdbg-server.h OBJECT_DEPENDS proto)
-set_source_files_properties(library/server/libfdbg-server.c OBJECT_DEPENDS proto)
+        library/common/common.h
+        ${PROTO_SRCS}
+        ${PROTO_HDRS}
+)
 
 add_library(fdbg-server_obj OBJECT EXCLUDE_FROM_ALL ${fdbg-server_src})
 set_property(TARGET fdbg-server_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 add_library(fdbg-server_static STATIC $<TARGET_OBJECTS:fdbg-server_obj>)
 set_target_properties(fdbg-server_static PROPERTIES OUTPUT_NAME "fgdb-server")
-target_link_libraries(fdbg-server_static PUBLIC proto)
-add_dependencies(fdbg-server_static proto)
 
 add_library(fdbg-server_shared SHARED $<TARGET_OBJECTS:fdbg-server_obj>)
 set_target_properties(fdbg-server_shared PROPERTIES OUTPUT_NAME "fgdb-server")
-target_link_libraries(fdbg-server_shared PUBLIC proto)
-add_dependencies(fdbg-server_static proto)
 
 #
 # libfdbg-client (C++)
