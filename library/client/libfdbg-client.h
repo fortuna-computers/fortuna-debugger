@@ -12,7 +12,7 @@ typedef enum DebuggingLevel { DL_NORMAL, DL_DEBUG, DL_TRACE } DebuggingLevel;
 
 typedef struct FdbgClient FdbgClient;
 
-FdbgClient* fdbg_client_init(const char* serial_port, uint32_t baud);
+FdbgClient* fdbg_client_init_pc(const char* serial_port, uint32_t baud);
 void        fdbg_client_free(FdbgClient* client);
 
 void        fdbg_client_set_debugging_level(FdbgClient* client, DebuggingLevel d);

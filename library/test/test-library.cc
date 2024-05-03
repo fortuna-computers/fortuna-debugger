@@ -30,7 +30,7 @@ int main()
 
     // start and run client
 
-    FdbgClient* client = fdbg_client_init(port.c_str(), EMULATOR_BAUD_RATE);
+    FdbgClient* client = fdbg_client_init_pc(port.c_str(), EMULATOR_BAUD_RATE);
     fdbg_client_set_debugging_level(client, DL_TRACE);
 
     fdbg_client_free(client);

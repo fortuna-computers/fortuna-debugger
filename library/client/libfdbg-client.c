@@ -13,7 +13,7 @@ typedef struct FdbgClient {
     DebuggingLevel debugging_level;
 } FdbgClient;
 
-FdbgClient* fdbg_client_init(const char* serial_port, uint32_t baud)
+FdbgClient* fdbg_client_init_pc(const char* serial_port, uint32_t baud)
 {
     int fd = open(serial_port, O_RDWR);
     if (fd < 0)
