@@ -29,6 +29,7 @@ set(CMAKE_MODULE_PATH ${NANOPB_SRC_ROOT_FOLDER}/extra)
 
 find_package(Nanopb REQUIRED)
 find_package(Protobuf CONFIG REQUIRED)
+find_package(OpenGL REQUIRED)
 
 include_directories(
         ${Protobuf_INCLUDE_DIR}
@@ -88,6 +89,53 @@ add_executable(test-library library/test/test-library.cc)
 target_link_libraries(test-library fdbg-client fdbg-server_static)
 add_test(NAME "Test library"
          COMMAND test-library)
+
+#
+# debugger
+#
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+add_subdirectory(contrib/glfw)
+
+set(IMGUI_SRC
+        contrib/imgui/imgui.cpp
+        contrib/imgui/imgui_demo.cpp
+        contrib/imgui/imgui_draw.cpp
+        contrib/imgui/imgui_tables.cpp
+        contrib/imgui/imgui_widgets.cpp
+        contrib/imgui/backends/imgui_impl_glfw.cpp
+        contrib/imgui/backends/imgui_impl_opengl3.cpp
+        contrib/glad/src/gl.c
+)
+
+add_executable(f-debugger
+        ${IMGUI_SRC}
+        debugger/main.cc
+        debugger/ui.cc
+        debugger/ui.hh
+        debugger/windows/window.hh
+        debugger/windows/demo.cc
+        debugger/windows/demo.hh
+        debugger/windows/messagebox.cc
+        debugger/windows/messagebox.hh
+        debugger/windows/startup.cc
+        debugger/windows/startup.hh
+        debugger/config.cc
+        debugger/config.hh
+        debugger/emulator/emulator.cc
+        debugger/emulator/emulator.hh
+        debugger/exceptions/exceptions.hh
+)
+
+target_include_directories(f-debugger PUBLIC
+        contrib/glad/include
+        contrib/imgui
+        ${Protobuf_INCLUDE_DIRS}
+)
+
+target_link_libraries(f-debugger fdbg-server_static glfw)
 
 #
 # scripts

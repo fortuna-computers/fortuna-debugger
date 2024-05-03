@@ -106,7 +106,6 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     fdbg_ToComputer msg;
     if (fdbg_receive_next_message(server, &msg, &error)) {
 
-
         switch (msg.which_message) {
             case fdbg_ToComputer_ack_tag: {
                 fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;

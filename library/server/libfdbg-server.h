@@ -22,6 +22,7 @@ typedef struct FdbgServerIOCallbacks {
 } FdbgServerIOCallbacks;
 
 typedef struct FdbgServerEvents {
+    int _unused;
 } FdbgServerEvents;
 
 FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
