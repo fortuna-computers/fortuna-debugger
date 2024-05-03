@@ -30,7 +30,10 @@ nanopb_generate_cpp(TARGET proto ${PROTOS})
 #
 
 set(fdbg-server_src
-        library/server/libfdbg-server.c)
+        library/server/libfdbg-server.c
+        library/server/libfdbg-server.h
+        library/common/terminal.c
+        library/common/terminal.h)
 
 add_library(fdbg-server_obj OBJECT EXCLUDE_FROM_ALL ${fdbg-server_src})
 set_property(TARGET fdbg-server_obj PROPERTY POSITION_INDEPENDENT_CODE 1)
@@ -48,5 +51,14 @@ target_link_libraries(fdbg-server_shared proto)
 #
 
 add_library(fdbg-client STATIC
-        library/client/libfdbg-client.c)
+        library/client/libfdbg-client.c
+        library/client/libfdbg-client.h
+        library/common/terminal.c
+        library/common/terminal.h)
 target_link_libraries(fdbg-client proto)
+
+#
+# scripts
+#
+
+configure_file(scripts/findserial.py . USE_SOURCE_PERMISSIONS COPYONLY)
