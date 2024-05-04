@@ -68,6 +68,8 @@ set_target_properties(fdbg-server_shared PROPERTIES OUTPUT_NAME "fgdb-server")
 
 add_library(fdbg-client STATIC
         library/common/common.h
+        library/common/terminal.h
+        library/common/terminal.c
         library/client/libfdbg-client.cc
         library/client/libfdbg-client.hh)
 
@@ -86,6 +88,11 @@ add_executable(test-library library/test/test-library.cc)
 target_link_libraries(test-library PUBLIC fdbg-client fdbg-server_static protobuf::libprotobuf-lite absl::log_internal_check_op)
 add_test(name "test library"
          COMMAND test-library)
+
+add_executable(test-microcontroller library/test/test-microcontroller.cc)
+target_link_libraries(test-microcontroller PUBLIC fdbg-client protobuf::libprotobuf-lite absl::log_internal_check_op)
+add_test(name "test microcontroller"
+        COMMAND test-microcontroller)
 
 #
 # debugger

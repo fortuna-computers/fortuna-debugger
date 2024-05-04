@@ -62,18 +62,11 @@ static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, 
 {
     *error = false;
 
-    uint16_t r = server->io_callbacks.read_byte_async(server);
-    if (r == SERIAL_ERROR) {
+    uint16_t sz = server->io_callbacks.read_byte_async(server);
+    if (sz == SERIAL_ERROR) {
         *error = true;
         return false;
-    } if (r == SERIAL_NO_DATA) {
-        return false;
-    }
-
-    uint8_t b0 = fdbg_read_sync(server);
-    uint16_t sz = b0 | (r << 8);
-    if (sz > MAX_MESSAGE_SZ) {
-        *error = true;
+    } if (sz == SERIAL_NO_DATA) {
         return false;
     }
 
@@ -92,7 +85,6 @@ static int fdbg_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
     pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof buf);
     bool status = pb_encode(&stream, fdbg_ToDebugger_fields, msg);
     if (status) {
-        server->io_callbacks.write_byte(server, ((stream.bytes_written >> 8) & 0xff));
         server->io_callbacks.write_byte(server, stream.bytes_written & 0xff);
 
         for (size_t i = 0; i < stream.bytes_written; ++i)

@@ -57,7 +57,7 @@ void FdbgClient::send_message(fdbg::ToComputer const &msg) const
     std::string message;
     msg.SerializeToString(&message);
 
-    uint8_t sz[2] = { static_cast<uint8_t>((message.length() >> 8) & 0xff), static_cast<uint8_t>(message.length() & 0xff) };
+    uint8_t sz = (uint8_t) message.length();
 
     if (message.size() > MAX_MESSAGE_SZ)
         throw std::runtime_error("Message too large: "s + msg.DebugString());
@@ -65,14 +65,14 @@ void FdbgClient::send_message(fdbg::ToComputer const &msg) const
     if (debugging_level_ != DebuggingLevel::NORMAL) {
         printf("-> %s", msg.DebugString().c_str());
         if (debugging_level_ == DebuggingLevel::TRACE) {
-            printf("=> %02hhX %02hhX", sz[0], sz[1]);
+            printf("=> [%02hhX]", sz);
             for (char c: message)
                 printf(" %02hhX", (uint8_t) c);
             printf("\n");
         }
     }
 
-    ssize_t r = write(fd_, sz, 2);
+    ssize_t r = write(fd_, &sz, 1);
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
     r = write(fd_, message.data(), message.length());
@@ -82,20 +82,19 @@ void FdbgClient::send_message(fdbg::ToComputer const &msg) const
 
 std::optional<fdbg::ToDebugger> FdbgClient::receive_message() const
 {
-    uint8_t sz[2];
-    ssize_t r = read(fd_, &sz, 2);
+    uint8_t sz;
+    ssize_t r = read(fd_, &sz, 1);
     if (r == 0)
         return {};
     else if (r == -1 && errno != EAGAIN)
         throw std::runtime_error("Error reading from serial: "s + strerror(errno));
 
     if (debugging_level_ == DebuggingLevel::TRACE)
-        printf("<= %02hhX %02hhX", sz[0], sz[1]);
+        printf("<= [%02hhX]", sz);
 
-    uint16_t tsz = sz[1] + ((uint16_t) sz[0] << 8);
-    uint8_t message[tsz];
-    r = read(fd_, message, tsz);
-    if (r < tsz)
+    uint8_t message[sz];
+    r = read(fd_, message, sz);
+    if (r < sz)
         throw std::runtime_error("Error reading from serial (message smaller than expected)");
 
     if (debugging_level_ == DebuggingLevel::TRACE) {
@@ -105,7 +104,7 @@ std::optional<fdbg::ToDebugger> FdbgClient::receive_message() const
     }
 
     fdbg::ToDebugger msg;
-    msg.ParseFromArray(message, tsz);
+    msg.ParseFromArray(message, sz);
 
     if (debugging_level_ != DebuggingLevel::NORMAL)
         printf("<- %s", msg.DebugString().c_str());

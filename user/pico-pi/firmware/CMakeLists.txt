@@ -24,8 +24,8 @@ add_definitions(-DMICROCONTROLLER=1)
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/microcontroller/FILELIST MicrocontrollerSources)
 
 add_executable(${CMAKE_PROJECT_NAME}
-		${MicrocontrollerSources}
 		src/microcontroller.c
+		${MicrocontrollerSources}
 )
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME}

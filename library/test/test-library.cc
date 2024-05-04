@@ -44,7 +44,7 @@ int main()
         printf("Client started.\n");
 
         FdbgClient client;
-        client.set_debugging_level(DebuggingLevel::DEBUG);
+        client.set_debugging_level(DebuggingLevel::TRACE);
         client.connect(port, EMULATOR_BAUD_RATE);
 
         client.ack_sync(MACHINE_ID);

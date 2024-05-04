@@ -7,6 +7,7 @@
 void microcontroller_init()
 {
     stdio_init_all();
+    stdio_set_translate_crlf(&stdio_usb, false);
 }
 
 void uart_write_byte(FdbgServer* server, uint8_t byte)
