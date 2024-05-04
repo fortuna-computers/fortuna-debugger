@@ -9,13 +9,15 @@
 #include "libfdbg-client.hh"
 #include "emulator/emulator.hh"
 #include "windows/window.hh"
+#include "model.hh"
 
 class UIInterface {
 public:
-    virtual FdbgClient& client() = 0;
-    virtual void        set_window_visible(std::string const& name, bool visible) = 0;
-    virtual Config&     config() = 0;
-    virtual Emulator&   emulator() = 0;
+    virtual FdbgClient&    client() = 0;
+    virtual DebuggerModel& model() = 0;
+    virtual void           set_window_visible(std::string const& name, bool visible) = 0;
+    virtual Config&        config() = 0;
+    virtual Emulator&      emulator() = 0;
 
 protected:
     UIInterface() = default;
@@ -29,6 +31,7 @@ public:
     void run();
 
     FdbgClient& client() override { return client_; }
+    DebuggerModel& model() override { return model_; }
     Emulator&   emulator() override { return emulator_; }
     Config&     config() override { return config_; }
 
@@ -43,12 +46,13 @@ private:
         return key;
     }
 
-    FdbgClient                                     client_;
-    Emulator                                       emulator_;
-    struct GLFWwindow*                             glfw_window_ = nullptr;
-    Config                                         config_;
+    FdbgClient         client_;
+    DebuggerModel      model_;
+    Emulator           emulator_;
+    struct GLFWwindow* glfw_window_ = nullptr;
+    Config             config_;
+    std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
-    std::string                                    msg_box_key_;
 };
 
 #endif //UI_HH_

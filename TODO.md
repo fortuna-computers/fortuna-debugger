@@ -24,6 +24,7 @@
 - [x] Memory commands in library (client/server)
 - [x] Memory in emulator
 - [ ] Memory in debugger
+ - [ ] Create debugger model
 - [ ] Memory in computer (CHIP-8)
 
 # Compilation
