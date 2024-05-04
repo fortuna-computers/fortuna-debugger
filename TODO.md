@@ -21,7 +21,7 @@
 # RAM
 
 - [x] Memory commands in proto
-- [ ] Memory commands in library (client/server)
+- [x] Memory commands in library (client/server)
 - [ ] Memory in emulator
 - [ ] Memory in debugger
 - [ ] Memory in computer (CHIP-8)

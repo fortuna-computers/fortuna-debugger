@@ -1,6 +1,6 @@
 # fortuna-debugger
 
-Fortuna Debugger is a set of tools for computer designers that, toghether, provide debugging capability to any custom computer.
+Fortuna Debugger is a set of tools for computer designers that, together, provide debugging capability to any custom computer.
 
 The user needs to provide custom code that will:
 
@@ -20,12 +20,12 @@ A sample implementation is provided for running an emulator version of the [CHIP
 
 ## Implementing a new architecture
 
-1. Fork the repository, or add as a submodule in another project. Remove the directory `sample-chip8` (or use it as a sample).
+1. Fork the repository, or add as a submodule in another project.
 2. Update the following files:
-     - `src/machine.h`: machine characteristics
-     - `src/emulation.cc`: emulator code
-     - `src/compiler.cc`: compilation code (call the compiler and interpret its results)
-     - Avoid changing the contents of directory `src/fdbg/`, as it contains the main emulator/debugger/firmware code provided by the project.
+     - [user/machine.h](user/machine.h): machine characteristics
+     - [user/emulator.c](user/emulator.c): emulator code
+     - [user/compiler.lua](user/compiler.lua): compilation code (call the compiler and interpret its results)
+     - Avoid changing the contents of other directories, as it contains the main emulator/debugger/firmware code provided by the project.
 3. Run the CMake build in the top directory. This will generate the debugger, emulator and library.
       ```sh
       mkdir build
@@ -33,5 +33,7 @@ A sample implementation is provided for running an emulator version of the [CHIP
       cmake ..
       make
       ```
-4. Update the `src/microcontroller.c` with the microcontroller specific code (such as initialization, UART, etc).
-     - The firmware build (such as a Makefile) needs to be provided by the user. This build will need to compile the files in `src/microcontroller.c` and `src/fdbg/firmware/*`, and upload it to the microcontroller.
+4. Provide a source file that implements [user/microcontroller.h] for that particular microcontroller (initialization, UART, etc), as well as
+  any additional files required to implement the firmware side of the debugger.
+     - The firmware build (such as a Makefile) needs to be provided by the user. This build will need to compile the files contained in 
+       [microcontroller/FILELIST](microcontroller/FILELIST).
