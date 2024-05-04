@@ -8,3 +8,6 @@
 [submodule "src/fdbg/contrib/nanopb"]
 	path = contrib/nanopb
 	url = https://github.com/nanopb/nanopb.git
+[submodule "contrib/imgui-filebrowser"]
+	path = contrib/imgui-filebrowser
+	url = https://github.com/AirGuanZ/imgui-filebrowser.git

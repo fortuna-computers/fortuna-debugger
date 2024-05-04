@@ -49,7 +49,7 @@ UI::UI()
 
     // configure ImGui
     IMGUI_CHECKVERSION();
-    ImGuiContext* context = ImGui::CreateContext();
+    context_ = ImGui::CreateContext();
     ImGuiIO* io_ = &ImGui::GetIO();
     ImGui_ImplGlfw_InitForOpenGL(glfw_window_, true);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
@@ -57,7 +57,7 @@ UI::UI()
     io_->KeyRepeatRate = 0.1f;
 
     // .ini config
-    config_.initialize(context);
+    config_.initialize(context_);
 
     // add windows
     add_window<Demo>(true);
@@ -95,7 +95,8 @@ void UI::run()
                 try {
                     w->draw();
                 } catch (std::exception& e) {
-                    ImGui::End();
+                    while (context_->CurrentWindowStack.Size > 1)
+                        ImGui::End();
                     ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::Error, e.what());
                 }
             }

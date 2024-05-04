@@ -1,6 +1,6 @@
 #include "model.hh"
 
-#include "user/machine.h"
+#include "load.hh"
 
 DebuggerModel::~DebuggerModel()
 {
@@ -21,7 +21,7 @@ void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint3
     client_.connect(serial_port, baud_rate);
     connected_ = true;
     client_.set_debugging_level(DebuggingLevel::TRACE);
-    client_.ack_sync(MACHINE_ID);
+    client_.ack_sync(machine_id());
 }
 
 void DebuggerModel::change_memory_page(int64_t page)

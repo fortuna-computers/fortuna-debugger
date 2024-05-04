@@ -116,9 +116,6 @@ set(IMGUI_SRC
 
 add_executable(f-debugger
         ${IMGUI_SRC}
-        user/machine.h
-        user/emulator.c
-        user/emulator.h
         debugger/model.hh
         debugger/model.cc
         debugger/main.cc
@@ -138,6 +135,8 @@ add_executable(f-debugger
         debugger/exceptions/exceptions.hh
         debugger/windows/memory.cc
         debugger/windows/memory.hh
+        debugger/load.cc
+        debugger/load.hh
 )
 
 target_include_directories(f-debugger PUBLIC

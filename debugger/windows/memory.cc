@@ -3,8 +3,6 @@
 #include "debugger/ui.hh"
 #include "imgui.h"
 
-#include "user/machine.h"
-
 void Memory::draw()
 {
     float h = 370;

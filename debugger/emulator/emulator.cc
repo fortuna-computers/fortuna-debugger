@@ -1,23 +1,18 @@
 #include "emulator.hh"
 
-extern "C" {
-#include "user/machine.h"
-}
+#include "debugger/load.hh"
 
 using namespace std::chrono_literals;
 
-extern "C" {
-#include "user/emulator.h"
-}
-
 std::string Emulator::init()
 {
-    server_ = fdbg_server_init_pc(MACHINE_ID, EMULATOR_BAUD_RATE);
+    server_ = fdbg_server_init_pc(machine_id(), EMULATOR_BAUD_RATE);
     return fdbg_server_serial_port(server_);
 }
 
 void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 {
+    /*
     emulator_init();
     emulator_reset();
 
@@ -40,6 +35,7 @@ void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 
         std::this_thread::sleep_for(1ms);  // TODO - use `select`
     }
+     */
 }
 
 void Emulator::run_as_thread()

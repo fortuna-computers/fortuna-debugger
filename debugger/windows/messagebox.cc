@@ -18,10 +18,12 @@ void MessageBox::set_message(MessageBox::Type type, std::string const& message, 
 
 void MessageBox::draw()
 {
+    ImGui::SetNextWindowSize(ImVec2(550, 0));
+
     if (type_ == Error || type_ == FatalError)
         ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
     if (ImGui::BeginPopupModal(title_.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("%s", message_.c_str());
+        ImGui::TextWrapped("%s", message_.c_str());
         ImGui::Separator();
         if (ImGui::Button("Ok")) {
             set_visible(false);

@@ -3,7 +3,10 @@
 
 #include "window.hh"
 
-#include "user/machine.h"
+#include <memory>
+
+#include <imgui.h>
+#include "contrib/imgui-filebrowser/imfilebrowser.h"
 
 class Startup : public Window {
 public:
@@ -19,7 +22,9 @@ private:
     enum ConnectionType { CT_EMULATOR, CT_SERIAL } connection_type = CT_EMULATOR;
     bool real_hardware_ = false;
     char serial_port_[128] { 0 };
-    int baud_rate_ = UART_BAUD_RATE;
+    int  baud_rate_ = 115200;  // TODO - use user-provided default
+    char machine_path_[1024] { 0 };
+    ImGui::FileBrowser file_browser_;
 };
 
 #endif //STARTUP_HH_

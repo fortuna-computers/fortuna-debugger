@@ -46,6 +46,7 @@ private:
 
     DebuggerModel      model_;
     struct GLFWwindow* glfw_window_ = nullptr;
+    ImGuiContext*      context_;
     Config             config_;
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};

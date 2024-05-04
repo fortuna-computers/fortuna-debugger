@@ -24,7 +24,9 @@
 - [x] Memory commands in library (client/server)
 - [x] Memory in emulator
 - [ ] Memory in debugger
- - [ ] Create debugger model
+ - [x] Create debugger model
+ - [ ] Stack ?
+ - [ ] PC in memory
 - [ ] Memory in computer (CHIP-8)
 
 # DLL

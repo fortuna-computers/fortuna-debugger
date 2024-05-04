@@ -6,7 +6,6 @@
 
 #include "libfdbg-client.hh"
 #include "debugger/emulator/emulator.hh"
-#include "user/machine.h"
 
 class DebuggerModel {
 public:
@@ -19,7 +18,8 @@ public:
         uint8_t data[256];
     };
 
-    Memory memory { .pages = TOTAL_MAPPABLE_MEMORY / 256, .current_page = 0, .data_present = false, .data = {0} };
+    Memory memory { .pages = 1, .current_page = 0, .data_present = false, .data = {0} };
+    // TODO - calculate number of pages
 
     void connect_to_emulator();
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
