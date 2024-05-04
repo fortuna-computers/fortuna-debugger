@@ -27,6 +27,10 @@
  - [ ] Create debugger model
 - [ ] Memory in computer (CHIP-8)
 
+# DLL
+
+- [ ] Can the user emulator be a DLL?
+
 # Compilation
 
 # CPU

@@ -7,17 +7,16 @@
 
 #include "config.hh"
 #include "libfdbg-client.hh"
-#include "emulator/emulator.hh"
 #include "windows/window.hh"
 #include "model.hh"
 
 class UIInterface {
 public:
-    virtual FdbgClient&    client() = 0;
     virtual DebuggerModel& model() = 0;
-    virtual void           set_window_visible(std::string const& name, bool visible) = 0;
     virtual Config&        config() = 0;
-    virtual Emulator&      emulator() = 0;
+
+    virtual void           init_debugging_session() = 0;
+    virtual void           set_window_visible(std::string const& name, bool visible) = 0;
 
 protected:
     UIInterface() = default;
@@ -30,12 +29,11 @@ public:
 
     void run();
 
-    FdbgClient& client() override { return client_; }
     DebuggerModel& model() override { return model_; }
-    Emulator&   emulator() override { return emulator_; }
     Config&     config() override { return config_; }
 
     void set_window_visible(std::string const& name, bool visible) override;
+    void init_debugging_session() override;
 
 private:
     template <typename W>
@@ -46,13 +44,22 @@ private:
         return key;
     }
 
-    FdbgClient         client_;
     DebuggerModel      model_;
-    Emulator           emulator_;
     struct GLFWwindow* glfw_window_ = nullptr;
     Config             config_;
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
 };
+
+namespace Key {
+    constexpr ImGuiKey PageUp = (ImGuiKey) 0x10a;
+    constexpr ImGuiKey PageDown = (ImGuiKey) 0x10b;
+    constexpr ImGuiKey F2 = (ImGuiKey) 0x123;
+    constexpr ImGuiKey F7 = (ImGuiKey) 0x128;
+    constexpr ImGuiKey F8 = (ImGuiKey) 0x129;
+    constexpr ImGuiKey F9 = (ImGuiKey) 0x12a;
+    constexpr ImGuiKey F10 = (ImGuiKey) 0x12b;
+    constexpr ImGuiKey F12 = (ImGuiKey) 0x12d;
+}
 
 #endif //UI_HH_

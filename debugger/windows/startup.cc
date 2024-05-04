@@ -47,16 +47,13 @@ void Startup::draw()
     // TODO - check for errors
     if (ImGui::Button("Connect")) {
         save_config();
-        if (connection_type == CT_EMULATOR) {
-            std::string port = ui_.emulator().init();
-            ui_.emulator().run_as_thread();
-            ui_.client().connect(port, EMULATOR_BAUD_RATE);
-        } else {
-            ui_.client().connect(serial_port_, baud_rate_);
-        }
-        ui_.client().set_debugging_level(DebuggingLevel::TRACE); // TODO
-        ui_.client().ack_sync(MACHINE_ID);
+        if (connection_type == CT_EMULATOR)
+            ui_.model().connect_to_emulator();
+        else
+            ui_.model().connect_to_serial_port(serial_port_, baud_rate_);
+
         visible_ = false;
+        ui_.init_debugging_session();
     }
 
     ImGui::End();

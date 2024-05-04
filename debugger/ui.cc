@@ -14,6 +14,7 @@
 #include "windows/messagebox.hh"
 #include "windows/startup.hh"
 #include "exceptions/exceptions.hh"
+#include "debugger/windows/memory.hh"
 
 UI::UI()
 {
@@ -61,6 +62,7 @@ UI::UI()
     // add windows
     add_window<Demo>(true);
     add_window<Startup>(true);
+    add_window<Memory>();
     msg_box_key_ = add_window<MessageBox>();
 }
 
@@ -74,13 +76,13 @@ UI::~UI()
     if (glfw_window_)
         glfwDestroyWindow(glfw_window_);
     glfwTerminate();
-
-    emulator_.kill();
 }
 
 void UI::run()
 {
     while (!glfwWindowShouldClose(glfw_window_)) {
+
+        model_.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -111,4 +113,10 @@ void UI::run()
 void UI::set_window_visible(std::string const& name, bool visible)
 {
     windows_.at(name)->set_visible(visible);
+}
+
+void UI::init_debugging_session()
+{
+    set_window_visible("memory", true);
+    ((Memory *) windows_.at("memory").get())->go_to_page_number(0);
 }

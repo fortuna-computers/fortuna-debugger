@@ -4,7 +4,14 @@
 #include <cstddef>
 #include <cstdint>
 
-struct DebuggerModel {
+#include "libfdbg-client.hh"
+#include "debugger/emulator/emulator.hh"
+#include "user/machine.h"
+
+class DebuggerModel {
+public:
+    ~DebuggerModel();
+
     struct Memory {
         size_t  pages;
         size_t  current_page;
@@ -12,7 +19,19 @@ struct DebuggerModel {
         uint8_t data[256];
     };
 
-    Memory memory { .pages = 1, .current_page = 0, .data_present = false, .data = {0} };
+    Memory memory { .pages = TOTAL_MAPPABLE_MEMORY / 256, .current_page = 0, .data_present = false, .data = {0} };
+
+    void connect_to_emulator();
+    void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
+
+    void change_memory_page(int64_t page);
+
+    void update();
+
+private:
+    FdbgClient client_;
+    Emulator   emulator_;
+    bool       connected_ = false;
 };
 
 #endif //MODEL_HH_

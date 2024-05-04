@@ -120,6 +120,7 @@ add_executable(f-debugger
         user/emulator.c
         user/emulator.h
         debugger/model.hh
+        debugger/model.cc
         debugger/main.cc
         debugger/ui.cc
         debugger/ui.hh
