@@ -18,6 +18,8 @@ private:
     FdbgServer* server_;
     std::thread run_thread_;
     bool        running_ = false;
+
+    static void run_emulator_thread(FdbgServer* server, bool& running);
 };
 
 #endif //EMULATOR_HH_

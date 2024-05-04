@@ -22,7 +22,7 @@
 
 - [x] Memory commands in proto
 - [x] Memory commands in library (client/server)
-- [ ] Memory in emulator
+- [x] Memory in emulator
 - [ ] Memory in debugger
 - [ ] Memory in computer (CHIP-8)
 

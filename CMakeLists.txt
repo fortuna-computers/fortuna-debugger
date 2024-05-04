@@ -131,6 +131,8 @@ add_executable(f-debugger
         debugger/emulator/emulator.cc
         debugger/emulator/emulator.hh
         debugger/exceptions/exceptions.hh
+        user/emulator.c
+        user/emulator.h
 )
 
 target_include_directories(f-debugger PUBLIC

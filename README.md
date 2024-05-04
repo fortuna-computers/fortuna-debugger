@@ -1,5 +1,7 @@
 # fortuna-debugger
 
+***Project in progress! Not ready for use.***
+
 Fortuna Debugger is a set of tools for computer designers that, together, provide debugging capability to any custom computer.
 
 The user needs to provide custom code that will:
