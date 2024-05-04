@@ -7,6 +7,7 @@ message Ack {}
 message WriteMemory {
   uint64 initial_addr = 1;
   bytes  bytes        = 2;
+  bool   validate     = 3;
 }
 
 message ReadMemory {

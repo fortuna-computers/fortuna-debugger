@@ -15,6 +15,7 @@
 #endif
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "to-computer.pb.h"
 #include "to-debugger.pb.h"
@@ -104,10 +105,46 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     if (fdbg_receive_next_message(server, &msg, &error)) {
 
         switch (msg.which_message) {
+
             case fdbg_ToComputer_ack_tag: {
                 fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
                 rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
                 rmsg.message.ack_response.id = server->machine_id;
+                fdbg_send_message(server, &rmsg);
+                break;
+            }
+
+            case fdbg_ToComputer_write_memory_tag: {
+                if (msg.message.write_memory.bytes.size > MAX_MEMORY_TRANSFER)
+                    msg.message.write_memory.bytes.size = MAX_MEMORY_TRANSFER;
+                bool status = false;
+                uint64_t first_failed = msg.message.write_memory.initial_addr;
+                if (events->write_memory) {
+                    status = events->write_memory(
+                            msg.message.write_memory.initial_addr, msg.message.write_memory.bytes.bytes,
+                            msg.message.write_memory.bytes.size, &first_failed);
+                }
+                fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+                rmsg.which_message = fdbg_ToDebugger_write_memory_confirmation_tag;
+                rmsg.message.write_memory_confirmation.error = !status;
+                rmsg.message.write_memory_confirmation.first_failed_pos = first_failed;
+                fdbg_send_message(server, &rmsg);
+                break;
+            }
+
+            case fdbg_ToComputer_read_memory_tag: {
+                if (msg.message.read_memory.sz > MAX_MEMORY_TRANSFER)
+                    msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
+                uint8_t buf[msg.message.read_memory.sz];
+                if (events->read_memory)
+                    events->read_memory(msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
+                else
+                    memset(buf, 0, msg.message.read_memory.sz);
+                fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+                rmsg.which_message = fdbg_ToDebugger_memory_update_tag;
+                rmsg.message.memory_update.initial_pos = msg.message.read_memory.initial_addr;
+                rmsg.message.memory_update.bytes.size = msg.message.read_memory.sz;
+                memcpy(rmsg.message.memory_update.bytes.bytes, buf, msg.message.read_memory.sz);
                 fdbg_send_message(server, &rmsg);
                 break;
             }
