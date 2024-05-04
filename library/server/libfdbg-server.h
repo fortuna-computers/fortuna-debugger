@@ -22,8 +22,8 @@ typedef struct FdbgServerIOCallbacks {
 } FdbgServerIOCallbacks;
 
 typedef struct FdbgServerEvents {
-    bool (*write_memory)(uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed);
-    void (*read_memory)(uint64_t pos, uint8_t sz, uint8_t* out_data);
+    bool (*write_memory)(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed);
+    void (*read_memory)(FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data);
 } FdbgServerEvents;
 
 FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);

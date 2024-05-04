@@ -120,7 +120,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 bool status = false;
                 uint64_t first_failed = msg.message.write_memory.initial_addr;
                 if (events->write_memory) {
-                    status = events->write_memory(
+                    status = events->write_memory(server,
                             msg.message.write_memory.initial_addr, msg.message.write_memory.bytes.bytes,
                             msg.message.write_memory.bytes.size, &first_failed);
                 }
@@ -137,7 +137,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                     msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
                 uint8_t buf[msg.message.read_memory.sz];
                 if (events->read_memory)
-                    events->read_memory(msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
+                    events->read_memory(server, msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
                 else
                     memset(buf, 0, msg.message.read_memory.sz);
                 fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;

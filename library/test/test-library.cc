@@ -24,8 +24,18 @@ int main()
 
     std::thread t([&server_running, &server](){
 
+        FdbgServerEvents events = {
+            .write_memory = [](FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed) {
+                return true;
+            },
+            .read_memory = [](FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data) {
+                for (size_t i = 0; i < sz; ++i)
+                    out_data[i] = i + 1;
+            },
+        };
+
         while (server_running) {
-            if (fdbg_server_next(server, nullptr) != 0) {
+            if (fdbg_server_next(server, &events) != 0) {
                 fprintf(stderr, "server: error reading data\n");
                 exit(1);
             }
@@ -48,6 +58,12 @@ int main()
         client.connect(port, EMULATOR_BAUD_RATE);
 
         client.ack_sync(MACHINE_ID);
+
+        std::vector<uint8_t> data { 1, 2, 3, 4 };
+        client.write_memory_sync(0x0, data, false);
+        auto data2 = client.read_memory_sync(0x0, data.size());
+        if (data != data2)
+            throw std::runtime_error("Data does not match.");
 
         printf("Client finalized.\n");
     }
