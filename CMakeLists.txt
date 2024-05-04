@@ -13,18 +13,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/client
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/server
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/library/client
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/library/server
 )
 
-file(GLOB PROTOS library/protobuf/*.proto)
+file(GLOB PROTOS src/library/protobuf/*.proto)
 
 #
 # external libraries
 #
 
-set(NANOPB_SRC_ROOT_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/contrib/nanopb")
+set(NANOPB_SRC_ROOT_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/src/contrib/nanopb")
 set(CMAKE_MODULE_PATH ${NANOPB_SRC_ROOT_FOLDER}/extra)
 
 find_package(Nanopb REQUIRED)
@@ -44,11 +45,11 @@ include_directories(
 nanopb_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTOS})
 
 set(fdbg-server_src
-        library/server/libfdbg-server.c
-        library/server/libfdbg-server.h
-        library/common/terminal.c
-        library/common/terminal.h
-        library/common/common.h
+        src/library/server/libfdbg-server.c
+        src/library/server/libfdbg-server.h
+        src/library/common/terminal.c
+        src/library/common/terminal.h
+        src/library/common/common.h
         ${PROTO_SRCS}
         ${PROTO_HDRS}
 )
@@ -67,11 +68,11 @@ set_target_properties(fdbg-server_shared PROPERTIES OUTPUT_NAME "fgdb-server")
 #
 
 add_library(fdbg-client STATIC
-        library/common/common.h
-        library/common/terminal.h
-        library/common/terminal.c
-        library/client/libfdbg-client.cc
-        library/client/libfdbg-client.hh)
+        src/library/common/common.h
+        src/library/common/terminal.h
+        src/library/common/terminal.c
+        src/library/client/libfdbg-client.cc
+        src/library/client/libfdbg-client.hh)
 
 target_link_libraries(fdbg-client PUBLIC ${Protobuf_LIBRARIES})
 
@@ -84,12 +85,12 @@ protobuf_generate(TARGET fdbg-client
 # library unit tests
 #
 
-add_executable(test-library library/test/test-library.cc)
+add_executable(test-library src/library/test/test-library.cc)
 target_link_libraries(test-library PUBLIC fdbg-client fdbg-server_static protobuf::libprotobuf-lite absl::log_internal_check_op)
 add_test(name "test library"
          COMMAND test-library)
 
-add_executable(test-microcontroller library/test/test-microcontroller.cc)
+add_executable(test-microcontroller src/library/test/test-microcontroller.cc)
 target_link_libraries(test-microcontroller PUBLIC fdbg-client protobuf::libprotobuf-lite absl::log_internal_check_op)
 add_test(name "test microcontroller"
         COMMAND test-microcontroller)
@@ -101,55 +102,61 @@ add_test(name "test microcontroller"
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory(contrib/glfw)
+add_subdirectory(src/contrib/glfw)
 
 set(IMGUI_SRC
-        contrib/imgui/imgui.cpp
-        contrib/imgui/imgui_demo.cpp
-        contrib/imgui/imgui_draw.cpp
-        contrib/imgui/imgui_tables.cpp
-        contrib/imgui/imgui_widgets.cpp
-        contrib/imgui/backends/imgui_impl_glfw.cpp
-        contrib/imgui/backends/imgui_impl_opengl3.cpp
-        contrib/glad/src/gl.c
+        src/contrib/imgui/imgui.cpp
+        src/contrib/imgui/imgui_demo.cpp
+        src/contrib/imgui/imgui_draw.cpp
+        src/contrib/imgui/imgui_tables.cpp
+        src/contrib/imgui/imgui_widgets.cpp
+        src/contrib/imgui/backends/imgui_impl_glfw.cpp
+        src/contrib/imgui/backends/imgui_impl_opengl3.cpp
+        src/contrib/glad/src/gl.c
 )
 
 add_executable(f-debugger
         ${IMGUI_SRC}
-        debugger/model.hh
-        debugger/model.cc
-        debugger/main.cc
-        debugger/ui.cc
-        debugger/ui.hh
-        debugger/windows/window.hh
-        debugger/windows/demo.cc
-        debugger/windows/demo.hh
-        debugger/windows/messagebox.cc
-        debugger/windows/messagebox.hh
-        debugger/windows/startup.cc
-        debugger/windows/startup.hh
-        debugger/config.cc
-        debugger/config.hh
-        debugger/emulator/emulator.cc
-        debugger/emulator/emulator.hh
-        debugger/exceptions/exceptions.hh
-        debugger/windows/memory.cc
-        debugger/windows/memory.hh
-        debugger/load.cc
-        debugger/load.hh
+        src/debugger/model.hh
+        src/debugger/model.cc
+        src/debugger/main.cc
+        src/debugger/ui.cc
+        src/debugger/ui.hh
+        src/debugger/windows/window.hh
+        src/debugger/windows/demo.cc
+        src/debugger/windows/demo.hh
+        src/debugger/windows/messagebox.cc
+        src/debugger/windows/messagebox.hh
+        src/debugger/windows/startup.cc
+        src/debugger/windows/startup.hh
+        src/debugger/config.cc
+        src/debugger/config.hh
+        src/debugger/emulator/emulator.cc
+        src/debugger/emulator/emulator.hh
+        src/debugger/exceptions/exceptions.hh
+        src/debugger/windows/memory.cc
+        src/debugger/windows/memory.hh
+        src/debugger/load.cc
+        src/debugger/load.hh
 )
 
 target_include_directories(f-debugger PUBLIC
-        contrib/glad/include
-        contrib/imgui
-        contrib/imgui/backends
+        src/contrib/glad/include
+        src/contrib/imgui
+        src/contrib/imgui/backends
         ${Protobuf_INCLUDE_DIRS}
 )
 
 target_link_libraries(f-debugger PUBLIC fdbg-client fdbg-server_static glfw protobuf::libprotobuf-lite absl::log_internal_check_op)
 
 #
+# sample project (CHIP-8)
+#
+
+add_subdirectory(sample-chip8)
+
+#
 # scripts
 #
 
-configure_file(scripts/findserial.py . USE_SOURCE_PERMISSIONS COPYONLY)
+configure_file(src/scripts/findserial.py . USE_SOURCE_PERMISSIONS COPYONLY)
