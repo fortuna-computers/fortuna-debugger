@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package fdbg;
 
+message Ready {
+  bool last_request_succeeded = 1;
+}
+
 message AckResponse {
   uint32 id = 1;
 }
@@ -18,8 +22,9 @@ message MemoryUpdate {
 
 message ToDebugger {
   oneof message {
-    AckResponse             ack_response              = 1;
-    WriteMemoryConfirmation write_memory_confirmation = 2;
-    MemoryUpdate            memory_update             = 3;
+    Ready                   ready                     = 1;
+    AckResponse             ack_response              = 2;
+    WriteMemoryConfirmation write_memory_confirmation = 3;
+    MemoryUpdate            memory_update             = 4;
   }
 }

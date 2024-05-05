@@ -25,6 +25,7 @@
 typedef struct FdbgServer {
     uint16_t machine_id;
     FdbgServerIOCallbacks io_callbacks;
+    bool ready;
 #ifndef MICROCONTROLLER
     int  fd;
     char port[256];
@@ -36,6 +37,7 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     FdbgServer* server = calloc(1, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
+    server->ready = false;
     return server;
 }
 
@@ -101,8 +103,15 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 {
     bool error = false;
 
+    if (!server->ready) {
+        fdbg_server_send_ready(server);
+        server->ready = true;
+    }
+
     fdbg_ToComputer msg;
     if (fdbg_receive_next_message(server, &msg, &error)) {
+
+        server->ready = false;
 
         switch (msg.which_message) {
 
@@ -153,6 +162,13 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     }
 
     return error ? -1 : 0;
+}
+
+int fdbg_server_send_ready(FdbgServer* server)
+{
+    fdbg_ToDebugger msg = fdbg_ToDebugger_init_default;
+    msg.which_message = fdbg_ToDebugger_ready_tag;
+    return fdbg_send_message(server, &msg);
 }
 
 #ifndef MICROCONTROLLER

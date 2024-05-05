@@ -18,6 +18,7 @@ typedef PB_BYTES_ARRAY_T(64) fdbg_WriteMemory_bytes_t;
 typedef struct _fdbg_WriteMemory {
     uint64_t initial_addr;
     fdbg_WriteMemory_bytes_t bytes;
+    bool validate;
 } fdbg_WriteMemory;
 
 typedef struct _fdbg_ReadMemory {
@@ -41,17 +42,18 @@ extern "C" {
 
 /* Initializer values for message structs */
 #define fdbg_Ack_init_default                    {0}
-#define fdbg_WriteMemory_init_default            {0, {0, {0}}}
+#define fdbg_WriteMemory_init_default            {0, {0, {0}}, 0}
 #define fdbg_ReadMemory_init_default             {0, 0}
 #define fdbg_ToComputer_init_default             {0, {fdbg_Ack_init_default}}
 #define fdbg_Ack_init_zero                       {0}
-#define fdbg_WriteMemory_init_zero               {0, {0, {0}}}
+#define fdbg_WriteMemory_init_zero               {0, {0, {0}}, 0}
 #define fdbg_ReadMemory_init_zero                {0, 0}
 #define fdbg_ToComputer_init_zero                {0, {fdbg_Ack_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define fdbg_WriteMemory_initial_addr_tag        1
 #define fdbg_WriteMemory_bytes_tag               2
+#define fdbg_WriteMemory_validate_tag            3
 #define fdbg_ReadMemory_initial_addr_tag         1
 #define fdbg_ReadMemory_sz_tag                   2
 #define fdbg_ToComputer_ack_tag                  1
@@ -66,7 +68,8 @@ extern "C" {
 
 #define fdbg_WriteMemory_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT64,   initial_addr,      1) \
-X(a, STATIC,   SINGULAR, BYTES,    bytes,             2)
+X(a, STATIC,   SINGULAR, BYTES,    bytes,             2) \
+X(a, STATIC,   SINGULAR, BOOL,     validate,          3)
 #define fdbg_WriteMemory_CALLBACK NULL
 #define fdbg_WriteMemory_DEFAULT NULL
 
@@ -101,8 +104,8 @@ extern const pb_msgdesc_t fdbg_ToComputer_msg;
 #define FDBG_TO_COMPUTER_PB_H_MAX_SIZE           fdbg_ToComputer_size
 #define fdbg_Ack_size                            0
 #define fdbg_ReadMemory_size                     17
-#define fdbg_ToComputer_size                     79
-#define fdbg_WriteMemory_size                    77
+#define fdbg_ToComputer_size                     81
+#define fdbg_WriteMemory_size                    79
 
 #ifdef __cplusplus
 } /* extern "C" */

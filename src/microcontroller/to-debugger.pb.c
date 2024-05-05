@@ -6,6 +6,9 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
+PB_BIND(fdbg_Ready, fdbg_Ready, AUTO)
+
+
 PB_BIND(fdbg_AckResponse, fdbg_AckResponse, AUTO)
 
 
