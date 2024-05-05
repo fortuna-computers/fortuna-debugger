@@ -50,13 +50,15 @@ void DebuggerModel::update()
 
     std::optional<fdbg::ToDebugger> msg;
     while (true) {
+        /*
         try {
-            msg = client_.receive_message();
+          msg = client_.receive_message();
         } catch (std::exception& e) {
             fprintf(stderr, "communication error: %s", e.what());
             continue;
         }
-
+         */
+        msg = client_.receive_message();
         if (!msg)
             break;
 

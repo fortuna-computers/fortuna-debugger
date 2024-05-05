@@ -25,17 +25,23 @@
 - [x] Memory in emulator
 - [ ] Memory in debugger
  - [x] Create debugger model
- - [ ] Stack ?
- - [ ] PC in memory
-- [ ] Memory in computer (CHIP-8)
+- [x] Memory in computer (CHIP-8)
+
+# Communication improvements
+
+- [ ] Ready signal
+- [x] Treat communication errors
 
 # DLL
 
-- [ ] Can the user emulator be a DLL?
+- [x] Can the user emulator be a DLL?
 
 # Compilation
 
 # CPU
+
+- [ ] Stack in memory window
+- [ ] Show PC in memory window
 
 # Video
 

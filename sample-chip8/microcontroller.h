@@ -12,4 +12,6 @@ void     microcontroller_init();
 void     uart_write_byte(FdbgServer* server, uint8_t byte);
 uint16_t uart_read_byte_async(FdbgServer* server);
 
+FdbgServerEvents* event_handler();
+
 #endif //MICROCONTROLLER_H_

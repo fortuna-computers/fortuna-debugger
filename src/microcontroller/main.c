@@ -10,8 +10,9 @@ int main()
             .write_byte = uart_write_byte,
     });
 
+    FdbgServerEvents* events = event_handler();
     for (;;) {
-        fdbg_server_next(server, NULL);
+        fdbg_server_next(server, events);
     }
 
 }

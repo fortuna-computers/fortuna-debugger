@@ -12,6 +12,7 @@
 #  include <termios.h>
 #endif
 
+#include <chrono>
 #include <format>
 #include <string>
 #include <thread>
@@ -84,6 +85,8 @@ void FdbgClient::send_message(fdbg::ToComputer const &msg) const
 
 std::optional<fdbg::ToDebugger> FdbgClient::receive_message() const
 {
+    errno = 0;
+
     uint8_t sz;
     ssize_t r = read(fd_, &sz, 1);
     if (r == 0)
@@ -95,9 +98,14 @@ std::optional<fdbg::ToDebugger> FdbgClient::receive_message() const
         printf("<= [%02hhX]", sz);
 
     uint8_t message[sz];
-    r = read(fd_, message, sz);
-    if (r < sz)
-        throw std::runtime_error("Error reading from serial (message smaller than expected)");
+
+    auto start = hrc::now();
+    int count = 0;
+    do {
+        if (hrc::now() > start + 3s)
+            throw std::runtime_error("Waiting for more than 3 seconds for a whole message - only received part of it.");
+        count += read(fd_, &message[count], sz);
+    } while (count < sz);
 
     if (debugging_level_ == DebuggingLevel::TRACE) {
         for (uint8_t c: message)

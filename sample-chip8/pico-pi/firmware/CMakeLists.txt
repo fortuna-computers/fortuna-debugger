@@ -25,6 +25,8 @@ file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/FILELIST MicrocontrollerSources)
 
 add_executable(${CMAKE_PROJECT_NAME}
 		src/microcontroller.c
+		src/emulator.h
+		src/emulator.c
 		${MicrocontrollerSources}
 )
 
