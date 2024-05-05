@@ -3,15 +3,13 @@
 
 #include <stdint.h>
 
-/*
-#define MACHINE_ID                 0x3b48
-#define TOTAL_MAPPABLE_MEMORY      (4 * 1024)
-#define UART_BAUD_RATE             115200
-#define MICROCONTROLLER_VENDOR_ID  "2e8a"
-#define MICROCONTROLLER_PRODUCT_ID "000a"
-*/
 
 uint16_t    machine_id();
 const char* machine_name();
+uint64_t    total_mappable_memory();
+
+uint32_t    uart_baud_rate();
+const char* microcontroller_vendor_id();
+const char* microcontroller_product_id();
 
 #endif //_MACHINE_H_

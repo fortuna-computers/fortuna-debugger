@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package fdbg;
+
+message Ack {}
+
+message WriteMemory {
+  uint64 initial_addr = 1;
+  bytes  bytes        = 2;
+  bool   validate     = 3;
+}
+
+message ReadMemory {
+  uint64 initial_addr = 1;
+  uint32 sz           = 2;
+}
+
+message ToComputer {
+  oneof message {
+    Ack         ack          = 1;
+    WriteMemory write_memory = 2;
+    ReadMemory  read_memory  = 3;
+  }
+}
