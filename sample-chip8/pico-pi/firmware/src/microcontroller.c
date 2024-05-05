@@ -1,6 +1,6 @@
 #include "pico/stdlib.h"
 
-#include "user/microcontroller.h"
+#include "microcontroller.h"
 
 #include <stdio.h>
 

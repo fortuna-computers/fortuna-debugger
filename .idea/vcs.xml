@@ -62,8 +62,9 @@
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/lib/sct_neopixel" vcs="Git" />
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/tools/uf2" vcs="Git" />
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/tools/uf2/hidapi" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/contrib/glfw" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/contrib/imgui" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/contrib/nanopb" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/contrib/glfw" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/contrib/imgui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/contrib/imgui-filebrowser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/contrib/nanopb" vcs="Git" />
   </component>
 </project>

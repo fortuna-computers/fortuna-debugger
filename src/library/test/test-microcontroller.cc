@@ -11,7 +11,7 @@ using namespace std::chrono_literals;
 
 int main()
 {
-    const uint16_t MACHINE_ID = 0x3b48;
+    const uint16_t MACHINE_ID = 0x3bf4;
 
     // start and run client
 
