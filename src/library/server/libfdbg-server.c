@@ -103,11 +103,6 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 {
     bool error = false;
 
-    if (!server->ready) {
-        fdbg_server_send_ready(server);
-        server->ready = true;
-    }
-
     fdbg_ToComputer msg;
     if (fdbg_receive_next_message(server, &msg, &error)) {
 
@@ -159,6 +154,11 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
             }
         }
 
+    }
+
+    if (!server->ready) {
+        fdbg_server_send_ready(server);
+        server->ready = true;
     }
 
     return error ? -1 : 0;

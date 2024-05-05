@@ -32,6 +32,8 @@ void FdbgClient::connect(std::string const& port, uint32_t baudrate)
         throw std::runtime_error("Could not open serial port "s + port + ": " + strerror(errno));
 
     configure_terminal_settings(fd_, baudrate);
+
+    server_ready_ = true;
 }
 
 FdbgClient::~FdbgClient()
@@ -125,6 +127,8 @@ std::optional<fdbg::ToDebugger> FdbgClient::receive_message() const
 fdbg::ToDebugger FdbgClient::wait_for_response(std::function<bool(fdbg::ToDebugger const& msg)> check_function) const
 {
     std::optional<fdbg::ToDebugger> response;
+
+    auto x = fdbg::ToDebugger::MessageCase::kMemoryUpdate;
 
     auto initial_time = hrc::now();
     for (;;) {

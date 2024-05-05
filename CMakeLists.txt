@@ -72,7 +72,9 @@ add_library(fdbg-client STATIC
         src/library/common/terminal.h
         src/library/common/terminal.c
         src/library/client/libfdbg-client.cc
-        src/library/client/libfdbg-client.hh)
+        src/library/client/libfdbg-client.hh
+        src/library/server/communicationqueue.cc
+        src/library/server/communicationqueue.hh)
 
 target_link_libraries(fdbg-client PUBLIC ${Protobuf_LIBRARIES})
 
