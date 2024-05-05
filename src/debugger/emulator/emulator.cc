@@ -12,7 +12,6 @@ std::string Emulator::init()
 
 void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 {
-    /*
     emulator_init();
     emulator_reset();
 
@@ -35,7 +34,6 @@ void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 
         std::this_thread::sleep_for(1ms);  // TODO - use `select`
     }
-     */
 }
 
 void Emulator::run_as_thread()

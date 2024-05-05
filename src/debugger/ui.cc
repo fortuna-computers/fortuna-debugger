@@ -120,5 +120,5 @@ void UI::set_window_visible(std::string const& name, bool visible)
 void UI::init_debugging_session()
 {
     set_window_visible("memory", true);
-    ((Memory *) windows_.at("memory").get())->go_to_page_number(0);
+    model_.initialize_memory();
 }

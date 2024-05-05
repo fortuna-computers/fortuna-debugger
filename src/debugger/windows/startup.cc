@@ -61,7 +61,7 @@ void Startup::draw()
         if (connection_type == CT_SERIAL) {
             ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
             if (ImGui::Button("Autodetect")) {
-                std::string port = "";  // TODO - FdbgClient::autodetect_usb_serial_port(MICROCONTROLLER_VENDOR_ID, MICROCONTROLLER_PRODUCT_ID);
+                std::string port = FdbgClient::autodetect_usb_serial_port(microcontroller_vendor_id(), microcontroller_product_id());
                 strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
             }
             ImGui::InputInt("Baud rate", &baud_rate_, 0);

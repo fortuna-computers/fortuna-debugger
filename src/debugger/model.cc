@@ -24,12 +24,18 @@ void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint3
     client_.ack_sync(machine_id());
 }
 
+void DebuggerModel::initialize_memory()
+{
+    memory.pages = total_mappable_memory() / 256;
+    change_memory_page(0);
+}
+
 void DebuggerModel::change_memory_page(int64_t page)
 {
-    if (page >= memory.pages)
+    if (page >= (int64_t) memory.pages)
         page = 0;
     if (page < 0)
-        page = memory.pages - 1;
+        page = ((int64_t) memory.pages) - 1;
 
     memory.data_present = false;
     memory.current_page = page;
@@ -43,7 +49,16 @@ void DebuggerModel::update()
         return;
 
     std::optional<fdbg::ToDebugger> msg;
-    while ((msg = client_.receive_message())) {
+    while (true) {
+        try {
+            msg = client_.receive_message();
+        } catch (std::exception& e) {
+            fprintf(stderr, "communication error: %s", e.what());
+            continue;
+        }
+
+        if (!msg)
+            break;
 
         switch (msg->message_case()) {
             case fdbg::ToDebugger::MessageCase::kMemoryUpdate:

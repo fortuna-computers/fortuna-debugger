@@ -24,6 +24,7 @@ public:
     void connect_to_emulator();
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
 
+    void initialize_memory();
     void change_memory_page(int64_t page);
 
     void update();

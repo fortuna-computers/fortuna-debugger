@@ -14,7 +14,7 @@ void Memory::draw()
         ImGui::SameLine();
 
         if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
-            go_to_page_number(ui_.model().memory.current_page - 1);
+            go_to_page_number(((int64_t) ui_.model().memory.current_page) - 1);
         ImGui::SameLine();
 
         char buf[3];
