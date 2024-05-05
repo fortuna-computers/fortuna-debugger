@@ -1,0 +1,12 @@
+[submodule "src/contrib/imgui"]
+	path = src/contrib/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "src/contrib/glfw"]
+	path = src/contrib/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "src/contrib/nanopb"]
+	path = src/contrib/nanopb
+	url = https://github.com/nanopb/nanopb.git
+[submodule "src/contrib/imgui-filebrowser"]
+	path = src/contrib/imgui-filebrowser
+	url = https://github.com/AirGuanZ/imgui-filebrowser.git
