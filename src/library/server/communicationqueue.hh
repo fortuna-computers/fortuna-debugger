@@ -18,6 +18,11 @@ public:
     void send_message(fdbg::ToComputer const& msg);           // put message in outbox
     std::optional<fdbg::ToDebugger> receive_next_message();   // get message from inbox
     std::optional<fdbg::ToDebugger> receive_next_message_of_type(fdbg::ToDebugger::MessageCase messageType);
+
+private:
+    bool                        server_ready_ = false;
+    std::list<fdbg::ToComputer> outbox_;
+    std::list<fdbg::ToDebugger> inbox_;
 };
 
 #endif
