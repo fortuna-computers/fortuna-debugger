@@ -5,6 +5,7 @@
 #include "library/protobuf/to-debugger.pb.h"
 
 #include "../common/common.h"
+#include "communicationqueue.hh"
 
 #include <optional>
 #include <string>
@@ -12,32 +13,25 @@
 
 // this class is used by the debugger or the tests scripts to connect to the computer/emulator
 
-enum class DebuggingLevel { NORMAL, DEBUG, TRACE };
-
 class FdbgClient {
 public:
-    ~FdbgClient();
+    void connect(std::string const& port, uint32_t baudrate) { comm_queue_.connect(port, baudrate); }
 
-    void connect(std::string const& port, uint32_t baudrate);
+    void set_debugging_level(DebuggingLevel debugging_level) { comm_queue_.set_debugging_level(debugging_level); }
 
-    void set_debugging_level(DebuggingLevel debugging_level) { debugging_level_ = debugging_level; }
+    std::optional<fdbg::ToDebugger> receive_message();
 
-    std::optional<fdbg::ToDebugger> receive_message() const;
-
-    void                 ack_sync(uint32_t id) const;
-    void                 write_memory_sync(uint64_t pos, std::vector<uint8_t> const& data, bool validate) const;
-    void                 read_memory_async(uint64_t pos, uint8_t sz) const;
-    std::vector<uint8_t> read_memory_sync(uint64_t pos, uint8_t sz) const;
+    void                 ack_sync(uint32_t id);
+    void                 write_memory_sync(uint64_t pos, std::vector<uint8_t> const& data, bool validate);
+    void                 read_memory_async(uint64_t pos, uint8_t sz);
+    std::vector<uint8_t> read_memory_sync(uint64_t pos, uint8_t sz);
 
     static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
 
 private:
-    int            fd_ = -1;
-    DebuggingLevel debugging_level_ = DebuggingLevel::NORMAL;
-    bool           server_ready_ = false;
+    CommunicationQueue comm_queue_;
 
-    void             send_message(fdbg::ToComputer const& msg) const;
-    fdbg::ToDebugger wait_for_response(std::function<bool(fdbg::ToDebugger const& msg)> check_function) const;
+    fdbg::ToDebugger wait_for_message_of_type(fdbg::ToDebugger::MessageCase messageType);
 };
 
 #endif //LIBFDBG_CLIENT_HH_

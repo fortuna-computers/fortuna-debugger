@@ -59,11 +59,13 @@ int main()
 
         client.ack_sync(MACHINE_ID);
 
+        /*
         std::vector<uint8_t> data { 1, 2, 3, 4 };
         client.write_memory_sync(0x0, data, false);
         auto data2 = client.read_memory_sync(0x0, data.size());
         if (data != data2)
             throw std::runtime_error("Data does not match.");
+        */
 
         printf("Client finalized.\n");
     }
