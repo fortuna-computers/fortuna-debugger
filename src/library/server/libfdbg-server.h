@@ -30,7 +30,6 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
 void        fdbg_server_free(FdbgServer* server);
 
 int         fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
-int         fdbg_server_send_ready(FdbgServer* server);
 
 #ifndef MICROCONTROLLER
 

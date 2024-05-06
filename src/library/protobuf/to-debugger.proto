@@ -2,29 +2,29 @@ syntax = "proto3";
 
 package fdbg;
 
-message Ready {
-  bool last_request_succeeded = 1;
+enum Status {
+  OK = 0;
+  ERR_WRITING_MEMORY = 1;
 }
 
 message AckResponse {
   uint32 id = 1;
 }
 
-message WriteMemoryConfirmation {
-  bool   error = 1;
-  uint64 first_failed_pos = 2;
+message WriteMemoryResponse {
+  uint64 first_failed_pos = 1;
 }
 
-message MemoryUpdate {
+message ReadMemoryResponse {
   uint64 initial_pos = 1;
   bytes  bytes       = 2;
 };
 
 message ToDebugger {
+  Status status = 1;
   oneof message {
-    Ready                   ready                     = 1;
-    AckResponse             ack_response              = 2;
-    WriteMemoryConfirmation write_memory_confirmation = 3;
-    MemoryUpdate            memory_update             = 4;
+    AckResponse         ack_response          = 2;
+    WriteMemoryResponse write_memory_response = 3;
+    ReadMemoryResponse  read_memory_response  = 4;
   }
 }

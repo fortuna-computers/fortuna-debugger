@@ -6,19 +6,17 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-PB_BIND(fdbg_Ready, fdbg_Ready, AUTO)
-
-
 PB_BIND(fdbg_AckResponse, fdbg_AckResponse, AUTO)
 
 
-PB_BIND(fdbg_WriteMemoryConfirmation, fdbg_WriteMemoryConfirmation, AUTO)
+PB_BIND(fdbg_WriteMemoryResponse, fdbg_WriteMemoryResponse, AUTO)
 
 
-PB_BIND(fdbg_MemoryUpdate, fdbg_MemoryUpdate, AUTO)
+PB_BIND(fdbg_ReadMemoryResponse, fdbg_ReadMemoryResponse, AUTO)
 
 
 PB_BIND(fdbg_ToDebugger, fdbg_ToDebugger, AUTO)
+
 
 
 

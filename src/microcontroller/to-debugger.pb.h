@@ -9,33 +9,34 @@
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
-/* Struct definitions */
-typedef struct _fdbg_Ready {
-    bool last_request_succeeded;
-} fdbg_Ready;
+/* Enum definitions */
+typedef enum _fdbg_Status {
+    fdbg_Status_OK = 0,
+    fdbg_Status_ERR_WRITING_MEMORY = 1
+} fdbg_Status;
 
+/* Struct definitions */
 typedef struct _fdbg_AckResponse {
     uint32_t id;
 } fdbg_AckResponse;
 
-typedef struct _fdbg_WriteMemoryConfirmation {
-    bool error;
+typedef struct _fdbg_WriteMemoryResponse {
     uint64_t first_failed_pos;
-} fdbg_WriteMemoryConfirmation;
+} fdbg_WriteMemoryResponse;
 
-typedef PB_BYTES_ARRAY_T(64) fdbg_MemoryUpdate_bytes_t;
-typedef struct _fdbg_MemoryUpdate {
+typedef PB_BYTES_ARRAY_T(64) fdbg_ReadMemoryResponse_bytes_t;
+typedef struct _fdbg_ReadMemoryResponse {
     uint64_t initial_pos;
-    fdbg_MemoryUpdate_bytes_t bytes;
-} fdbg_MemoryUpdate;
+    fdbg_ReadMemoryResponse_bytes_t bytes;
+} fdbg_ReadMemoryResponse;
 
 typedef struct _fdbg_ToDebugger {
+    fdbg_Status status;
     pb_size_t which_message;
     union {
-        fdbg_Ready ready;
         fdbg_AckResponse ack_response;
-        fdbg_WriteMemoryConfirmation write_memory_confirmation;
-        fdbg_MemoryUpdate memory_update;
+        fdbg_WriteMemoryResponse write_memory_response;
+        fdbg_ReadMemoryResponse read_memory_response;
     } message;
 } fdbg_ToDebugger;
 
@@ -44,85 +45,82 @@ typedef struct _fdbg_ToDebugger {
 extern "C" {
 #endif
 
+/* Helper constants for enums */
+#define _fdbg_Status_MIN fdbg_Status_OK
+#define _fdbg_Status_MAX fdbg_Status_ERR_WRITING_MEMORY
+#define _fdbg_Status_ARRAYSIZE ((fdbg_Status)(fdbg_Status_ERR_WRITING_MEMORY+1))
+
+
+
+
+#define fdbg_ToDebugger_status_ENUMTYPE fdbg_Status
+
+
 /* Initializer values for message structs */
-#define fdbg_Ready_init_default                  {0}
 #define fdbg_AckResponse_init_default            {0}
-#define fdbg_WriteMemoryConfirmation_init_default {0, 0}
-#define fdbg_MemoryUpdate_init_default           {0, {0, {0}}}
-#define fdbg_ToDebugger_init_default             {0, {fdbg_Ready_init_default}}
-#define fdbg_Ready_init_zero                     {0}
+#define fdbg_WriteMemoryResponse_init_default    {0}
+#define fdbg_ReadMemoryResponse_init_default     {0, {0, {0}}}
+#define fdbg_ToDebugger_init_default             {_fdbg_Status_MIN, 0, {fdbg_AckResponse_init_default}}
 #define fdbg_AckResponse_init_zero               {0}
-#define fdbg_WriteMemoryConfirmation_init_zero   {0, 0}
-#define fdbg_MemoryUpdate_init_zero              {0, {0, {0}}}
-#define fdbg_ToDebugger_init_zero                {0, {fdbg_Ready_init_zero}}
+#define fdbg_WriteMemoryResponse_init_zero       {0}
+#define fdbg_ReadMemoryResponse_init_zero        {0, {0, {0}}}
+#define fdbg_ToDebugger_init_zero                {_fdbg_Status_MIN, 0, {fdbg_AckResponse_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
-#define fdbg_Ready_last_request_succeeded_tag    1
 #define fdbg_AckResponse_id_tag                  1
-#define fdbg_WriteMemoryConfirmation_error_tag   1
-#define fdbg_WriteMemoryConfirmation_first_failed_pos_tag 2
-#define fdbg_MemoryUpdate_initial_pos_tag        1
-#define fdbg_MemoryUpdate_bytes_tag              2
-#define fdbg_ToDebugger_ready_tag                1
+#define fdbg_WriteMemoryResponse_first_failed_pos_tag 1
+#define fdbg_ReadMemoryResponse_initial_pos_tag  1
+#define fdbg_ReadMemoryResponse_bytes_tag        2
+#define fdbg_ToDebugger_status_tag               1
 #define fdbg_ToDebugger_ack_response_tag         2
-#define fdbg_ToDebugger_write_memory_confirmation_tag 3
-#define fdbg_ToDebugger_memory_update_tag        4
+#define fdbg_ToDebugger_write_memory_response_tag 3
+#define fdbg_ToDebugger_read_memory_response_tag 4
 
 /* Struct field encoding specification for nanopb */
-#define fdbg_Ready_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, BOOL,     last_request_succeeded,   1)
-#define fdbg_Ready_CALLBACK NULL
-#define fdbg_Ready_DEFAULT NULL
-
 #define fdbg_AckResponse_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT32,   id,                1)
 #define fdbg_AckResponse_CALLBACK NULL
 #define fdbg_AckResponse_DEFAULT NULL
 
-#define fdbg_WriteMemoryConfirmation_FIELDLIST(X, a) \
-X(a, STATIC,   SINGULAR, BOOL,     error,             1) \
-X(a, STATIC,   SINGULAR, UINT64,   first_failed_pos,   2)
-#define fdbg_WriteMemoryConfirmation_CALLBACK NULL
-#define fdbg_WriteMemoryConfirmation_DEFAULT NULL
+#define fdbg_WriteMemoryResponse_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UINT64,   first_failed_pos,   1)
+#define fdbg_WriteMemoryResponse_CALLBACK NULL
+#define fdbg_WriteMemoryResponse_DEFAULT NULL
 
-#define fdbg_MemoryUpdate_FIELDLIST(X, a) \
+#define fdbg_ReadMemoryResponse_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT64,   initial_pos,       1) \
 X(a, STATIC,   SINGULAR, BYTES,    bytes,             2)
-#define fdbg_MemoryUpdate_CALLBACK NULL
-#define fdbg_MemoryUpdate_DEFAULT NULL
+#define fdbg_ReadMemoryResponse_CALLBACK NULL
+#define fdbg_ReadMemoryResponse_DEFAULT NULL
 
 #define fdbg_ToDebugger_FIELDLIST(X, a) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (message,ready,message.ready),   1) \
+X(a, STATIC,   SINGULAR, UENUM,    status,            1) \
 X(a, STATIC,   ONEOF,    MESSAGE,  (message,ack_response,message.ack_response),   2) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (message,write_memory_confirmation,message.write_memory_confirmation),   3) \
-X(a, STATIC,   ONEOF,    MESSAGE,  (message,memory_update,message.memory_update),   4)
+X(a, STATIC,   ONEOF,    MESSAGE,  (message,write_memory_response,message.write_memory_response),   3) \
+X(a, STATIC,   ONEOF,    MESSAGE,  (message,read_memory_response,message.read_memory_response),   4)
 #define fdbg_ToDebugger_CALLBACK NULL
 #define fdbg_ToDebugger_DEFAULT NULL
-#define fdbg_ToDebugger_message_ready_MSGTYPE fdbg_Ready
 #define fdbg_ToDebugger_message_ack_response_MSGTYPE fdbg_AckResponse
-#define fdbg_ToDebugger_message_write_memory_confirmation_MSGTYPE fdbg_WriteMemoryConfirmation
-#define fdbg_ToDebugger_message_memory_update_MSGTYPE fdbg_MemoryUpdate
+#define fdbg_ToDebugger_message_write_memory_response_MSGTYPE fdbg_WriteMemoryResponse
+#define fdbg_ToDebugger_message_read_memory_response_MSGTYPE fdbg_ReadMemoryResponse
 
-extern const pb_msgdesc_t fdbg_Ready_msg;
 extern const pb_msgdesc_t fdbg_AckResponse_msg;
-extern const pb_msgdesc_t fdbg_WriteMemoryConfirmation_msg;
-extern const pb_msgdesc_t fdbg_MemoryUpdate_msg;
+extern const pb_msgdesc_t fdbg_WriteMemoryResponse_msg;
+extern const pb_msgdesc_t fdbg_ReadMemoryResponse_msg;
 extern const pb_msgdesc_t fdbg_ToDebugger_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
-#define fdbg_Ready_fields &fdbg_Ready_msg
 #define fdbg_AckResponse_fields &fdbg_AckResponse_msg
-#define fdbg_WriteMemoryConfirmation_fields &fdbg_WriteMemoryConfirmation_msg
-#define fdbg_MemoryUpdate_fields &fdbg_MemoryUpdate_msg
+#define fdbg_WriteMemoryResponse_fields &fdbg_WriteMemoryResponse_msg
+#define fdbg_ReadMemoryResponse_fields &fdbg_ReadMemoryResponse_msg
 #define fdbg_ToDebugger_fields &fdbg_ToDebugger_msg
 
 /* Maximum encoded size of messages (where known) */
 #define FDBG_TO_DEBUGGER_PB_H_MAX_SIZE           fdbg_ToDebugger_size
 #define fdbg_AckResponse_size                    6
-#define fdbg_MemoryUpdate_size                   77
-#define fdbg_Ready_size                          2
-#define fdbg_ToDebugger_size                     79
-#define fdbg_WriteMemoryConfirmation_size        13
+#define fdbg_ReadMemoryResponse_size             77
+#define fdbg_ToDebugger_size                     81
+#define fdbg_WriteMemoryResponse_size            11
 
 #ifdef __cplusplus
 } /* extern "C" */

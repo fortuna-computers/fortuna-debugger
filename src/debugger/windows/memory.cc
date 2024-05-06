@@ -77,8 +77,8 @@ void Memory::draw_memory_table() const
             std::string ascii;
             for (int i = 0; i < 0x10; ++i) {
                 ImGui::TableSetColumnIndex(i + 1);
-                if (ui_.model().memory.data_present) {
-                    uint8_t byte = ui_.model().memory.data[line * 16 + i];
+                std::optional<uint8_t> byte = ui_.model().memory.data[line * 16 + i];
+                if (byte.has_value()) {
                     bool needs_pop = false;
                     /* TODO
                     if (addr + i == emulator_.z80().PC.W)
@@ -86,14 +86,14 @@ void Memory::draw_memory_table() const
                     else if (addr + i == emulator_.z80().SP.W)
                         ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, sp_bg_color);
                     */
-                    if (byte == 0) {
+                    if (*byte == 0) {
                         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(128, 128, 128)));
                         needs_pop = true;
                     }
-                    ImGui::Text("%02X", byte);
+                    ImGui::Text("%02X", *byte);
                     if (needs_pop)
                         ImGui::PopStyleColor();
-                    ascii += (byte >= 32 && byte < 127) ? (char) byte : '.';
+                    ascii += (*byte >= 32 && *byte < 127) ? (char) *byte : '.';
                 } else {
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(128, 128, 128)));
                     ImGui::Text("??");

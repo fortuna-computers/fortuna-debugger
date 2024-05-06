@@ -1,1 +1,1 @@
-fdbg.MemoryUpdate.bytes max_size:64
+fdbg.ReadMemoryResponse.bytes max_size:64

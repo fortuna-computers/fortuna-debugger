@@ -25,7 +25,6 @@
 typedef struct FdbgServer {
     uint16_t machine_id;
     FdbgServerIOCallbacks io_callbacks;
-    bool ready;
 #ifndef MICROCONTROLLER
     int  fd;
     char port[256];
@@ -37,7 +36,6 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     FdbgServer* server = calloc(1, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
-    server->ready = true;
     return server;
 }
 
@@ -69,7 +67,7 @@ static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, 
     if (sz == SERIAL_ERROR) {
         *error = true;
         return false;
-    } if (sz == SERIAL_NO_DATA) {
+    } else if (sz == SERIAL_NO_DATA) {
         return false;
     }
 
@@ -106,15 +104,13 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     fdbg_ToComputer msg;
     if (fdbg_receive_next_message(server, &msg, &error)) {
 
-        server->ready = false;
+        fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
 
         switch (msg.which_message) {
 
             case fdbg_ToComputer_ack_tag: {
-                fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
                 rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
                 rmsg.message.ack_response.id = server->machine_id;
-                fdbg_send_message(server, &rmsg);
                 break;
             }
 
@@ -128,11 +124,11 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                             msg.message.write_memory.initial_addr, msg.message.write_memory.bytes.bytes,
                             msg.message.write_memory.bytes.size, &first_failed);
                 }
-                fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
-                rmsg.which_message = fdbg_ToDebugger_write_memory_confirmation_tag;
-                rmsg.message.write_memory_confirmation.error = !status;
-                rmsg.message.write_memory_confirmation.first_failed_pos = first_failed;
-                fdbg_send_message(server, &rmsg);
+
+                rmsg.which_message = fdbg_ToDebugger_write_memory_response_tag;
+                rmsg.status = status ? fdbg_Status_OK : fdbg_Status_ERR_WRITING_MEMORY;
+                if (!status)
+                    rmsg.message.write_memory_response.first_failed_pos = first_failed;
                 break;
             }
 
@@ -140,37 +136,23 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 if (msg.message.read_memory.sz > MAX_MEMORY_TRANSFER)
                     msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
                 uint8_t buf[msg.message.read_memory.sz];
-                for (uint8_t i = 0; i < msg.message.read_memory.sequences; ++i) {
-                    uint64_t initial_addr = msg.message.read_memory.initial_addr + (i * msg.message.read_memory.sz);
-                    if (events->read_memory)
-                        events->read_memory(server, initial_addr, msg.message.read_memory.sz, buf);
-                    else
-                        memset(buf, 0, msg.message.read_memory.sz);
-                    fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
-                    rmsg.which_message = fdbg_ToDebugger_memory_update_tag;
-                    rmsg.message.memory_update.initial_pos = initial_addr;
-                    rmsg.message.memory_update.bytes.size = msg.message.read_memory.sz;
-                    memcpy(rmsg.message.memory_update.bytes.bytes, buf, msg.message.read_memory.sz);
-                    fdbg_send_message(server, &rmsg);
+                if (events->read_memory)
+                    events->read_memory(server, msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
+                else
+                    memset(buf, 0, msg.message.read_memory.sz);
+
+                rmsg.which_message = fdbg_ToDebugger_read_memory_response_tag;
+                rmsg.message.read_memory_response.initial_pos = msg.message.read_memory.initial_addr;
+                rmsg.message.read_memory_response.bytes.size = msg.message.read_memory.sz;
+                memcpy(rmsg.message.read_memory_response.bytes.bytes, buf, msg.message.read_memory.sz);
                 }
                 break;
             }
-        }
 
-    }
-
-    if (!server->ready) {
-        fdbg_server_send_ready(server);
-        server->ready = true;
+        return fdbg_send_message(server, &rmsg);
     }
 
     return error ? -1 : 0;
-}
-
-int fdbg_server_send_ready(FdbgServer* server)
-{
-    server->io_callbacks.write_byte(server, READY_SIGNAL);
-    return 1;
 }
 
 #ifndef MICROCONTROLLER
