@@ -23,13 +23,13 @@
 - [x] Memory commands in proto
 - [x] Memory commands in library (client/server)
 - [x] Memory in emulator
-- [ ] Memory in debugger
+- [x] Memory in debugger
  - [x] Create debugger model
 - [x] Memory in computer (CHIP-8)
 
 # Communication improvements
 
-- [ ] Ready signal
+- [x] Ready signal
 - [x] Treat communication errors
 
 # DLL
@@ -37,6 +37,11 @@
 - [x] Can the user emulator be a DLL?
 
 # Compilation
+
+- [ ] Install and test chip-8 compiler
+- [ ] Create interfaces (debugging info, compiler output, ROM, and file list, location in memory)
+- [ ] Compile
+- [ ] Upload to ROM
 
 # CPU
 
