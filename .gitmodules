@@ -10,3 +10,6 @@
 [submodule "src/contrib/imgui-filebrowser"]
 	path = src/contrib/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser.git
+[submodule "sample-chip8/Chip8Assembler"]
+	path = sample-chip8/Chip8Assembler
+	url = https://github.com/craigthomas/Chip8Assembler
