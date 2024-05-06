@@ -15,6 +15,8 @@
 
 class FdbgClient {
 public:
+    ~FdbgClient();
+
     void connect(std::string const& port, uint32_t baudrate) { comm_queue_.connect(port, baudrate); }
 
     void set_debugging_level(DebuggingLevel debugging_level) { comm_queue_.set_debugging_level(debugging_level); }
