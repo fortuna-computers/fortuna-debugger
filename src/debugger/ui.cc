@@ -82,7 +82,12 @@ void UI::run()
 {
     while (!glfwWindowShouldClose(glfw_window_)) {
 
-        model_.update();
+        try {
+            model_.update();
+        } catch (std::exception& e) {
+            fprintf(stderr, "%s", e.what());
+            ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::Error, e.what());
+        }
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

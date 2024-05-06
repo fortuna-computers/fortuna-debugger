@@ -37,7 +37,7 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     FdbgServer* server = calloc(1, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
-    server->ready = false;
+    server->ready = true;
     return server;
 }
 

@@ -46,9 +46,7 @@ CommunicationQueue::~CommunicationQueue()
 void CommunicationQueue::communicate()
 {
     receive_messages();
-
-    if (server_ready_)
-        send_messages();
+    send_messages();
 }
 
 void CommunicationQueue::receive_messages()
@@ -89,16 +87,20 @@ void CommunicationQueue::receive_messages()
         if (msg.message_case() == fdbg::ToDebugger::kReady)
             server_ready_ = true;
         else
-            inbox_.emplace_back(std::move(msg));
+            inbox_.push_back(msg);
     }
 }
 
 void CommunicationQueue::send_messages()
 {
     while (!outbox_.empty()) {
+
+        if (!server_ready_)
+            break;
+
         server_ready_ = false;
 
-        auto const& msg = outbox_.front();
+        auto msg = outbox_.front();
         outbox_.pop();
 
         std::string message;
