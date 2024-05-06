@@ -25,8 +25,8 @@ public:
 
     void                 ack_sync(uint32_t id);
     void                 write_memory_sync(uint64_t pos, std::vector<uint8_t> const& data, bool validate);
-    void                 read_memory_async(uint64_t pos, uint8_t sz);
-    std::vector<uint8_t> read_memory_sync(uint64_t pos, uint8_t sz);
+    void                 read_memory_async(uint64_t pos, uint8_t sz, uint8_t sequences=1);
+    std::vector<uint8_t> read_memory_sync(uint64_t pos, uint8_t sz, uint8_t sequences=1);
 
     static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
 

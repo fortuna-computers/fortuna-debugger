@@ -98,7 +98,7 @@ void FdbgClient::write_memory_sync(uint64_t pos, std::vector<uint8_t> const& dat
         throw std::runtime_error(std::format("Error writing memory: first byte failed is 0x{:x}", response.write_memory_confirmation().first_failed_pos()));
 }
 
-void FdbgClient::read_memory_async(uint64_t pos, uint8_t sz)
+void FdbgClient::read_memory_async(uint64_t pos, uint8_t sz, uint8_t sequences)
 {
     if (sz > MAX_MEMORY_TRANSFER)
         throw std::runtime_error("Cannot read more than " + std::to_string(MAX_MEMORY_TRANSFER) + " bytes at time.");
@@ -106,15 +106,16 @@ void FdbgClient::read_memory_async(uint64_t pos, uint8_t sz)
     auto read_memory = new fdbg::ReadMemory();
     read_memory->set_initial_addr(pos);
     read_memory->set_sz(sz);
+    read_memory->set_sequences(sequences);
 
     fdbg::ToComputer msg;
     msg.set_allocated_read_memory(read_memory);
     comm_queue_.send_message(msg);
 }
 
-std::vector<uint8_t> FdbgClient::read_memory_sync(uint64_t pos, uint8_t sz)
+std::vector<uint8_t> FdbgClient::read_memory_sync(uint64_t pos, uint8_t sz, uint8_t sequences)
 {
-    read_memory_async(pos, sz);
+    read_memory_async(pos, sz, sequences);
 
     auto response = wait_for_message_of_type(fdbg::ToDebugger::kMemoryUpdate);
     return { response.memory_update().bytes().begin(), response.memory_update().bytes().end() };

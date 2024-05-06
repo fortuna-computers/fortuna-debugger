@@ -13,6 +13,7 @@ message WriteMemory {
 message ReadMemory {
   uint64 initial_addr = 1;
   uint32 sz           = 2;
+  uint32 sequences    = 3;
 }
 
 message ToComputer {

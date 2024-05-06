@@ -39,8 +39,7 @@ void DebuggerModel::change_memory_page(int64_t page)
 
     memory.data_present = false;
     memory.current_page = page;
-    for (size_t i = 0; i < 4; ++i)
-        client_.read_memory_async((page * 256) + (i * 64), 64);
+    client_.read_memory_async(page * 256, 64, 4);
 }
 
 void DebuggerModel::update()

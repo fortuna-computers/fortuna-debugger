@@ -24,6 +24,7 @@ typedef struct _fdbg_WriteMemory {
 typedef struct _fdbg_ReadMemory {
     uint64_t initial_addr;
     uint32_t sz;
+    uint32_t sequences;
 } fdbg_ReadMemory;
 
 typedef struct _fdbg_ToComputer {
@@ -43,11 +44,11 @@ extern "C" {
 /* Initializer values for message structs */
 #define fdbg_Ack_init_default                    {0}
 #define fdbg_WriteMemory_init_default            {0, {0, {0}}, 0}
-#define fdbg_ReadMemory_init_default             {0, 0}
+#define fdbg_ReadMemory_init_default             {0, 0, 0}
 #define fdbg_ToComputer_init_default             {0, {fdbg_Ack_init_default}}
 #define fdbg_Ack_init_zero                       {0}
 #define fdbg_WriteMemory_init_zero               {0, {0, {0}}, 0}
-#define fdbg_ReadMemory_init_zero                {0, 0}
+#define fdbg_ReadMemory_init_zero                {0, 0, 0}
 #define fdbg_ToComputer_init_zero                {0, {fdbg_Ack_init_zero}}
 
 /* Field tags (for use in manual encoding/decoding) */
@@ -56,6 +57,7 @@ extern "C" {
 #define fdbg_WriteMemory_validate_tag            3
 #define fdbg_ReadMemory_initial_addr_tag         1
 #define fdbg_ReadMemory_sz_tag                   2
+#define fdbg_ReadMemory_sequences_tag            3
 #define fdbg_ToComputer_ack_tag                  1
 #define fdbg_ToComputer_write_memory_tag         2
 #define fdbg_ToComputer_read_memory_tag          3
@@ -75,7 +77,8 @@ X(a, STATIC,   SINGULAR, BOOL,     validate,          3)
 
 #define fdbg_ReadMemory_FIELDLIST(X, a) \
 X(a, STATIC,   SINGULAR, UINT64,   initial_addr,      1) \
-X(a, STATIC,   SINGULAR, UINT32,   sz,                2)
+X(a, STATIC,   SINGULAR, UINT32,   sz,                2) \
+X(a, STATIC,   SINGULAR, UINT32,   sequences,         3)
 #define fdbg_ReadMemory_CALLBACK NULL
 #define fdbg_ReadMemory_DEFAULT NULL
 
@@ -103,7 +106,7 @@ extern const pb_msgdesc_t fdbg_ToComputer_msg;
 /* Maximum encoded size of messages (where known) */
 #define FDBG_TO_COMPUTER_PB_H_MAX_SIZE           fdbg_ToComputer_size
 #define fdbg_Ack_size                            0
-#define fdbg_ReadMemory_size                     17
+#define fdbg_ReadMemory_size                     23
 #define fdbg_ToComputer_size                     81
 #define fdbg_WriteMemory_size                    79
 

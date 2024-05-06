@@ -140,16 +140,19 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 if (msg.message.read_memory.sz > MAX_MEMORY_TRANSFER)
                     msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
                 uint8_t buf[msg.message.read_memory.sz];
-                if (events->read_memory)
-                    events->read_memory(server, msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
-                else
-                    memset(buf, 0, msg.message.read_memory.sz);
-                fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
-                rmsg.which_message = fdbg_ToDebugger_memory_update_tag;
-                rmsg.message.memory_update.initial_pos = msg.message.read_memory.initial_addr;
-                rmsg.message.memory_update.bytes.size = msg.message.read_memory.sz;
-                memcpy(rmsg.message.memory_update.bytes.bytes, buf, msg.message.read_memory.sz);
-                fdbg_send_message(server, &rmsg);
+                for (uint8_t i = 0; i < msg.message.read_memory.sequences; ++i) {
+                    uint64_t initial_addr = msg.message.read_memory.initial_addr + (i * msg.message.read_memory.sz);
+                    if (events->read_memory)
+                        events->read_memory(server, initial_addr, msg.message.read_memory.sz, buf);
+                    else
+                        memset(buf, 0, msg.message.read_memory.sz);
+                    fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+                    rmsg.which_message = fdbg_ToDebugger_memory_update_tag;
+                    rmsg.message.memory_update.initial_pos = initial_addr;
+                    rmsg.message.memory_update.bytes.size = msg.message.read_memory.sz;
+                    memcpy(rmsg.message.memory_update.bytes.bytes, buf, msg.message.read_memory.sz);
+                    fdbg_send_message(server, &rmsg);
+                }
                 break;
             }
         }
@@ -167,11 +170,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 int fdbg_server_send_ready(FdbgServer* server)
 {
     server->io_callbacks.write_byte(server, READY_SIGNAL);
-    /*
-    fdbg_ToDebugger msg = fdbg_ToDebugger_init_default;
-    msg.which_message = fdbg_ToDebugger_ready_tag;
-    return fdbg_send_message(server, &msg);
-     */
+    return 1;
 }
 
 #ifndef MICROCONTROLLER
