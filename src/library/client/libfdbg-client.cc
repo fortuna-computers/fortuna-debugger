@@ -25,6 +25,11 @@ using namespace std::chrono_literals;
 using namespace std::string_literals;
 using hrc = std::chrono::high_resolution_clock;
 
+FdbgClient::~FdbgClient()
+{
+    google::protobuf::ShutdownProtobufLibrary();
+}
+
 std::string FdbgClient::autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id)
 {
     char port[512];
