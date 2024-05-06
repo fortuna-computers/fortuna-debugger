@@ -166,9 +166,12 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 
 int fdbg_server_send_ready(FdbgServer* server)
 {
+    server->io_callbacks.write_byte(server, READY_SIGNAL);
+    /*
     fdbg_ToDebugger msg = fdbg_ToDebugger_init_default;
     msg.which_message = fdbg_ToDebugger_ready_tag;
     return fdbg_send_message(server, &msg);
+     */
 }
 
 #ifndef MICROCONTROLLER

@@ -54,22 +54,43 @@ void CommunicationQueue::receive_messages()
     for (;;) {
         uint8_t sz;
         ssize_t r = read(fd_, &sz, 1);
-        if (r == 0)
+        if (r == 0) {
             break;  // no more messages
-        else if (r == -1 && errno != EAGAIN)
-            throw std::runtime_error("Error reading from serial: "s + strerror(errno));
+        } else if (r == -1 && errno != EAGAIN) {
+            server_ready_ = true;
+            throw std::runtime_error("Error reading message size from serial: "s + strerror(errno));
+        }
 
         if (debugging_level_ == DebuggingLevel::TRACE)
             printf("<= [%02hhX]", sz);
+
+        if (sz == READY_SIGNAL) {
+            server_ready_ = true;
+            if (debugging_level_ != DebuggingLevel::NORMAL)
+                printf(" (READY)\n");
+            continue;
+        } else if (sz > MAX_MESSAGE_SZ) {
+            throw std::runtime_error("Message received too big (" + std::to_string(sz) + " )");
+        }
 
         uint8_t message[sz];
 
         auto start = hrc::now();
         int count = 0;
         do {
-            if (hrc::now() > start + 3s)
+            if (hrc::now() > start + 3s) {
+                server_ready_ = true;
                 throw std::runtime_error("Waiting for more than 3 seconds for a whole message - only received part of it.");
-            count += read(fd_, &message[count], sz);
+            }
+            r = read(fd_, &message[count], sz);
+            if (r == 0 || (r == -1 && errno == EAGAIN)) {
+                std::this_thread::sleep_for(10us);
+                continue;
+            } else if (r == -1) {
+                server_ready_ = true;
+                throw std::runtime_error("Error reading message from serial: "s + strerror(errno));
+            }
+            count += r;
         } while (count < sz);
 
         if (debugging_level_ == DebuggingLevel::TRACE) {
