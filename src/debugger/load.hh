@@ -4,21 +4,31 @@
 #include <cstdint>
 #include <functional>
 
+extern "C" {
+#include "user/compiler.h"
+}
+
 void load_machine(const char* filename);
 
-extern uint16_t    (*machine_id)();
-extern const char* (*machine_name)();
+struct User {
+    uint16_t    (*machine_id)();
+    const char* (*machine_name)();
 
-extern uint64_t    (*total_mappable_memory)();
+    uint64_t    (*total_mappable_memory)();
 
-extern uint32_t    (*uart_baud_rate)();
-extern const char* (*microcontroller_vendor_id)();
-extern const char* (*microcontroller_product_id)();
+    uint32_t    (*uart_baud_rate)();
+    const char* (*microcontroller_vendor_id)();
+    const char* (*microcontroller_product_id)();
 
-extern void        (*emulator_init)();
-extern void        (*emulator_reset)();
+    void        (*emulator_init)();
+    void        (*emulator_reset)();
 
-extern void        (*emulator_ram_set)(uint64_t pos, uint8_t data);
-extern uint8_t     (*emulator_ram_get)(uint32_t pos);
+    void        (*emulator_ram_set)(uint64_t pos, uint8_t data);
+    uint8_t     (*emulator_ram_get)(uint32_t pos);
+
+    CompilationResult (*compile)(const char* source_file);
+};
+
+extern User user;
 
 #endif //LOAD_HH_

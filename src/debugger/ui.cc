@@ -95,7 +95,7 @@ void UI::run()
                 } catch (std::exception& e) {
                     while (context_->CurrentWindowStack.Size > 1)
                         ImGui::End();
-                    fprintf(stderr, "%s", e.what());
+                    fprintf(stderr, "%s\n", e.what());
                     ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::Error, e.what());
                 }
             }

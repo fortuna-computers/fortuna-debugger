@@ -6,24 +6,24 @@ using namespace std::chrono_literals;
 
 std::string Emulator::init()
 {
-    server_ = fdbg_server_init_pc(machine_id(), EMULATOR_BAUD_RATE);
+    server_ = fdbg_server_init_pc(user.machine_id(), EMULATOR_BAUD_RATE);
     return fdbg_server_serial_port(server_);
 }
 
 void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 {
-    emulator_init();
-    emulator_reset();
+    user.emulator_init();
+    user.emulator_reset();
 
     FdbgServerEvents events = {
             .write_memory = [](FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed) {
                 for (size_t i = 0; i < sz; ++i)
-                    emulator_ram_set(pos + i, data[i]);
+                    user.emulator_ram_set(pos + i, data[i]);
                 return true;
             },
             .read_memory = [](FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data) {
                 for (size_t i = 0; i < sz; ++i)
-                    out_data[i] = emulator_ram_get(pos +i);
+                    out_data[i] = user.emulator_ram_get(pos +i);
             },
     };
 

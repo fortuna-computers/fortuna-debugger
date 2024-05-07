@@ -5,25 +5,17 @@
 
 #include <dlfcn.h>
 
+extern "C" {
+#include "user/compiler.h"
+}
+
 using namespace std::string_literals;
 
-uint16_t    (*machine_id)();
-const char* (*machine_name)();
-uint64_t    (*total_mappable_memory)();
-
-uint32_t    (*uart_baud_rate)();
-const char* (*microcontroller_vendor_id)();
-const char* (*microcontroller_product_id)();
-
-void        (*emulator_init)();
-void        (*emulator_reset)();
-
-void        (*emulator_ram_set)(uint64_t pos, uint8_t data);
-uint8_t     (*emulator_ram_get)(uint32_t pos);
+User user;
 
 #define LOAD(f) { \
-    *(void**)(&f) = dlsym(handle, #f); \
-    if (!f) { \
+    *(void**)(&user.f) = dlsym(handle, #f); \
+    if (!user.f) { \
         error = "Error linking function `" #f "`: "s + dlerror(); \
         goto err; \
     } \
@@ -50,6 +42,7 @@ void load_machine(const char* filename)
     LOAD(emulator_reset)
     LOAD(emulator_ram_get)
     LOAD(emulator_ram_set)
+    LOAD(compile)
 
     return;
 

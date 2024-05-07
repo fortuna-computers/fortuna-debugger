@@ -29,10 +29,14 @@ public:
     void initialize_memory();
     void change_memory_page(int64_t page);
 
+    void compile(std::string const& source_file);
+
 private:
     FdbgClient client_;
     Emulator   emulator_;
     bool       connected_ = false;
+
+    void free_compilation_result(struct CompilationResult& cr);
 };
 
 #endif //MODEL_HH_

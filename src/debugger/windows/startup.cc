@@ -14,6 +14,7 @@ Startup::Startup(UIInterface& ui, bool visible)
 
     strncpy(machine_path_, ui.config().get("Machine path").c_str(), IM_ARRAYSIZE(machine_path_));
     strncpy(serial_port_, ui.config().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
+    strncpy(source_file_, ui.config().get("Source file").c_str(), IM_ARRAYSIZE(source_file_));
 
     if (machine_path_[0] != '\0') {
         try {
@@ -25,6 +26,8 @@ Startup::Startup(UIInterface& ui, bool visible)
 
     file_browser_.SetTitle("Choose machine file");
     file_browser_.SetTypeFilters({ ".so", ".dylib" });
+
+    source_browser_.SetTitle("Choose source file");
 }
 
 void Startup::save_config()
@@ -32,12 +35,13 @@ void Startup::save_config()
     ui_.config().set("Machine path", machine_path_);
     ui_.config().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
     ui_.config().set("Serial port", serial_port_);
+    ui_.config().set("Source file", source_file_);
     ui_.config().save();
 }
 
 void Startup::draw()
 {
-    ImGui::SetNextWindowSize(ImVec2(800, 250));
+    ImGui::SetNextWindowSize(ImVec2(800, 340));
     ImGui::Begin("Welcome to Fortuna debugger", nullptr, ImGuiWindowFlags_NoResize);
 
     ImGui::SeparatorText("Machine");
@@ -50,7 +54,7 @@ void Startup::draw()
 
     if (machine_path_[0] != '\0') {
 
-        ImGui::Text("Machine: %s", machine_name());
+        ImGui::Text("Machine: %s", user.machine_name());
 
         ImGui::SeparatorText("Connection");
 
@@ -61,14 +65,24 @@ void Startup::draw()
         if (connection_type == CT_SERIAL) {
             ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
             if (ImGui::Button("Autodetect")) {
-                std::string port = FdbgClient::autodetect_usb_serial_port(microcontroller_vendor_id(), microcontroller_product_id());
+                std::string port = FdbgClient::autodetect_usb_serial_port(user.microcontroller_vendor_id(), user.microcontroller_product_id());
                 strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
             }
             ImGui::InputInt("Baud rate", &baud_rate_, 0);
         }
 
+        ImGui::SeparatorText("Source");
+        ImGui::Text("Select source file");
+        if (ImGui::Button("Select file"))
+            source_browser_.Open();
+        ImGui::SameLine();
+        ImGui::Text("%s", source_file_);
+
+        ImGui::SeparatorText("Connect");
+
         if (ImGui::Button("Connect")) {
             save_config();
+            ui_.model().compile(source_file_);
             if (connection_type == CT_EMULATOR)
                 ui_.model().connect_to_emulator();
             else
@@ -86,6 +100,12 @@ void Startup::draw()
         strncpy(machine_path_, file_browser_.GetSelected().c_str(), sizeof(machine_path_));
         file_browser_.ClearSelected();
         load_machine(machine_path_);
+    }
+
+    source_browser_.Display();
+    if (source_browser_.HasSelected()) {
+        strncpy(source_file_, source_browser_.GetSelected().c_str(), sizeof(source_file_));
+        source_browser_.ClearSelected();
     }
 
 }
