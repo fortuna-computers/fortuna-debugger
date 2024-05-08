@@ -6,8 +6,8 @@
 
 #include "../common/common.h"
 
-#include "to-debugger.pb.h"
-#include "to-computer.pb.h"
+#include "library/protobuf/to-debugger.pb.h"
+#include "library/protobuf/to-computer.pb.h"
 
 // runs either in the emulator or the computer
 
