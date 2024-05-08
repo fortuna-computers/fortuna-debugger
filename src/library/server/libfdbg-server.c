@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "to-computer.pb.h"
-#include "to-debugger.pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
 
