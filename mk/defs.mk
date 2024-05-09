@@ -6,13 +6,8 @@ endif
 # directories
 #
 
-OUTDIR=${BASE}/build
-SRCDIR=${BASE}/src
-VPATH := ${SRCDIR}
 
-PROTO=library/protobuf
-
-CONTRIB=${SRCDIR}/contrib
+CONTRIB=${BASE}/src/contrib
 NANOPB=${CONTRIB}/nanopb
 
 #
@@ -26,7 +21,7 @@ NANOPB_GEN=${PYTHON} ${NANOPB}/generator/nanopb_generator.py
 # compilation flags
 #
 
-INCLUDES = -I. -I${OUTDIR} -I${NANOPB}
+INCLUDES = -I. -I${NANOPB}
 CPPFLAGS = -MMD -Wall -Wextra ${INCLUDES}
 
 ifdef RELEASE
@@ -34,19 +29,3 @@ ifdef RELEASE
 else
 	CPPFLAGS += -O0 -ggdb
 endif
-
-#
-# automatic rules
-#
-
-# nanopb C compilation
-${OUTDIR}/${PROTO}/%.o: ${OUTDIR}/${PROTO}/%.c
-	${CC} ${CFLAGS} ${CPPFLAGS} -o $@ -c $^
-
-# out-of-source build
-%.o: $(subst .o,.c,$(subst ${OUTDIR},${SRCDIR},$@))
-	@echo ----------------------
-	@echo $@
-	@echo $^
-	mkdir -p $(*D)
-	${CC} ${CFLAGS} ${CPPFLAGS} -o $@ -c $(subst .o,.c,$(subst ${OUTDIR},${SRCDIR},$@))
