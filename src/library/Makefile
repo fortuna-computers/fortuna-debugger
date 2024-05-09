@@ -2,7 +2,8 @@ BASE=../..
 
 include ${BASE}/mk/defs.mk
 
-all: ${OUTDIR}/libfdbg-server.so
+.PHONY: all
+all: ${OUTDIR}/libfdbg-server.a
 
 #
 # nanopb proto files
@@ -18,20 +19,27 @@ ${GENERATED_PROTO_FILES}: ${SRCDIR}/${PROTO}/to-computer.proto ${SRCDIR}/${PROTO
 # libfdbg-server
 #
 
-${OUTDIR}/library/server/libfdbg-server.o: ${GENERATED_PROTO_FILES}
+${OUTDIR}/library/server/libfdbg-server.o: ${GENERATED_PROTO_FILES} # generate protos first
 
 LIBFDBG_SERVER_SRC = \
         ${OUTDIR}/library/common/terminal.o \
-        ${OUTDIR}/library/server/libfdbg-server.o \
-        ${OUTDIR}/${PROTO}/to-computer.pb.o \
-        ${OUTDIR}/${PROTO}/to-debugger.pb.o
+        ${OUTDIR}/library/server/libfdbg-server.o
 
-${OUTDIR}/libfdbg-server.so: ${LIBFDBG_SERVER_SRC}
-	${CC} -shared -o $@ $^ ${LDFLAGS}
+NANOPB_SRC = \
+        ${OUTDIR}/contrib/nanopb/pb_common.o \
+        ${OUTDIR}/contrib/nanopb/pb_encode.o \
+        ${OUTDIR}/contrib/nanopb/pb_decode.o \
+        $(GENERATED_PROTO_FILES:.c=.o)
+
+${OUTDIR}/libfdbg-server.a: ${LIBFDBG_SERVER_SRC} ${NANOPB_SRC}
+	ar -rc $@ $^
+
+# include $(LIBFDBG_SERVER_SRC:%.o=%.d)
 
 #
 # clean
 #
 
+.PHONY: clean
 clean:
-	rm -rf ${OUTDIR}/library ${OUTDIR}/libfdbg-server.so
+	rm -rf ${OUTDIR}

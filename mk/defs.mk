@@ -27,7 +27,7 @@ NANOPB_GEN=${PYTHON} ${NANOPB}/generator/nanopb_generator.py
 #
 
 INCLUDES = -I. -I${OUTDIR} -I${NANOPB}
-CPPFLAGS = -Wall -Wextra ${INCLUDES}
+CPPFLAGS = -MMD -Wall -Wextra ${INCLUDES}
 
 ifdef RELEASE
 	CPPFLAGS += -O3
@@ -39,9 +39,14 @@ endif
 # automatic rules
 #
 
+# nanopb C compilation
 ${OUTDIR}/${PROTO}/%.o: ${OUTDIR}/${PROTO}/%.c
 	${CC} ${CFLAGS} ${CPPFLAGS} -o $@ -c $^
 
+# out-of-source build
 %.o: $(subst .o,.c,$(subst ${OUTDIR},${SRCDIR},$@))
+	@echo ----------------------
+	@echo $@
+	@echo $^
 	mkdir -p $(*D)
 	${CC} ${CFLAGS} ${CPPFLAGS} -o $@ -c $(subst .o,.c,$(subst ${OUTDIR},${SRCDIR},$@))
