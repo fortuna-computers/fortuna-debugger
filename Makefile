@@ -30,6 +30,6 @@ test-microcontroller:
 clean:
 	$(MAKE) -C src/library clean
 	$(MAKE) -C src/debugger clean
-	rm -f f-debugger ${LIBRARY}
+	rm -f f-debugger ${LIBRARY} simple-chip8.so
 
 .PHONY = f-debugger-compile library-compile
