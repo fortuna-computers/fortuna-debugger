@@ -10,10 +10,7 @@ K := $(if $(shell which python3),,$(error "python3 not found in PATH - please in
 K := $(if $(shell which protoc),,$(error "protoc not found in PATH - please install protobuf")))
 K := $(if $(shell pkg-config --modversion protobuf),,$(error "protobuf pkg-config file not found - please install protobuf"))
 
-# bypass a bug in Clion
-CPPFLAGS += -I/opt/homebrew/Cellar/abseil/20240116.2/include -I/opt/homebrew/Cellar/protobuf/26.1/include -I/opt/homebrew/Cellar/abseil/20240116.2/include
-
-# 
+#
 # targets
 #
 
