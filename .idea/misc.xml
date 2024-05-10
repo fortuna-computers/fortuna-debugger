@@ -12,4 +12,7 @@
       <file path="$PROJECT_DIR$/src/fdbg/contrib" />
     </libraryRoots>
   </component>
+  <component name="MakefileWorkspace">
+    <contentRoot DIR="$PROJECT_DIR$" />
+  </component>
 </project>

@@ -68,7 +68,8 @@ libfdbg-client.so: ${LIBFDBG_CLIENT_SRC} $(GENERATED_PROTO_FILES:.cc=.o)
 test-library: test/test-library.o libfdbg-client.a libfdbg-server.a
 	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
 
-test-microcontroller: test/test-library.o libfdbg-client.a
+#test-microcontroller: test/test-microcontroller.o libfdbg-client.a
+test-microcontroller: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC} test/test-microcontroller.o
 	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
 
 #
@@ -77,4 +78,4 @@ test-microcontroller: test/test-library.o libfdbg-client.a
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${GENERATED_NANOPB_FILES} $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES $(GENERATED_PROTO_FILES:.cc=.h) ${NANOPB}/*.d
+	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${GENERATED_NANOPB_FILES} $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h) ${NANOPB}/*.d

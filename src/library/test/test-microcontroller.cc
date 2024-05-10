@@ -1,13 +1,9 @@
 #include <cstdio>
 
-#include "libfdbg-client.hh"
+#include "client/libfdbg-client.hh"
 
 #include <thread>
 using namespace std::chrono_literals;
-
-extern "C" {
-#include "libfdbg-server.h"
-}
 
 int main()
 {
