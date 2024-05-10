@@ -31,5 +31,7 @@
 *.out
 *.app
 
+f-debugger
+
 .DS_Store
 imgui.ini

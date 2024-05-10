@@ -61,6 +61,8 @@ F_DEBUGGER_SRC = \
 f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
 	$(CXX) -o $@ $^ ${PROTOBUF_LDFLAGS} ${LDFLAGS}
 
+-include $(F_DEBUGGER_SRC:.o=.d)
+
 #
 # clean
 #

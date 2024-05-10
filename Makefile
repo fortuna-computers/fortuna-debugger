@@ -5,7 +5,7 @@ all: ${TARGETS}
 
 ${LIBRARY}: library-compile
 
-f-debugger: ${LIBRARY} f-debugger-compile
+f-debugger: ${LIBRARY} f-debugger-compile simple-chip8-compile
 
 library-compile:
 	$(MAKE) -C src/library
@@ -14,6 +14,18 @@ library-compile:
 f-debugger-compile:
 	$(MAKE) -C src/debugger
 	-cp src/debugger/f-debugger .
+
+simple-chip8-compile:
+	$(MAKE) -C sample-chip8
+	-cp sample-chip8/simple-chip8.so .
+
+test-library:
+	$(MAKE) -C src/library test-library
+	./src/library/test-library
+
+test-microcontroller:
+	$(MAKE) -C src/library test-microcontroller
+	./src/library/test-microcontroller
 
 clean:
 	$(MAKE) -C src/library clean
