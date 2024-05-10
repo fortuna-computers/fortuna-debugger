@@ -10,6 +10,8 @@ CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BAS
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
 			-I${CONTRIB}/imgui-filebrowser
 
+CPPFLAGS += -I/opt/homebrew/Cellar/glfw/3.3.9/include
+
 LDFLAGS += `pkg-config --libs glfw3`
 
 #

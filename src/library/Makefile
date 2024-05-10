@@ -28,6 +28,8 @@ GENERATED_NANOPB_FILES := protobuf/to-computer.nanopb.c protobuf/to-debugger.nan
 ${GENERATED_NANOPB_FILES}: protobuf/to-computer.proto protobuf/to-debugger.proto
 	${NANOPB_GEN} -e .nanopb $^
 
+server/libfdbg-server.o: ${GENERATED_NANOPB_FILES}
+
 LIBFDBG_SERVER_SRC = \
         common/terminal.o \
         server/libfdbg-server.o
@@ -55,6 +57,8 @@ ${GENERATED_PROTO_FILES}: protobuf/to-computer.proto protobuf/to-debugger.proto
 LIBFDBG_CLIENT_SRC = \
 		common/terminal.o \
 		client/libfdbg-client.o
+
+client/libfdbg-client.o: ${GENERATED_PROTO_FILES}
 
 libfdbg-client.a: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC} 
 	ar -rc $@ $^
