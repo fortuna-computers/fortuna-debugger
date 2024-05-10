@@ -8,7 +8,9 @@ include ${BASE}/mk/defs.mk
 
 CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
-			-I${CONTRIB}/imgui-filebrowser
+			-I${CONTRIB}/imgui-filebrowser `pkg-config --cflags glfw3`
+
+LDFLAGS += `pkg-config --libs glfw3`
 
 #
 # targets
@@ -28,18 +30,6 @@ ${BASE}/src/library/libfdbg-server.a:
 	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1
 
 #
-# build dependencies
-#
-
-GLFW_A = ${CONTRIB}/glfw/build/src/libglfw3.a
-
-${GLFW_A}:
-	mkdir -p ${CONTRIB}/glfw/build && \
-	cd ${CONTRIB}/glfw/build && \
-	cmake .. && \
-	${MAKE} -j4
-
-# 
 # f-debugger
 #
 
@@ -66,8 +56,8 @@ F_DEBUGGER_SRC = \
         windows/startup.o \
         ${IMGUI_SRC}
 
-f-debugger: ${F_DEBUGGER_SRC} ${GLFW_A} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
-	$(CXX) -o $@ $^ ${LDFLAGS} ${PROTOBUF_LDFLAGS}
+f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
+	$(CXX) -o $@ $^ ${PROTOBUF_LDFLAGS} ${LDFLAGS}
 
 #
 # clean

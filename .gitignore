@@ -31,6 +31,5 @@
 *.out
 *.app
 
-cmake-build-*
 .DS_Store
-build/
+imgui.ini
