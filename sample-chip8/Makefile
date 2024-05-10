@@ -1,6 +1,5 @@
 CFLAGS=--std=gnu17
 CPPFLAGS = -Wall -Wextra -I. -MMD -fPIC
-LDFLAGS = `pkg-config --libs lua5.`
 
 SRC=emulator.o machine.o compiler.o
 
