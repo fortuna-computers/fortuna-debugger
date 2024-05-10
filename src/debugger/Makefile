@@ -8,7 +8,7 @@ include ${BASE}/mk/defs.mk
 
 CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
-			-I${CONTRIB}/imgui-filebrowser `pkg-config --cflags glfw3`
+			-I${CONTRIB}/imgui-filebrowser
 
 LDFLAGS += `pkg-config --libs glfw3`
 

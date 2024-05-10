@@ -21,8 +21,7 @@ NANOPB_GEN=python3 ${NANOPB}/generator/nanopb_generator.py
 
 INCLUDES = -I. -I${NANOPB}
 CFLAGS = --std=gnu17
-CPPFLAGS = -MMD -Wall -Wextra -fPIC ${INCLUDES} \
-		   `pkg-config --cflags protobuf`
+CPPFLAGS = -MMD -Wall -Wextra -fPIC ${INCLUDES} `pkg-config --cflags protobuf glfw3`
 CXXFLAGS = --std=c++20
 
 PROTOBUF_LDFLAGS = `pkg-config --libs protobuf`

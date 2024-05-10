@@ -1,10 +1,15 @@
 LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so
+TARGETS = f-debugger ${LIBRARY}
 
-all:
-	$(MAKE) -C src/library
+all: ${TARGETS}
+
+f-debugger:
 	$(MAKE) -C src/debugger
-	-cp $(addprefix src/library/,${LIBRARY}) .
 	-cp src/debugger/f-debugger .
+
+${LIBRARY}:
+	$(MAKE) -C src/library
+	-cp $(addprefix src/library/,${LIBRARY}) .
 
 clean:
 	$(MAKE) -C src/library clean
