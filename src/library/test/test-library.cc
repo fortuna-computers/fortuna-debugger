@@ -25,10 +25,10 @@ int main()
     std::thread t([&server_running, &server](){
 
         FdbgServerEvents events = {
-            .write_memory = [](FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed) {
+            .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
                 return true;
             },
-            .read_memory = [](FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data) {
+            .read_memory = [](FdbgServer*, uint64_t, uint8_t sz, uint8_t* out_data) {
                 for (size_t i = 0; i < sz; ++i)
                     out_data[i] = i + 1;
             },
