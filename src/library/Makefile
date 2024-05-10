@@ -1,10 +1,17 @@
 BASE=../..
-DEPENDENCIES = python3 protoc
 
 include ${BASE}/mk/defs.mk
 
 # 
 # check for dependencies
+#
+
+K := $(if $(shell which python3),,$(error "python3 not found in PATH - please install it")))
+K := $(if $(shell which protoc),,$(error "protoc not found in PATH - please install protobuf")))
+K := $(if $(shell pkg-config --modversion protobuf),,$(error "protobuf pkg-config file not found - please install protobuf"))
+
+# 
+# targets
 #
 
 TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so test-library test-microcontroller

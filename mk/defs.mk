@@ -3,13 +3,6 @@ ifndef BASE
 endif
 
 #
-# check for dependencies
-#
-
-K := $(foreach exec,${DEPENDENCIES},\
-	 $(if $(shell which $(exec)),,$(error "No $(exec) found in PATH")))
-
-#
 # directories
 #
 
