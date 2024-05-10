@@ -3,7 +3,7 @@
 #include <imgui.h>
 
 #include "../ui.hh"
-#include "debugger/load.hh"
+#include "load.hh"
 
 
 Startup::Startup(UIInterface& ui, bool visible)

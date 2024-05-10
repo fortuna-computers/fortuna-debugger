@@ -9,12 +9,12 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
 
+#include "exceptions/exceptions.hh"
 #include "windows/window.hh"
 #include "windows/demo.hh"
 #include "windows/messagebox.hh"
 #include "windows/startup.hh"
-#include "exceptions/exceptions.hh"
-#include "debugger/windows/memory.hh"
+#include "windows/memory.hh"
 
 UI::UI()
 {

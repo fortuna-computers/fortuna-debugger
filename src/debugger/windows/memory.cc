@@ -1,6 +1,6 @@
 #include "memory.hh"
 
-#include "debugger/ui.hh"
+#include "ui.hh"
 #include "imgui.h"
 
 void Memory::draw()

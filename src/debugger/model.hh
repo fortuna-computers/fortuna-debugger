@@ -7,7 +7,7 @@
 #include <optional>
 
 #include "libfdbg-client.hh"
-#include "debugger/emulator/emulator.hh"
+#include "emulator/emulator.hh"
 
 class DebuggerModel {
     static constexpr size_t PAGE_SZ = 256;

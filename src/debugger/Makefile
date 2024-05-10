@@ -1,0 +1,77 @@
+BASE=../..
+
+include ${BASE}/mk/defs.mk
+
+# 
+# flags
+#
+
+CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
+			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
+			-I${CONTRIB}/imgui-filebrowser
+
+#
+# targets
+#
+
+TARGET = f-debugger
+all: ${TARGET}
+
+#
+# check dependencies
+#
+
+${BASE}/src/library/libfdbg-client.a:
+	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1
+
+${BASE}/src/library/libfdbg-server.a:
+	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1
+
+#
+# build dependencies
+#
+
+GLFW_A = ${CONTRIB}/glfw/build/src/libglfw3.a
+
+${GLFW_A}:
+	mkdir -p ${CONTRIB}/glfw/build && \
+	cd ${CONTRIB}/glfw/build && \
+	cmake .. && \
+	${MAKE} -j4
+
+# 
+# f-debugger
+#
+
+IMGUI_SRC = \
+        ${CONTRIB}/imgui/imgui.o \
+        ${CONTRIB}/imgui/imgui_demo.o \
+        ${CONTRIB}/imgui/imgui_draw.o \
+        ${CONTRIB}/imgui/imgui_tables.o \
+        ${CONTRIB}/imgui/imgui_widgets.o \
+        ${CONTRIB}/imgui/backends/imgui_impl_glfw.o \
+        ${CONTRIB}/imgui/backends/imgui_impl_opengl3.o \
+        ${CONTRIB}/glad/src/gl.o
+
+F_DEBUGGER_SRC = \
+        config.o \
+        load.o \
+        model.o \
+        main.o \
+        ui.o \
+        emulator/emulator.o \
+        windows/demo.o \
+        windows/memory.o \
+        windows/messagebox.o \
+        windows/startup.o \
+        ${IMGUI_SRC}
+
+f-debugger: ${F_DEBUGGER_SRC} ${GLFW_A} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
+	$(CXX) -o $@ $^ ${LDFLAGS} ${PROTOBUF_LDFLAGS}
+
+#
+# clean
+#
+
+clean:
+	rm -rf ${CONTRIB}/glfw/build ${TARGET} ${F_DEBUGGER_SRC} $(F_DEBUGGER_SRC:.o=.d)
