@@ -2,7 +2,8 @@ BASE=../..
 
 include ${BASE}/defs.mk
 
-# 
+
+#
 # flags
 #
 
@@ -24,6 +25,8 @@ all: ${TARGET}
 #
 # check dependencies
 #
+
+K := $(if $(shell pkg-config --modversion glfw3),,$(error "glfw3 pkg-config file not found - please install GLFW"))
 
 ${BASE}/src/library/libfdbg-client.a:
 	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1

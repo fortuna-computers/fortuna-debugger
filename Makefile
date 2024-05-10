@@ -11,7 +11,7 @@ library-compile:
 	$(MAKE) -C src/library
 	-cp $(addprefix src/library/,${LIBRARY}) .
 
-f-debugger-compile:
+f-debugger-compile: ${LIBRARY}
 	$(MAKE) -C src/debugger
 	-cp src/debugger/f-debugger .
 
