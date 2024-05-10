@@ -3,9 +3,15 @@ ifndef BASE
 endif
 
 #
-# directories
+# check for dependencies
 #
 
+K := $(foreach exec,${DEPENDENCIES},\
+	 $(if $(shell which $(exec)),,$(error "No $(exec) found in PATH")))
+
+#
+# directories
+#
 
 CONTRIB=${BASE}/src/contrib
 NANOPB=${CONTRIB}/nanopb
@@ -14,15 +20,19 @@ NANOPB=${CONTRIB}/nanopb
 # special commands
 #
 
-PYTHON=python3
-NANOPB_GEN=${PYTHON} ${NANOPB}/generator/nanopb_generator.py
+NANOPB_GEN=python3 ${NANOPB}/generator/nanopb_generator.py
 
 #
 # compilation flags
 #
 
 INCLUDES = -I. -I${NANOPB}
-CPPFLAGS = -MMD -Wall -Wextra ${INCLUDES}
+CFLAGS = --std=gnu17
+CPPFLAGS = -MMD -Wall -Wextra ${INCLUDES} \
+		   `pkg-config --cflags protobuf-lite`
+CXXFLAGS = --std=c++20
+
+PROTOBUF_LDFLAGS = `pkg-config --libs protobuf-lite`
 
 ifdef RELEASE
 	CPPFLAGS += -O3

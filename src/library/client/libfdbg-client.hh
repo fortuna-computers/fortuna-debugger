@@ -1,8 +1,8 @@
 #ifndef LIBFDBG_CLIENT_HH_
 #define LIBFDBG_CLIENT_HH_
 
-#include "library/protobuf/to-computer.pb.h"
-#include "library/protobuf/to-debugger.pb.h"
+#include "protobuf/to-computer.pb.h"
+#include "protobuf/to-debugger.pb.h"
 
 #include "../common/common.h"
 
