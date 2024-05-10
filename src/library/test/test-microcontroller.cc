@@ -1,5 +1,7 @@
 #include <cstdio>
 
+#include "protobuf/to-computer.pb.h"
+
 #include "client/libfdbg-client.hh"
 
 #include <thread>

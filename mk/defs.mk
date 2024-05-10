@@ -32,7 +32,7 @@ CPPFLAGS = -MMD -Wall -Wextra -fPIC ${INCLUDES} \
 		   `pkg-config --cflags protobuf`
 CXXFLAGS = --std=c++20
 
-PROTOBUF_LDFLAGS = `pkg-config --libs protobuf-lite`
+PROTOBUF_LDFLAGS = `pkg-config --libs protobuf`
 
 ifdef RELEASE
 	CPPFLAGS += -O3
