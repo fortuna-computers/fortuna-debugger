@@ -91,4 +91,4 @@ test-microcontroller: test/test-microcontroller.o libfdbg-client.a
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} ${NANOPB}/*.d # $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h)
+	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} ${NANOPB}/*.d $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h)
