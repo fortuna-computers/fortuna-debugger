@@ -47,6 +47,7 @@ void load_machine(const char* filename)
     return;
 
 err:
-    dlclose(handle);
+    if (handle)
+        dlclose(handle);
     throw std::runtime_error(error);
 }

@@ -1,15 +1,19 @@
-CFLAGS=--std=gnu17
+CFLAGS = --std=gnu17
 CPPFLAGS = -Wall -Wextra -I. -Ilua -MMD -fPIC
+
+ifdef RELEASE
+	CPPFLAGS += -O3
+else
+	CPPFLAGS += -O0 -ggdb
+endif
 
 SRC=emulator.o machine.o compiler.o
 
 all: simple-chip8.so
 
-lua/liblua.a:
-	$(MAKE) -C lua MYLDFLAGS=
-
-simple-chip8.so: lua/liblua.a ${SRC}
-	$(CXX) $^ -shared -o $@ ${LDFLAGS}
+simple-chip8.so: ${SRC}
+	$(MAKE) -C lua MYLDFLAGS= MYCFLAGS=-fPIC
+	$(CC) -shared -o $@ $^ $(wildcard lua/*.o) ${LDFLAGS}
 
 clean:
 	$(MAKE) -C lua clean
