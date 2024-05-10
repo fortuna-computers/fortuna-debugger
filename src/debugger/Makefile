@@ -1,6 +1,6 @@
 BASE=../..
 
-include ${BASE}/mk/defs.mk
+include ${BASE}/defs.mk
 
 # 
 # flags

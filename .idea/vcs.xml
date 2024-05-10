@@ -67,6 +67,5 @@
     <mapping directory="$PROJECT_DIR$/src/contrib/imgui-filebrowser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/nanopb" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/user/lua" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/user/lua/upstream" vcs="Git" />
   </component>
 </project>
