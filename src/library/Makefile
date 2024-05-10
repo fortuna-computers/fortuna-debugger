@@ -7,8 +7,10 @@ include ${BASE}/mk/defs.mk
 # check for dependencies
 #
 
+TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so
+
 .PHONY: all
-all: libfdbg-server.a libfdbg-client.a libfdbg-client.so
+all: $(TARGET)
 
 #
 # libfdbg-server
@@ -51,14 +53,23 @@ LIBFDBG_CLIENT_SRC = \
 		common/terminal.o \
 		client/libfdbg-client.o
 
-libfdbg-client.a: ${LIBFDBG_CLIENT_SRC} ${GENERATED_PROTO_FILES}
+libfdbg-client.a: ${LIBFDBG_CLIENT_SRC} $(GENERATED_PROTO_FILES:.cc=.o)
 	ar -rc $@ $^
 
-libfdbg-client.so: ${LIBFDBG_CLIENT_SRC} ${GENERATED_PROTO_FILES}
-	gcc $< -shared -o $@ $(PROTOBUF_LDFLAGS)
+libfdbg-client.so: ${LIBFDBG_CLIENT_SRC} $(GENERATED_PROTO_FILES:.cc=.o)
+	$(CXX) $^ -shared -o $@ $(PROTOBUF_LDFLAGS)
 
 -include $(LIBFDBG_CLIENT_SRC:.o=.d)
 
+#
+# tests
+#
+
+test-library: test/test-library.o libfdbg-client.a libfdbg-server.a
+	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
+
+test-microcontroller: test/test-library.o libfdbg-client.a
+	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
 
 #
 # clean
@@ -66,4 +77,4 @@ libfdbg-client.so: ${LIBFDBG_CLIENT_SRC} ${GENERATED_PROTO_FILES}
 
 .PHONY: clean
 clean:
-	rm -f *.a *.o *.d **/*.o **/*.d ${GENERATED_NANOPB_FILES} $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES $(GENERATED_PROTO_FILES:.cc=.h) ${NANOPB}/*.d
+	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${GENERATED_NANOPB_FILES} $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES $(GENERATED_PROTO_FILES:.cc=.h) ${NANOPB}/*.d

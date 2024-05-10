@@ -1,10 +1,10 @@
 #include <cstdio>
 
 extern "C" {
-#include "libfdbg-server.h"
+#include "server/libfdbg-server.h"
 }
 
-#include "libfdbg-client.hh"
+#include "client/libfdbg-client.hh"
 
 #include <thread>
 using namespace std::chrono_literals;
