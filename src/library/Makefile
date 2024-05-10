@@ -72,8 +72,12 @@ libfdbg-client.so: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 # tests
 #
 
+test/test-library.o: libfdbg-client.a libfdbg-server.a   # fix ordering issue
+
 test-library: test/test-library.o libfdbg-client.a libfdbg-server.a
 	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
+
+test/test-microcontroller.o: libfdbg-client.a
 
 test-microcontroller: test/test-microcontroller.o libfdbg-client.a
 	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
@@ -84,4 +88,4 @@ test-microcontroller: test/test-microcontroller.o libfdbg-client.a
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h) ${NANOPB}/*.d
+	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} ${NANOPB}/*.d # $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h)
