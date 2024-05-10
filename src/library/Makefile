@@ -7,7 +7,7 @@ include ${BASE}/mk/defs.mk
 # check for dependencies
 #
 
-TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so
+TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so test-library test-microcontroller
 
 .PHONY: all
 all: $(TARGET)
