@@ -15,7 +15,6 @@ simple-chip8.so: ${SRC}
 	$(CC) -shared -o $@ $^ ${LDFLAGS}
 
 clean:
-	$(MAKE) -C lua clean
 	rm -f ${SRC} simple-chip8.so *.d
 
 -include $(${SRC}:.o=.d)
