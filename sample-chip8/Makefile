@@ -23,7 +23,7 @@ SRC=emulator.o machine.o compiler.o
 all: simple-chip8.so
 
 simple-chip8.so: ${SRC}
-	$(CC) -shared -undefined dynamic_lookup -o $@ $^ ${LDFLAGS}
+	$(CC) -shared -o $@ $^ ${LDFLAGS}
 
 clean:
 	rm -f ${SRC} $(SRC:.o=.d) simple-chip8.so
