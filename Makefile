@@ -1,11 +1,17 @@
+ifeq ($(OS),Windows_NT)
+	$(warning Windows not supported - use it at your own risk)
+endif
+
 LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so
-TARGETS = f-debugger ${LIBRARY}
+TARGETS = f-debugger simple-chip8.so ${LIBRARY}
 
 all: ${TARGETS}
 
 ${LIBRARY}: library-compile
 
-f-debugger: ${LIBRARY} f-debugger-compile simple-chip8-compile
+f-debugger: ${LIBRARY} f-debugger-compile
+
+simple-chip8.so: simple-chip8-compile
 
 library-compile:
 	$(MAKE) -C src/library
@@ -30,6 +36,6 @@ test-microcontroller:
 clean:
 	$(MAKE) -C src/library clean
 	$(MAKE) -C src/debugger clean
-	rm -f f-debugger ${LIBRARY} simple-chip8.so
+	rm -f ${TARGETS}
 
 .PHONY = f-debugger-compile library-compile
