@@ -8,7 +8,7 @@
 #include "config.hh"
 #include "libfdbg-client.hh"
 #include "windows/window.hh"
-#include "model.hh"
+#include "model/model.hh"
 
 class UIInterface {
 public:

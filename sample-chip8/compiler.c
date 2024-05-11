@@ -200,7 +200,7 @@ CompilationResult compile(const char* source_file)
         lua_pop(L, 1);
 
         get_field("file_idx", true);
-        cr.d_info.source_lines[j].file_idx = lua_tointeger(L, -1);
+        cr.d_info.source_lines[j].file_idx = lua_tointeger(L, -1) - 1;
         lua_pop(L, 1);
 
         get_field("line_number", true);
@@ -229,11 +229,11 @@ CompilationResult compile(const char* source_file)
             luaL_checktype(L, -1, LUA_TTABLE);
 
             get_field("name", true);
-            cr.d_info.source_lines[j].line = copy_str(lua_tostring(L, -1));
+            cr.d_info.symbols[j].name = copy_str(lua_tostring(L, -1));
             lua_pop(L, 1);
 
             get_field("address", true);
-            cr.d_info.source_lines[j].file_idx = lua_tointeger(L, -1);
+            cr.d_info.symbols[j].address = lua_tointeger(L, -1);
             lua_pop(L, 2);
         }
 

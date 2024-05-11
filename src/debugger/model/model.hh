@@ -8,6 +8,7 @@
 
 #include "libfdbg-client.hh"
 #include "emulator/emulator.hh"
+#include "model/debuginfo.hh"
 
 class DebuggerModel {
     static constexpr size_t PAGE_SZ = 256;
@@ -35,8 +36,7 @@ private:
     FdbgClient client_;
     Emulator   emulator_;
     bool       connected_ = false;
-
-    void free_compilation_result(struct CompilationResult& cr);
+    DebugInfo  debug_;
 };
 
 #endif //MODEL_HH_

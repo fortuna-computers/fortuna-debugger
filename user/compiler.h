@@ -15,8 +15,8 @@ typedef struct Binary {
 } Binary;
 
 typedef struct Symbol {
-    char*  name;
-    size_t address;
+    char*    name;
+    uint64_t address;
 } Symbol;
 
 typedef struct SourceLine {

@@ -51,33 +51,8 @@ void DebuggerModel::change_memory_page(int64_t page)
 void DebuggerModel::compile(std::string const& source_file)
 {
     CompilationResult cr = user.compile(source_file.c_str());
-    if (!cr.success) {
-        std::string error = cr.error_info ? cr.error_info : "Compilation error - no message reported.";
-        free_compilation_result(cr);
-        throw std::runtime_error(error);
-    }
+    debug_.parse_and_free(cr);
 
-    free_compilation_result(cr);
-}
-
-void DebuggerModel::free_compilation_result(CompilationResult& cr)
-{
-    free(cr.result_info);
-    free(cr.error_info);
-
-    for (size_t i = 0; i < cr.d_info.files_n; ++i)
-        free(cr.d_info.files[i]);
-    free(cr.d_info.files);
-
-    for (size_t i = 0; i < cr.d_info.source_lines_n; ++i)
-        free(cr.d_info.source_lines[i].line);
-    free(cr.d_info.source_lines);
-
-    for (size_t i = 0; i < cr.d_info.symbols_n; ++i)
-        free(cr.d_info.symbols[i].name);
-    free(cr.d_info.symbols);
-
-    for (size_t i = 0; i < cr.binaries_n; ++i)
-        free(cr.binaries[i].rom);
-    free(cr.binaries);
+    if (!debug_.success)
+        throw std::runtime_error(debug_.error_info);
 }

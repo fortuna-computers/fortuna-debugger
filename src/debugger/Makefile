@@ -50,10 +50,11 @@ IMGUI_SRC = \
 F_DEBUGGER_SRC = \
         config.o \
         load.o \
-        model.o \
         main.o \
         ui.o \
         emulator/emulator.o \
+        model/debuginfo.o \
+        model/model.o \
         windows/demo.o \
         windows/memory.o \
         windows/messagebox.o \
