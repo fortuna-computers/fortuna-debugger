@@ -70,5 +70,4 @@ f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/l
 #
 
 clean:
-	$(MAKE) -C ${CONTRIB}/lua clean
 	rm -rf ${TARGET} ${F_DEBUGGER_SRC} $(F_DEBUGGER_SRC:.o=.d)

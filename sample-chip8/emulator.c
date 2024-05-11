@@ -7,6 +7,8 @@
 
 static uint8_t* ram;
 
+extern void luaL_newState();
+
 void emulator_init()
 {
     ram = malloc(total_mappable_memory());

@@ -1,5 +1,5 @@
 CFLAGS = --std=gnu17
-CPPFLAGS = -Wall -Wextra -I. -Ilua -MMD -fPIC
+CPPFLAGS = -Wall -Wextra -I. -I../src/contrib/lua -MMD -fPIC `pkg-config --cflags lua`
 
 ifdef RELEASE
 	CPPFLAGS += -O3
@@ -12,10 +12,9 @@ SRC=emulator.o machine.o compiler.o
 all: simple-chip8.so
 
 simple-chip8.so: ${SRC}
-	$(CC) -shared -o $@ $^ ${LDFLAGS}
+	$(CC) -shared -undefined suppress -o $@ $^ ${LDFLAGS}
 
 clean:
-	$(MAKE) -C lua clean
 	rm -f ${SRC} simple-chip8.so *.d
 
 -include $(${SRC}:.o=.d)
