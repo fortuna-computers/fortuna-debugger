@@ -32,10 +32,10 @@ private:
     int            fd_;
     DebuggingLevel debugging_level_ = DebuggingLevel::NORMAL;
 
-    fdbg::ToDebugger send_message(fdbg::ToComputer const& msg, fdbg::ToDebugger::MessageCase expected_response, bool check_for_errors=true);
+    fdbg::ToDebugger send_message(fdbg::ToComputer const& msg, bool check_for_errors=true);
 
     void             send(fdbg::ToComputer const& msg);
-    fdbg::ToDebugger receive(fdbg::ToDebugger::MessageCase expected_response, bool check_for_errors);
+    fdbg::ToDebugger receive(bool check_for_errors);
 };
 
 #endif //LIBFDBG_CLIENT_HH_

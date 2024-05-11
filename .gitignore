@@ -35,3 +35,5 @@ f-debugger
 
 .DS_Store
 imgui.ini
+
+/findserial.py

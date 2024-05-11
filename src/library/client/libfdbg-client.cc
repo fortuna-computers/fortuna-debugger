@@ -57,10 +57,10 @@ std::string FdbgClient::autodetect_usb_serial_port(std::string const& vendor_id,
     return port;
 }
 
-fdbg::ToDebugger FdbgClient::send_message(fdbg::ToComputer const& msg, fdbg::ToDebugger::MessageCase expected_response, bool check_for_errors)
+fdbg::ToDebugger FdbgClient::send_message(fdbg::ToComputer const& msg, bool check_for_errors)
 {
     send(msg);
-    return receive(expected_response, check_for_errors);
+    return receive(check_for_errors);
 }
 
 void FdbgClient::send(fdbg::ToComputer const& msg)
@@ -91,7 +91,7 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
         throw std::runtime_error("Error writing to serial.");
 }
 
-fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase expected_response, bool check_for_errors)
+fdbg::ToDebugger FdbgClient::receive(bool check_for_errors)
 {
 start:
     uint8_t sz;
@@ -170,7 +170,7 @@ void FdbgClient::write_memory(uint64_t pos, std::vector<uint8_t> const& data, bo
     fdbg::ToComputer msg;
     msg.set_allocated_write_memory(write_memory);
 
-    auto response = send_message(msg, fdbg::ToDebugger::kWriteMemoryResponse, false);
+    auto response = send_message(msg, false);
 
     if (response.status() != fdbg::Status::OK)
         throw std::runtime_error(std::format("Error writing memory: first byte failed is 0x{:x}", response.write_memory_response().first_failed_pos()));

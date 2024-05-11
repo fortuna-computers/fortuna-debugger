@@ -2,14 +2,14 @@ ifeq ($(OS),Windows_NT)
 	$(warning Windows not supported - use it at your own risk)
 endif
 
-LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so
+LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so findserial.py
 TARGETS = f-debugger simple-chip8.so ${LIBRARY}
 
 all: ${TARGETS}
 
 ${LIBRARY}: library-compile
 
-f-debugger: ${LIBRARY} f-debugger-compile
+f-debugger: ${LIBRARY} f-debugger-compile findserial.py
 
 simple-chip8.so: simple-chip8-compile
 
@@ -29,9 +29,12 @@ test-library:
 	$(MAKE) -C src/library test-library
 	./src/library/test-library
 
-test-microcontroller:
+test-microcontroller: findserial.py
 	$(MAKE) -C src/library test-microcontroller
 	./src/library/test-microcontroller
+
+findserial.py:
+	cp src/scripts/findserial.py .
 
 clean:
 	$(MAKE) -C src/library clean
