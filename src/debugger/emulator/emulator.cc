@@ -10,6 +10,12 @@ std::string Emulator::init()
     return fdbg_server_serial_port(server_);
 }
 
+Emulator::~Emulator()
+{
+    if (server_)
+        fdbg_server_free(server_);
+}
+
 void Emulator::run_emulator_thread(FdbgServer* server, bool& running)
 {
     user.emulator_init();

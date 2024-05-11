@@ -10,12 +10,14 @@ extern "C" {
 
 class Emulator {
 public:
+    ~Emulator();
+
     std::string init();
     void run_as_thread();
     void kill();
 
 private:
-    FdbgServer* server_;
+    FdbgServer* server_ = nullptr;
     std::thread run_thread_;
     bool        running_ = false;
 
