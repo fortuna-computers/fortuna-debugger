@@ -9,12 +9,12 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_glfw.h"
 
+#include "exceptions/exceptions.hh"
 #include "windows/window.hh"
 #include "windows/demo.hh"
 #include "windows/messagebox.hh"
 #include "windows/startup.hh"
-#include "exceptions/exceptions.hh"
-#include "debugger/windows/memory.hh"
+#include "windows/memory.hh"
 
 UI::UI()
 {
@@ -28,9 +28,10 @@ UI::UI()
     // window hints
     glfwWindowHint(GLFW_DOUBLEBUFFER, 1);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
     glfwWindowHint(GLFW_STENCIL_BITS, 8);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     std::string glsl_version = "#version 150";
 

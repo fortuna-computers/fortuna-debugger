@@ -6,7 +6,7 @@
 #include <memory>
 
 #include <imgui.h>
-#include "contrib/imgui-filebrowser/imfilebrowser.h"
+#include "imfilebrowser.h"
 
 class Startup : public Window {
 public:

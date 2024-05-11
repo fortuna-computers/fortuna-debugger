@@ -17,8 +17,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "to-computer.pb.h"
-#include "to-debugger.pb.h"
 #include "pb_decode.h"
 #include "pb_encode.h"
 
@@ -178,7 +176,7 @@ FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud)
 {
     int fd, slave_fd;
 
-    char serial_port[1024];
+    char serial_port[256];
 
     if (openpty(&fd, &slave_fd, serial_port, NULL, NULL) == -1)
         return NULL;

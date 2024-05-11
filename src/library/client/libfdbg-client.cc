@@ -11,6 +11,7 @@
 #  include <stdio.h>
 #  include <termios.h>
 #endif
+#include <unistd.h>
 
 #include <chrono>
 #include <format>

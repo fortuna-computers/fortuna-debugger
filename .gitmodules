@@ -1,15 +1,16 @@
 [submodule "src/contrib/imgui"]
 	path = src/contrib/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "src/contrib/glfw"]
-	path = src/contrib/glfw
-	url = https://github.com/glfw/glfw.git
+	ignore = dirty
 [submodule "src/contrib/nanopb"]
 	path = src/contrib/nanopb
 	url = https://github.com/nanopb/nanopb.git
+	ignore = dirty
 [submodule "src/contrib/imgui-filebrowser"]
 	path = src/contrib/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser.git
+	ignore = dirty
 [submodule "user/lua"]
 	path = user/lua
-	url = https://github.com/lubgr/lua-cmake
+	url = https://github.com/lua/lua.git
+	ignore = dirty

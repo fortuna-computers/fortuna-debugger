@@ -7,5 +7,4 @@
 
 #define READY_SIGNAL 0xff
 
-
 #endif //COMMON_H_

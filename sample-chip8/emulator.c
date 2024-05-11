@@ -29,3 +29,4 @@ uint8_t emulator_ram_get(uint32_t pos)
 {
     return ram[pos];
 }
+

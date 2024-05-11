@@ -63,7 +63,6 @@
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/tools/uf2" vcs="Git" />
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/tools/uf2/hidapi" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/sample-chip8/lua" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/contrib/glfw" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/imgui" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/imgui-filebrowser" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/nanopb" vcs="Git" />
