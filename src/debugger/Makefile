@@ -29,7 +29,7 @@ ${BASE}/src/library/libfdbg-server.a:
 
 CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
-			-I${CONTRIB}/imgui-filebrowser `pkg-config --cflags glfw3 lua`
+			-I${CONTRIB}/imgui-filebrowser $(shell pkg-config --cflags glfw3 lua)
 
 LDFLAGS += `pkg-config --libs glfw3 lua`
 

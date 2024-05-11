@@ -1,7 +1,7 @@
 # flags
 
 CFLAGS = --std=gnu17
-CPPFLAGS = -Wall -Wextra -I. -I../src/contrib/lua -MMD -fPIC `pkg-config --cflags lua`
+CPPFLAGS = -Wall -Wextra -I. -I../src/contrib/lua -MMD -fPIC $(shell pkg-config --cflags lua)
 
 ifdef RELEASE
 	CPPFLAGS += -O3

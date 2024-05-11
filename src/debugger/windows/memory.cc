@@ -48,8 +48,10 @@ void Memory::draw_memory_table() const
                            | ImGuiTableFlags_NoBordersInBody
                            | ImGuiTableFlags_RowBg
                            | ImGuiTableFlags_ScrollY;
+    /*
     static ImU32 pc_bg_color = ImGui::GetColorU32(ImVec4(0.2f, 0.6f, 0.2f, 0.65f));
     static ImU32 sp_bg_color = ImGui::GetColorU32(ImVec4(0.6f, 0.2f, 0.2f, 0.65f));
+     */
 
     ImVec2 size = ImVec2(-FLT_MIN, 293);
     if (ImGui::BeginTable("##ram", 18, tbl_flags, size)) {
