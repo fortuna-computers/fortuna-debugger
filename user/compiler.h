@@ -6,19 +6,13 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define NO_ADDRESS UINT64_MAX;
+#define NO_ADDRESS UINT64_MAX
 
 typedef struct Binary {
     uint8_t* rom;
     size_t   rom_sz;
     uint64_t load_pos;
 } Binary;
-
-typedef struct Location {
-    size_t   file;
-    size_t   line;
-    uint64_t address;
-} Location;
 
 typedef struct Symbol {
     char*  name;
@@ -27,7 +21,9 @@ typedef struct Symbol {
 
 typedef struct SourceLine {
     char*    line;
-    Location location;
+    size_t   file_idx;
+    size_t   line_number;
+    uint64_t address;
 } SourceLine;
 
 typedef struct DebuggingInfo {
