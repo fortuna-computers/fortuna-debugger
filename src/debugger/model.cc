@@ -52,7 +52,7 @@ void DebuggerModel::compile(std::string const& source_file)
 {
     CompilationResult cr = user.compile(source_file.c_str());
     if (!cr.success) {
-        std::string error = cr.error_info;
+        std::string error = cr.error_info ? cr.error_info : "Compilation error - no message reported.";
         free_compilation_result(cr);
         throw std::runtime_error(error);
     }
