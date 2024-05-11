@@ -1,3 +1,5 @@
+# flags
+
 CFLAGS = --std=gnu17
 CPPFLAGS = -Wall -Wextra -I. -I../src/contrib/lua -MMD -fPIC `pkg-config --cflags lua`
 
@@ -7,7 +9,16 @@ else
 	CPPFLAGS += -O0 -ggdb
 endif
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+    LDFLAGS += -undefined dynamic_lookup
+endif
+
+# sources
+
 SRC=emulator.o machine.o compiler.o
+
+# rules
 
 all: simple-chip8.so
 
@@ -15,6 +26,6 @@ simple-chip8.so: ${SRC}
 	$(CC) -shared -undefined dynamic_lookup -o $@ $^ ${LDFLAGS}
 
 clean:
-	rm -f ${SRC} simple-chip8.so *.d
+	rm -f ${SRC} $(SRC:.o=.d) simple-chip8.so
 
 -include $(${SRC}:.o=.d)
