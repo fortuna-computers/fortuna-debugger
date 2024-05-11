@@ -10,7 +10,3 @@
 	path = src/contrib/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser.git
 	ignore = dirty
-[submodule "user/lua"]
-	path = user/lua
-	url = https://github.com/lua/lua.git
-	ignore = dirty

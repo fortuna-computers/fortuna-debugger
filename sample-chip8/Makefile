@@ -12,11 +12,10 @@ SRC=emulator.o machine.o compiler.o
 all: simple-chip8.so
 
 simple-chip8.so: ${SRC}
-	$(MAKE) -C lua MYLDFLAGS= MYCFLAGS=-fPIC
-	$(CC) -shared -o $@ $^ $(wildcard lua/*.o) ${LDFLAGS}
+	$(CC) -shared -o $@ $^ ${LDFLAGS}
 
 clean:
 	$(MAKE) -C lua clean
-	rm -f ${SRC} simple-chip8.so
+	rm -f ${SRC} simple-chip8.so *.d
 
 -include $(${SRC}:.o=.d)
