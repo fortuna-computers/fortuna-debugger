@@ -2,19 +2,19 @@
 
 #include <imgui.h>
 
-#include "../ui.hh"
-#include "load.hh"
+#include "ui/ui.hh"
+#include "load/load.hh"
 
 
 Startup::Startup(UIInterface& ui, bool visible)
     : Window(ui, visible)
 {
-    if (ui.config().get("Connection type") == "hardware")
+    if (ui.ini_properties_file().get("Connection type") == "hardware")
         connection_type = CT_SERIAL;
 
-    strncpy(machine_path_, ui.config().get("Machine path").c_str(), IM_ARRAYSIZE(machine_path_));
-    strncpy(serial_port_, ui.config().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
-    strncpy(source_file_, ui.config().get("Source file").c_str(), IM_ARRAYSIZE(source_file_));
+    strncpy(machine_path_, ui.ini_properties_file().get("Machine path").c_str(), IM_ARRAYSIZE(machine_path_));
+    strncpy(serial_port_, ui.ini_properties_file().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
+    strncpy(source_file_, ui.ini_properties_file().get("Source file").c_str(), IM_ARRAYSIZE(source_file_));
 
     if (machine_path_[0] != '\0') {
         try {
@@ -32,11 +32,11 @@ Startup::Startup(UIInterface& ui, bool visible)
 
 void Startup::save_config()
 {
-    ui_.config().set("Machine path", machine_path_);
-    ui_.config().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
-    ui_.config().set("Serial port", serial_port_);
-    ui_.config().set("Source file", source_file_);
-    ui_.config().save();
+    ui_.ini_properties_file().set("Machine path", machine_path_);
+    ui_.ini_properties_file().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
+    ui_.ini_properties_file().set("Serial port", serial_port_);
+    ui_.ini_properties_file().set("Source file", source_file_);
+    ui_.ini_properties_file().save();
 }
 
 void Startup::draw()
@@ -54,7 +54,7 @@ void Startup::draw()
 
     if (machine_path_[0] != '\0') {
 
-        ImGui::Text("Machine: %s", user.machine_name());
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Machine: %s", user.machine_name());
 
         ImGui::SeparatorText("Connection");
 
@@ -80,7 +80,7 @@ void Startup::draw()
 
         ImGui::SeparatorText("Connect");
 
-        if (ImGui::Button("Connect")) {
+        if (ImGui::Button("Connect & Upload")) {
             save_config();
             ui_.model().compile(source_file_);
             if (connection_type == CT_EMULATOR)

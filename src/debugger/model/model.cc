@@ -1,6 +1,6 @@
 #include "model.hh"
 
-#include "load.hh"
+#include "load/load.hh"
 
 DebuggerModel::~DebuggerModel()
 {
@@ -14,6 +14,17 @@ void DebuggerModel::connect_to_emulator()
     emulator_.run_as_thread();
 
     connect_to_serial_port(port, EMULATOR_BAUD_RATE);
+
+    if (!debug_.binaries.empty()) {
+        upload_ = Upload {
+                .binary_idx = 0,
+                .binary_count = debug_.binaries.size(),
+                .current = 0,
+                .total = debug_.binaries.front().rom.size(),
+                .address = debug_.binaries.front().load_pos,
+                .verifying = false,
+        };
+    }
 }
 
 void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint32_t baud_rate)
@@ -22,6 +33,10 @@ void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint3
     connected_ = true;
     client_.set_debugging_level(DebuggingLevel::TRACE);
     client_.ack(user.machine_id());
+}
+
+void DebuggerModel::update()
+{
 }
 
 void DebuggerModel::initialize_memory()

@@ -1,7 +1,8 @@
 #include "memory.hh"
 
-#include "ui.hh"
 #include "imgui.h"
+
+#include "ui/ui.hh"
 
 void Memory::draw()
 {

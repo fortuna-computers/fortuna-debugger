@@ -1,10 +1,10 @@
-#include "config.hh"
+#include "properties.hh"
 
 #include <stdexcept>
 
 #include "imgui_internal.h"
 
-void Config::initialize(struct ImGuiContext *context)
+void IniPropertiesFile::initialize(struct ImGuiContext *context)
 {
     ImGuiSettingsHandler ini_handler;
     ini_handler.TypeName = "UserData";
@@ -35,7 +35,7 @@ void Config::initialize(struct ImGuiContext *context)
     ImGui::LoadIniSettingsFromDisk("imgui.ini");
 }
 
-std::string Config::get(std::string const &key) const
+std::string IniPropertiesFile::get(std::string const &key) const
 {
     try {
         return properties_.at(key);
@@ -44,12 +44,22 @@ std::string Config::get(std::string const &key) const
     }
 }
 
-void Config::set(std::string const &key, std::string const &value)
+void IniPropertiesFile::set(std::string const &key, std::string const &value)
 {
     properties_[key] = value;
 }
 
-void Config::save()
+bool IniPropertiesFile::get_bool(std::string const& key) const
+{
+    return get(key) == "true";
+}
+
+void IniPropertiesFile::set(std::string const& key, bool value)
+{
+    set(key, (std::string) { value ? "true" : "false" });
+}
+
+void IniPropertiesFile::save()
 {
     ImGui::SaveIniSettingsToDisk("imgui.ini");
 }

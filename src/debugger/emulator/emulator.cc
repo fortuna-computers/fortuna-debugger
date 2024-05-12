@@ -1,6 +1,6 @@
 #include "emulator.hh"
 
-#include "load.hh"
+#include "load/load.hh"
 
 using namespace std::chrono_literals;
 

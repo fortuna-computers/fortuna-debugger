@@ -27,7 +27,7 @@ CXXFLAGS = --std=c++20
 PROTOBUF_LDFLAGS = `pkg-config --libs protobuf`
 
 ifdef RELEASE
-	CPPFLAGS += -O3
+	CPPFLAGS += -O3 -DNDEBUG=1
 else
-	CPPFLAGS += -O0 -ggdb
+	CPPFLAGS += -O0 -ggdb -DDEBUG=1
 endif

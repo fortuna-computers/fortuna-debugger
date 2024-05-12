@@ -5,18 +5,20 @@
 #include <memory>
 #include <string>
 
-#include "config.hh"
+#include "properties.hh"
 #include "libfdbg-client.hh"
 #include "windows/window.hh"
 #include "model/model.hh"
+#include "config/config.hh"
 
 class UIInterface {
 public:
-    virtual DebuggerModel& model() = 0;
-    virtual Config&        config() = 0;
+    virtual DebuggerModel&     model() = 0;
+    virtual IniPropertiesFile& ini_properties_file() = 0;
+    virtual Config&            config() = 0;
 
-    virtual void           init_debugging_session() = 0;
-    virtual void           set_window_visible(std::string const& name, bool visible) = 0;
+    virtual void               init_debugging_session() = 0;
+    virtual void               set_window_visible(std::string const& name, bool visible) = 0;
 
 protected:
     UIInterface() = default;
@@ -29,8 +31,9 @@ public:
 
     void run();
 
-    DebuggerModel& model() override { return model_; }
-    Config&     config() override { return config_; }
+    DebuggerModel&      model() override { return model_; }
+    IniPropertiesFile&  ini_properties_file() override { return ini_properties_file_; }
+    Config&             config() override { return config_; }
 
     void set_window_visible(std::string const& name, bool visible) override;
     void init_debugging_session() override;
@@ -45,9 +48,10 @@ private:
     }
 
     DebuggerModel      model_;
+    Config             config_;
     struct GLFWwindow* glfw_window_ = nullptr;
     ImGuiContext*      context_;
-    Config             config_;
+    IniPropertiesFile  ini_properties_file_;
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
 };

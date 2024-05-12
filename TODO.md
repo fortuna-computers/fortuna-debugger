@@ -36,11 +36,17 @@
 
 - [x] Can the user emulator be a DLL?
 
+# Debugger
+
+- [ ] Main menu
+- [ ] Config window
+- [ ] Demo window
+
 # Compilation
 
-- [ ] Install and test chip-8 compiler
-- [ ] Create interfaces (debugging info, compiler output, ROM, and file list, location in memory)
-- [ ] Compile
+- [x] Install and test chip-8 compiler
+- [x] Create interfaces (debugging info, compiler output, ROM, and file list, location in memory)
+- [x] Compile
 - [ ] Upload to ROM
 
 # CPU

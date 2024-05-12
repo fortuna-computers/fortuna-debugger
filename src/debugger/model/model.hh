@@ -22,21 +22,36 @@ public:
         std::optional<uint8_t> data[PAGE_SZ];
     };
 
+    struct Upload {
+        size_t   binary_idx;
+        size_t   binary_count;
+        size_t   current;
+        size_t   total;
+        uint64_t address;
+        bool   verifying;
+    };
+
     Memory memory { .pages = 1, .current_page = 0, .data = {{}} };
 
     void connect_to_emulator();
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
+
+    void update();
 
     void initialize_memory();
     void change_memory_page(int64_t page);
 
     void compile(std::string const& source_file);
 
+    std::optional<Upload> const &upload_state() const { return upload_; }
+    bool connected() const { return connected_; }
+
 private:
-    FdbgClient client_;
-    Emulator   emulator_;
-    bool       connected_ = false;
-    DebugInfo  debug_;
+    FdbgClient            client_;
+    Emulator              emulator_;
+    DebugInfo             debug_;
+    std::optional<Upload> upload_;
+    bool                  connected_;
 };
 
 #endif //MODEL_HH_

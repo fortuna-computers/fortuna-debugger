@@ -12,7 +12,7 @@
 
 // this class is used by the debugger or the tests scripts to connect to the computer/emulator
 
-enum class DebuggingLevel { NORMAL, DEBUG, TRACE };
+enum class DebuggingLevel { NORMAL, DEBUG_, TRACE };
 
 class FdbgClient {
 public:

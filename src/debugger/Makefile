@@ -48,14 +48,17 @@ IMGUI_SRC = \
         ${CONTRIB}/glad/src/gl.o
 
 F_DEBUGGER_SRC = \
-        config.o \
-        load.o \
         main.o \
-        ui.o \
+        config/config.o \
         emulator/emulator.o \
+        load/load.o \
         model/debuginfo.o \
         model/model.o \
+        ui/properties.o \
+        ui/ui.o \
+        windows/configuration.o \
         windows/demo.o \
+        windows/mainmenu.o \
         windows/memory.o \
         windows/messagebox.o \
         windows/startup.o \

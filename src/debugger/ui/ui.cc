@@ -12,11 +12,14 @@
 #include "exceptions/exceptions.hh"
 #include "windows/window.hh"
 #include "windows/demo.hh"
+#include "windows/mainmenu.hh"
 #include "windows/messagebox.hh"
 #include "windows/startup.hh"
 #include "windows/memory.hh"
+#include "windows/configuration.hh"
 
 UI::UI()
+    : config_(ini_properties_file_)
 {
     // initialize
     if (!glfwInit())
@@ -58,11 +61,14 @@ UI::UI()
     io_->KeyRepeatRate = 0.1f;
 
     // .ini config
-    config_.initialize(context_);
+    ini_properties_file_.initialize(context_);
+    config_.load();
 
     // add windows
-    add_window<Demo>(true);
+    add_window<MainMenu>(true);
     add_window<Startup>(true);
+    add_window<Configuration>();
+    add_window<Demo>();
     add_window<Memory>();
     msg_box_key_ = add_window<MessageBox>();
 }
@@ -82,6 +88,8 @@ UI::~UI()
 void UI::run()
 {
     while (!glfwWindowShouldClose(glfw_window_)) {
+
+        model_.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
