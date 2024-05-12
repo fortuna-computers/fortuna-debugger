@@ -14,6 +14,7 @@ public:
     bool        get_bool(std::string const& key) const;
 
     void        set(std::string const& key, std::string const& value);
+    void        set(std::string const& key, const char* value) { set(key, std::string { value }); }
     void        set(std::string const& key, bool value);
 
     void        save();

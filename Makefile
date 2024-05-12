@@ -27,11 +27,9 @@ simple-chip8-compile:
 
 test-library:
 	$(MAKE) -C src/library test-library
-	./src/library/test-library
 
 test-microcontroller: findserial.py
 	$(MAKE) -C src/library test-microcontroller
-	./src/library/test-microcontroller
 
 findserial.py:
 	cp src/scripts/findserial.py .

@@ -6,6 +6,7 @@ extern "C" {
 
 #include "client/libfdbg-client.hh"
 
+#include <cstdlib>
 #include <thread>
 using namespace std::chrono_literals;
 
@@ -59,12 +60,29 @@ int main()
 
         client.ack(MACHINE_ID);
 
-        std::vector<uint8_t> data { 1, 2, 3, 4 };
-        client.write_memory(0x0, data, false);
-        auto data2 = client.read_memory(0x0, data.size());
-        if (data != data2)
-            throw std::runtime_error("Data does not match.");
+        printf("==============================================\n");
 
+        {
+            std::vector<uint8_t> data { 1, 2, 3, 4 };
+            client.write_memory(0x0, data, false);
+            auto data2 = client.read_memory(0x0, data.size());
+            if (data != data2)
+                throw std::runtime_error("Data does not match.");
+        }
+
+        printf("==============================================\n");
+
+        {
+            std::vector<uint8_t> data(100);
+            std::generate(data.begin(), data.end(), []() { return rand(); });
+
+            FdbgClient::Upload upload;
+            while (client.write_memory_step(100, data, false, upload))
+                ;
+        }
+
+
+        printf("==============================================\n");
         printf("Client finalized.\n");
     }
 

@@ -46,12 +46,15 @@ public:
     std::optional<Upload> const &upload_state() const { return upload_; }
     bool connected() const { return connected_; }
 
+    std::string fmt_addr(uint64_t addr) const;
+
 private:
     FdbgClient            client_;
     Emulator              emulator_;
     DebugInfo             debug_;
     std::optional<Upload> upload_;
     bool                  connected_;
+    uint8_t               addr_sz_ = 0;
 };
 
 #endif //MODEL_HH_

@@ -17,6 +17,7 @@
 #include "windows/startup.hh"
 #include "windows/memory.hh"
 #include "windows/configuration.hh"
+#include "windows/uploadrom.hh"
 
 UI::UI()
     : config_(ini_properties_file_)
@@ -70,6 +71,7 @@ UI::UI()
     add_window<Configuration>();
     add_window<Demo>();
     add_window<Memory>();
+    add_window<UploadROM>(true);
     msg_box_key_ = add_window<MessageBox>();
 }
 

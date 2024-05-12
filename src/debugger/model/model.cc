@@ -70,4 +70,18 @@ void DebuggerModel::compile(std::string const& source_file)
 
     if (!debug_.success)
         throw std::runtime_error(debug_.error_info);
+
+    if (user.total_mappable_memory() <= 0xffff)
+        addr_sz_ = 4;
+    else if (user.total_mappable_memory() <= 0xffffff)
+        addr_sz_ = 6;
+    else
+        addr_sz_ = 8;
+}
+
+std::string DebuggerModel::fmt_addr(uint64_t addr) const
+{
+    char buf[9] = {0};
+    snprintf(buf, sizeof buf, "%0*llX", addr_sz_, addr);
+    return buf;
 }

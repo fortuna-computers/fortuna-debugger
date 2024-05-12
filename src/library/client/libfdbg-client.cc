@@ -14,7 +14,6 @@
 #include <unistd.h>
 
 #include <chrono>
-#include <format>
 #include <string>
 #include <thread>
 
@@ -156,7 +155,7 @@ void FdbgClient::ack(uint32_t id)
         throw std::runtime_error("Invalid id received from server during ack");
 }
 
-void FdbgClient::write_memory(uint64_t pos, std::vector<uint8_t> const& data, bool validate)
+void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
 {
     if (data.size() > MAX_MEMORY_TRANSFER)
         throw std::runtime_error("Cannot write more than " + std::to_string(MAX_MEMORY_TRANSFER) + " bytes at time.");
@@ -194,3 +193,19 @@ std::vector<uint8_t> FdbgClient::read_memory(uint64_t pos, uint8_t sz, uint8_t s
     return { response.read_memory_response().bytes().begin(), response.read_memory_response().bytes().end() };
 }
 
+bool FdbgClient::write_memory_step(uint64_t pos, std::vector<uint8_t> const& data, bool validate, FdbgClient::Upload& upload)
+{
+    uint64_t initial_pos = pos + (upload.next * MAX_MEMORY_TRANSFER);
+
+    if ((upload.next + 1) * MAX_MEMORY_TRANSFER > data.size()) {    // less than 64 bytes left
+        std::span<const uint8_t> data_span(data.begin() + (upload.next * MAX_MEMORY_TRANSFER), data.end());
+        write_memory(initial_pos, data_span, validate);
+        return false;
+
+    } else {    // more than 64 bytes left
+        std::span<const uint8_t> data_span(data.data() + initial_pos, MAX_MEMORY_TRANSFER);
+        write_memory(initial_pos, data_span, validate);
+        ++upload.next;
+        return true;
+    }
+}

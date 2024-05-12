@@ -62,6 +62,7 @@ F_DEBUGGER_SRC = \
         windows/memory.o \
         windows/messagebox.o \
         windows/startup.o \
+        windows/uploadrom.o \
         ${IMGUI_SRC}
 
 f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
