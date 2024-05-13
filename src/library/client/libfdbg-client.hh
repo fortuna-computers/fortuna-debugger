@@ -3,6 +3,7 @@
 
 #include "common/common.h"
 #include "machine.hh"
+#include "debuginfo.hh"
 #include "protobuf/to-debugger.pb.h"
 #include "protobuf/to-computer.pb.h"
 
@@ -29,10 +30,10 @@ public:
     struct Upload { size_t next = 0; };  // TODO - move this to class
     bool write_memory_step(uint64_t pos, std::vector<uint8_t> const& data, bool validate, Upload& upload);
 
-    static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
-
     void set_debugging_level(DebuggingLevel debugging_level) { debugging_level_ = debugging_level; }
     Machine const& machine() const { return machine_; }
+
+    static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
 
 private:
     Machine           machine_;

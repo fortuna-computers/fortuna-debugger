@@ -38,9 +38,19 @@
 
 # Debugger
 
-- [ ] Main menu
-- [ ] Config window
-- [ ] Demo window
+- [x] Main menu
+- [x] Config window
+- [x] Demo window
+
+# Refactory
+
+- [x] Move machine id to Lua and library
+- [ ] Move compilation to library
+- [ ] Implement Compile & Upload
+- [ ] Run emulator independently
+- [ ] What else can be moved to the library
+- [ ] Isolate UI model
+- [ ] Refactor UI debugger
 
 # Compilation
 

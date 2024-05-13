@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
+#include "debuginfo.hh"
 
 class Machine {
 public:
@@ -10,6 +12,7 @@ public:
     ~Machine();
 
     void load_user_definition(std::string const& filename);
+    DebugInfo compile(std::string const& filename) const;
 
     uint16_t    id;
     std::string name;
@@ -22,8 +25,13 @@ public:
 private:
     struct lua_State* L;
 
-    void get_field(const char* field, bool mandatory) const;
-    void assert_stack(int sz) const;
+    void                     get_field(const char* field, bool mandatory=true) const;
+    bool                     field_bool(const char* field, bool mandatory=true) const;
+    int                      field_int(const char* field, bool mandatory=true) const;
+    std::string              field_str(const char* field, bool mandatory=true) const;
+    std::vector<uint8_t>     field_byte_array(const char* field, bool mandatory=true) const;
+    std::vector<std::string> field_string_array(const char* field, bool mandatory=true) const;
+    void                     assert_stack(int sz) const;
 };
 
 #endif
