@@ -73,7 +73,7 @@ libfdbg-client.a: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 	ar -rc $@ $^
 
 libfdbg-client.so: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
-	$(CXX) $^ -shared -o $@ $(PROTOBUF_LDFLAGS)
+	$(CXX) $^ -shared -o $@ $(PROTOBUF_LDFLAGS) ${LUA_LIBS}
 
 -include $(LIBFDBG_CLIENT_SRC:.o=.d)
 

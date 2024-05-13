@@ -47,11 +47,12 @@
 - [x] Move machine id to Lua and library
 - [x] Move compilation to library
 - [x] Implement Compile & Upload
-- [ ] Run emulator independently
+- [x] Run emulator independently
 - [ ] What else can be moved to the library
 - [ ] Isolate UI model
 - [ ] Refactor UI debugger
-- [ ] Python library
+- [ ] Lua library (client, server)
+- [ ] Move findserial.py code to C++ library
 
 # Compilation
 

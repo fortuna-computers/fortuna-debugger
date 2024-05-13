@@ -195,4 +195,10 @@ const char* fdbg_server_serial_port(FdbgServer* server)
     return server->port;
 }
 
+void fdbg_die_if_parent_dies()
+{
+    if (getpid() == 1)
+        exit(0);
+}
+
 #endif

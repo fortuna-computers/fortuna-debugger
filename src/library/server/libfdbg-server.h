@@ -35,6 +35,7 @@ int         fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
 FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud);
 const char* fdbg_server_serial_port(FdbgServer* server);
+void        fdbg_die_if_parent_dies();
 
 #endif
 

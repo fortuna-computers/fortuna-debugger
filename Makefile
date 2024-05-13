@@ -3,7 +3,8 @@ ifeq ($(OS),Windows_NT)
 endif
 
 LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so
-TARGETS = f-debugger simple-chip8.so findserial.py ${LIBRARY}
+# TARGETS = f-debugger simple-chip8.so findserial.py ${LIBRARY}
+TARGETS = chip8-emulator findserial.py ${LIBRARY}
 
 all: ${TARGETS}
 
@@ -11,7 +12,7 @@ ${LIBRARY}: library-compile
 
 f-debugger: ${LIBRARY} f-debugger-compile findserial.py
 
-simple-chip8.so: simple-chip8-compile
+chip8-emulator: chip8-emulator-compile
 
 library-compile:
 	$(MAKE) -C src/library
@@ -21,9 +22,9 @@ f-debugger-compile: ${LIBRARY}
 	$(MAKE) -C src/debugger
 	-cp src/debugger/f-debugger .
 
-simple-chip8-compile:
+chip8-emulator-compile:
 	$(MAKE) -C sample-chip8
-	-cp sample-chip8/simple-chip8.so .
+	-cp sample-chip8/chip8-emulator .
 
 test-library:
 	$(MAKE) -C src/library test-library
