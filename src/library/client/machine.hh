@@ -24,6 +24,7 @@ public:
 
 private:
     struct lua_State* L;
+    bool   user_definition_loaded_ = false;
 
     void                     get_field(const char* field, bool mandatory=true) const;
     bool                     field_bool(const char* field, bool mandatory=true) const;

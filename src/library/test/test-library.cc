@@ -83,12 +83,8 @@ int main()
         {
             std::vector<uint8_t> data(100);
             std::generate(data.begin(), data.end(), []() { return rand(); });
-
-            FdbgClient::Upload upload;
-            while (client.write_memory_step(100, data, false, upload))
-                ;
+            client.write_memory_full(0, data);
         }
-
 
         printf("==============================================\n");
         printf("Client finalized.\n");

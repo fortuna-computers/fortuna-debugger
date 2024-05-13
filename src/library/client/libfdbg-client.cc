@@ -198,7 +198,14 @@ std::vector<uint8_t> FdbgClient::read_memory(uint64_t pos, uint8_t sz, uint8_t s
     return { response.read_memory_response().bytes().begin(), response.read_memory_response().bytes().end() };
 }
 
-bool FdbgClient::write_memory_step(uint64_t pos, std::vector<uint8_t> const& data, bool validate, FdbgClient::Upload& upload)
+void FdbgClient::write_memory_full(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
+{
+    Upload upload;
+    while (write_memory_step(pos, data, upload, validate))
+        ;
+}
+
+bool FdbgClient::write_memory_step(uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate)
 {
     uint64_t initial_pos = pos + (upload.next * MAX_MEMORY_TRANSFER);
 
@@ -213,4 +220,11 @@ bool FdbgClient::write_memory_step(uint64_t pos, std::vector<uint8_t> const& dat
         ++upload.next;
         return true;
     }
+}
+
+void FdbgClient::compile_and_write_memory(std::string const& source_filename, bool validate)
+{
+    DebugInfo di = machine_.compile(source_filename);
+    for (auto const& bin: di.binaries)
+        write_memory_full(bin.load_pos, bin.rom, validate);
 }

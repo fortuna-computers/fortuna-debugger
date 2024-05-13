@@ -20,19 +20,27 @@ class FdbgClient {
 public:
     ~FdbgClient();
 
+    // initialization
     void load_user_definition(std::string const& filename);
     void connect(std::string const& port, uint32_t baudrate);
 
+    // lower-level calls to server
     void                 ack(uint32_t id);
-    void                 write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate);
+    void                 write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
     std::vector<uint8_t> read_memory(uint64_t pos, uint8_t sz, uint8_t sequences=1);
 
-    struct Upload { size_t next = 0; };  // TODO - move this to class
-    bool write_memory_step(uint64_t pos, std::vector<uint8_t> const& data, bool validate, Upload& upload);
+    // higher-level calls to server
+    struct Upload { size_t next = 0; };
+    bool write_memory_step(uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate=false);
 
+    void write_memory_full(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
+    void compile_and_write_memory(std::string const& source_filename, bool validate=false);
+
+    // properties
     void set_debugging_level(DebuggingLevel debugging_level) { debugging_level_ = debugging_level; }
     Machine const& machine() const { return machine_; }
 
+    // static methods
     static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
 
 private:

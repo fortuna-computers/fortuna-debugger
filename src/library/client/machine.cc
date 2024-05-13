@@ -2,6 +2,8 @@
 
 #include <lua.hpp>
 
+#include <stdexcept>
+
 Machine::Machine()
     : L(luaL_newstate())
 {
@@ -123,10 +125,15 @@ void Machine::load_user_definition(std::string const &filename)
     lua_pop(L, 1);
 
     assert_stack(1);
+
+    user_definition_loaded_ = true;
 }
 
 DebugInfo Machine::compile(std::string const& filename) const
 {
+    if (user_definition_loaded_)
+        throw std::runtime_error("User definition not loaded yet");
+
     // execute compilation function
 
     get_field("compile", true);
