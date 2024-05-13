@@ -25,6 +25,11 @@ using namespace std::chrono_literals;
 using namespace std::string_literals;
 using hrc = std::chrono::high_resolution_clock;
 
+void FdbgClient::load_user_definition(std::string const& filename)
+{
+    machine_.load_user_definition(filename);
+}
+
 void FdbgClient::connect(std::string const& port, uint32_t baudrate)
 {
     fd_ = open(port.c_str(), O_RDWR);

@@ -9,6 +9,14 @@ include ${BASE}/defs.mk
 K := $(if $(shell which python3),,$(error "python3 not found in PATH - please install it")))
 K := $(if $(shell which protoc),,$(error "protoc not found in PATH - please install protobuf")))
 K := $(if $(shell pkg-config --modversion protobuf),,$(error "protobuf pkg-config file not found - please install protobuf"))
+K := $(if $(shell pkg-config --modversion lua),,$(error "lua pkg-config file not found - please install Lua"))
+
+#
+# flags
+#
+
+CPPFLAGS += $(shell pkg-config --cflags lua)
+LUA_LIBS = $(shell pkg-config --libs lua)
 
 #
 # targets
@@ -56,7 +64,8 @@ ${GENERATED_PROTO_FILES}: protobuf/to-computer.proto protobuf/to-debugger.proto
 
 LIBFDBG_CLIENT_SRC = \
 		common/terminal.o \
-		client/libfdbg-client.o
+		client/libfdbg-client.o \
+		client/machine.o
 
 client/libfdbg-client.o: ${GENERATED_PROTO_FILES}
 
@@ -75,12 +84,12 @@ libfdbg-client.so: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 test/test-library.o: libfdbg-client.a libfdbg-server.a   # fix ordering issue
 
 test-library: test/test-library.o libfdbg-client.a libfdbg-server.a
-	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
+	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS) ${LUA_LIBS}
 
 test/test-microcontroller.o: libfdbg-client.a
 
 test-microcontroller: test/test-microcontroller.o libfdbg-client.a
-	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS)
+	$(CXX) -o $@ $^ $(PROTOBUF_LDFLAGS) ${LUA_LIBS}
 
 #
 # clean
