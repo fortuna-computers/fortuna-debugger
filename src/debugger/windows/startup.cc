@@ -26,8 +26,6 @@ Startup::Startup(bool visible)
      */
 
     file_browser_.SetTitle("Choose machine file");
-    file_browser_.SetTypeFilters({ ".so", ".dylib" });
-
     source_browser_.SetTitle("Choose source file");
 }
 
@@ -65,8 +63,13 @@ void Startup::draw()
         ImGui::RadioButton("Emulator", (int*) &connection_type, CT_EMULATOR); ImGui::SameLine();
         ImGui::RadioButton("Real hardware (serial)", (int*) &connection_type, CT_SERIAL);
 
-        if (connection_type == CT_SERIAL) {
-            ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
+        if (connection_type == CT_EMULATOR) {
+            if (ImGui::Button("Emulator path"))
+                emulator_browser_.Open();
+            ImGui::SameLine();
+            ImGui::Text("%s", emulator_path_);
+        } else if (connection_type == CT_SERIAL) {
+            ImGui::InputTextWithHint("Serial port", "/dev/ttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
             if (ImGui::Button("Autodetect")) {
                 std::string port =  FdbgClient::autodetect_usb_serial_port(model.machine().vendor_id, model.machine().product_id);
                 strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
@@ -102,7 +105,8 @@ void Startup::draw()
     if (file_browser_.HasSelected()) {
         strncpy(machine_path_, file_browser_.GetSelected().c_str(), sizeof(machine_path_));
         file_browser_.ClearSelected();
-        // TODO - load machine
+        model.load_machine(machine_path_);
+        baud_rate_ = model.machine().uc_baudrate;
     }
 
     source_browser_.Display();
@@ -111,4 +115,9 @@ void Startup::draw()
         source_browser_.ClearSelected();
     }
 
+    emulator_browser_.Display();
+    if (emulator_browser_.HasSelected()) {
+        strncpy(emulator_path_, emulator_browser_.GetSelected().c_str(), sizeof(emulator_path_));
+        emulator_browser_.ClearSelected();
+    }
 }

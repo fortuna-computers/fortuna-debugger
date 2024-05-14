@@ -5,6 +5,11 @@ Model::Model()
     config_.load();
 }
 
+void Model::load_machine(std::string const& file)
+{
+    client_.load_user_definition(file);
+}
+
 void Model::connect_to_emulator(std::string const& path)
 {
     std::string port = FdbgClient::start_emulator(path);
@@ -27,7 +32,7 @@ void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud
     client_.connect(serial_port, baud_rate);
     connected_ = true;
     client_.set_debugging_level(DebuggingLevel::TRACE);
-    client_.ack(user.machine_id());
+    client_.ack(machine().id);
 }
 
 void Model::update()
@@ -36,7 +41,7 @@ void Model::update()
 
 void Model::initialize_memory()
 {
-    memory.pages = user.total_mappable_memory() / PAGE_SZ;
+    memory.pages = machine().total_memory / PAGE_SZ;
     change_memory_page(0);
 }
 
@@ -60,15 +65,11 @@ void Model::change_memory_page(int64_t page)
 
 void Model::compile(std::string const& source_file)
 {
-    CompilationResult cr = user.compile(source_file.c_str());
-    debug_.parse_and_free(cr);
+    debug_ = client_.machine().compile(source_file);
 
-    if (!debug_.success)
-        throw std::runtime_error(debug_.error_info);
-
-    if (user.total_mappable_memory() <= 0xffff)
+    if (machine().total_memory <= 0xffff)
         addr_sz_ = 4;
-    else if (user.total_mappable_memory() <= 0xffffff)
+    else if (machine().total_memory <= 0xffffff)
         addr_sz_ = 6;
     else
         addr_sz_ = 8;

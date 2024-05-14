@@ -32,6 +32,8 @@ public:
 
     Memory memory { .pages = 1, .current_page = 0, .data = {{}} };
 
+    void load_machine(std::string const& file);
+
     void connect_to_emulator(std::string const& path);
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
 
