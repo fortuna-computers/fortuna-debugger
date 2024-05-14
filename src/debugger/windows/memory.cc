@@ -15,11 +15,11 @@ void Memory::draw()
         ImGui::SameLine();
 
         if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
-            go_to_page_number(((int64_t) ui_.model().memory.current_page) - 1);
+            go_to_page_number(((int64_t) model.memory.current_page) - 1);
         ImGui::SameLine();
 
         char buf[3];
-        snprintf(buf, 3, "%02zX", ui_.model().memory.current_page);
+        snprintf(buf, 3, "%02zX", model.memory.current_page);
         ImGui::PushItemWidth(24.0);
         ImGui::InputText("##page", buf, sizeof buf, ImGuiInputTextFlags_CallbackEdit,
                          [](ImGuiInputTextCallbackData* data) {
@@ -32,7 +32,7 @@ void Memory::draw()
         ImGui::PopItemWidth();
         ImGui::SameLine();
         if (ImGui::Button(">") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageDown)))
-            go_to_page_number(ui_.model().memory.current_page + 1);
+            go_to_page_number(model.memory.current_page + 1);
         ImGui::SameLine();
         ImGui::Text("(PgDown)");
 
@@ -72,7 +72,7 @@ void Memory::draw_memory_table() const
             ImGui::TableNextRow();
 
             // address
-            uint16_t addr = (ui_.model().memory.current_page << 8) + (line * 0x10);
+            uint16_t addr = (model.memory.current_page << 8) + (line * 0x10);
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%04X : ", addr);
 
@@ -80,7 +80,7 @@ void Memory::draw_memory_table() const
             std::string ascii;
             for (int i = 0; i < 0x10; ++i) {
                 ImGui::TableSetColumnIndex(i + 1);
-                std::optional<uint8_t> byte = ui_.model().memory.data[line * 16 + i];
+                std::optional<uint8_t> byte = model.memory.data[line * 16 + i];
                 if (byte.has_value()) {
                     bool needs_pop = false;
                     /* TODO
@@ -130,5 +130,5 @@ void Memory::draw_stack() const
 
 void Memory::go_to_page_number(int64_t page)
 {
-    ui_.model().change_memory_page(page);
+    model.change_memory_page(page);
 }

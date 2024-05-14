@@ -11,50 +11,31 @@
 #include "model/model.hh"
 #include "config/config.hh"
 
-class UIInterface {
-public:
-    virtual DebuggerModel&     model() = 0;
-    virtual IniPropertiesFile& ini_properties_file() = 0;
-    virtual Config&            config() = 0;
-
-    virtual void               init_debugging_session() = 0;
-    virtual void               set_window_visible(std::string const& name, bool visible) = 0;
-
-protected:
-    UIInterface() = default;
-};
-
-class UI : public UIInterface {
+class UI {
 public:
     explicit UI();
     ~UI();
 
     void run();
 
-    DebuggerModel&      model() override { return model_; }
-    IniPropertiesFile&  ini_properties_file() override { return ini_properties_file_; }
-    Config&             config() override { return config_; }
-
-    void set_window_visible(std::string const& name, bool visible) override;
-    void init_debugging_session() override;
+    void set_window_visible(std::string const& name, bool visible) ;
+    void init_debugging_session();
 
 private:
-    template <typename W>
-    std::string add_window(bool visible=false) {
-        auto w = std::make_unique<W>(*this, visible);
+    template <typename W> std::string add_window(bool visible=false) {
+        auto w = std::make_unique<W>(visible);
         std::string key = w->name();
         windows_[key] = std::move(w);
         return key;
     }
 
-    DebuggerModel      model_;
-    Config             config_;
     struct GLFWwindow* glfw_window_ = nullptr;
     ImGuiContext*      context_;
-    IniPropertiesFile  ini_properties_file_;
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
 };
+
+extern UI ui;
 
 namespace Key {
     constexpr ImGuiKey PageUp = (ImGuiKey) 0x10a;

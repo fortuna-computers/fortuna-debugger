@@ -20,7 +20,6 @@
 #include "windows/uploadrom.hh"
 
 UI::UI()
-    : config_(ini_properties_file_)
 {
     // initialize
     if (!glfwInit())
@@ -61,10 +60,6 @@ UI::UI()
     ImGui::StyleColorsDark();
     io_->KeyRepeatRate = 0.1f;
 
-    // .ini config
-    ini_properties_file_.initialize(context_);
-    config_.load();
-
     // add windows
     add_window<MainMenu>(true);
     add_window<Startup>(true);
@@ -91,7 +86,7 @@ void UI::run()
 {
     while (!glfwWindowShouldClose(glfw_window_)) {
 
-        model_.update();
+        model.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -129,5 +124,5 @@ void UI::set_window_visible(std::string const& name, bool visible)
 void UI::init_debugging_session()
 {
     set_window_visible("memory", true);
-    model_.initialize_memory();
+    model.initialize_memory();
 }

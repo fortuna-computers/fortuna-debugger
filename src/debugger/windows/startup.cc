@@ -3,12 +3,12 @@
 #include <imgui.h>
 
 #include "ui/ui.hh"
-#include "load/load.hh"
 
 
-Startup::Startup(UIInterface& ui, bool visible)
-    : Window(ui, visible)
+Startup::Startup(bool visible)
+    : Window(visible)
 {
+    /*
     if (ui.ini_properties_file().get("Connection type") == "hardware")
         connection_type = CT_SERIAL;
 
@@ -23,6 +23,7 @@ Startup::Startup(UIInterface& ui, bool visible)
             machine_path_[0] = '\0';
         }
     }
+     */
 
     file_browser_.SetTitle("Choose machine file");
     file_browser_.SetTypeFilters({ ".so", ".dylib" });
@@ -32,11 +33,13 @@ Startup::Startup(UIInterface& ui, bool visible)
 
 void Startup::save_config()
 {
-    ui_.ini_properties_file().set("Machine path", machine_path_);
-    ui_.ini_properties_file().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
-    ui_.ini_properties_file().set("Serial port", serial_port_);
-    ui_.ini_properties_file().set("Source file", source_file_);
-    ui_.ini_properties_file().save();
+    /*
+    ui.ini_properties_file().set("Machine path", machine_path_);
+    ui.ini_properties_file().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
+    ui.ini_properties_file().set("Serial port", serial_port_);
+    ui.ini_properties_file().set("Source file", source_file_);
+    ui.ini_properties_file().save();
+     */
 }
 
 void Startup::draw()
@@ -54,7 +57,7 @@ void Startup::draw()
 
     if (machine_path_[0] != '\0') {
 
-        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Machine: %s", user.machine_name());
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Machine: %s", model.machine().name.c_str());
 
         ImGui::SeparatorText("Connection");
 
@@ -65,7 +68,7 @@ void Startup::draw()
         if (connection_type == CT_SERIAL) {
             ImGui::InputTextWithHint("Serial port", "/dev/devttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
             if (ImGui::Button("Autodetect")) {
-                std::string port = FdbgClient::autodetect_usb_serial_port(user.microcontroller_vendor_id(), user.microcontroller_product_id());
+                std::string port =  FdbgClient::autodetect_usb_serial_port(model.machine().vendor_id, model.machine().product_id);
                 strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
             }
             ImGui::InputInt("Baud rate", &baud_rate_, 0);
@@ -82,14 +85,14 @@ void Startup::draw()
 
         if (ImGui::Button("Connect & Upload")) {
             save_config();
-            ui_.model().compile(source_file_);
+            model.compile(source_file_);
             if (connection_type == CT_EMULATOR)
-                ui_.model().connect_to_emulator();
+                model.connect_to_emulator("");    // TODO
             else
-                ui_.model().connect_to_serial_port(serial_port_, baud_rate_);
+                model.connect_to_serial_port(serial_port_, baud_rate_);
 
             visible_ = false;
-            ui_.init_debugging_session();
+            ui.init_debugging_session();
         }
     }
 
@@ -99,7 +102,7 @@ void Startup::draw()
     if (file_browser_.HasSelected()) {
         strncpy(machine_path_, file_browser_.GetSelected().c_str(), sizeof(machine_path_));
         file_browser_.ClearSelected();
-        load_machine(machine_path_);
+        // TODO - load machine
     }
 
     source_browser_.Display();

@@ -50,9 +50,6 @@ IMGUI_SRC = \
 F_DEBUGGER_SRC = \
         main.o \
         config/config.o \
-        emulator/emulator.o \
-        load/load.o \
-        model/debuginfo.o \
         model/model.o \
         ui/properties.o \
         ui/ui.o \

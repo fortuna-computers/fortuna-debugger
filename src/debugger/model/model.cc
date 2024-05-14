@@ -1,18 +1,13 @@
 #include "model.hh"
 
-#include "load/load.hh"
-
-DebuggerModel::~DebuggerModel()
+Model::Model()
 {
-    emulator_.kill();
+    config_.load();
 }
 
-void DebuggerModel::connect_to_emulator()
+void Model::connect_to_emulator(std::string const& path)
 {
-    std::string port = emulator_.init();
-
-    emulator_.run_as_thread();
-
+    std::string port = FdbgClient::start_emulator(path);
     connect_to_serial_port(port, EMULATOR_BAUD_RATE);
 
     if (!debug_.binaries.empty()) {
@@ -27,7 +22,7 @@ void DebuggerModel::connect_to_emulator()
     }
 }
 
-void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint32_t baud_rate)
+void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud_rate)
 {
     client_.connect(serial_port, baud_rate);
     connected_ = true;
@@ -35,17 +30,17 @@ void DebuggerModel::connect_to_serial_port(const std::string &serial_port, uint3
     client_.ack(user.machine_id());
 }
 
-void DebuggerModel::update()
+void Model::update()
 {
 }
 
-void DebuggerModel::initialize_memory()
+void Model::initialize_memory()
 {
     memory.pages = user.total_mappable_memory() / PAGE_SZ;
     change_memory_page(0);
 }
 
-void DebuggerModel::change_memory_page(int64_t page)
+void Model::change_memory_page(int64_t page)
 {
     if (page >= (int64_t) memory.pages)
         page = 0;
@@ -63,7 +58,7 @@ void DebuggerModel::change_memory_page(int64_t page)
     }
 }
 
-void DebuggerModel::compile(std::string const& source_file)
+void Model::compile(std::string const& source_file)
 {
     CompilationResult cr = user.compile(source_file.c_str());
     debug_.parse_and_free(cr);
@@ -79,7 +74,7 @@ void DebuggerModel::compile(std::string const& source_file)
         addr_sz_ = 8;
 }
 
-std::string DebuggerModel::fmt_addr(uint64_t addr) const
+std::string Model::fmt_addr(uint64_t addr) const
 {
     char buf[9] = {0};
     snprintf(buf, sizeof buf, "%0*llX", addr_sz_, addr);

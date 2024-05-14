@@ -11,7 +11,7 @@ void MainMenu::draw()
     ImGui::SetNextWindowSize(ImVec2(180, 0));
     ImGui::Begin("Main menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
 
-    if (ui_.model().connected()) {
+    if (model.connected()) {
         ImGui::SeparatorText("Debugger");
 
         button("Memory", "memory");
@@ -33,5 +33,5 @@ void MainMenu::draw()
 void MainMenu::button(std::string const &text, std::string const &window_name)
 {
     if (ImGui::Button(text.c_str(), sz))
-        ui_.set_window_visible(window_name, true);
+        ui.set_window_visible(window_name, true);
 }

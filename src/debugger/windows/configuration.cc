@@ -12,10 +12,10 @@ void Configuration::draw()
 
     ImGui::BeginTabItem("Initialization");
 
-    static bool verify = ui_.config().verify_upload_rom;
+    static bool verify = model.config().verify_upload_rom;
     if (ImGui::Checkbox("Verify memory after uploading ROM", &verify)) {
-        ui_.config().verify_upload_rom = verify;
-        ui_.config().save();
+        model.config().verify_upload_rom = verify;
+        model.config().save();
     }
 
     ImGui::EndTabItem();

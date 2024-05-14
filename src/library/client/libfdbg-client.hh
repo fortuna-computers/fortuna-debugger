@@ -42,6 +42,7 @@ public:
 
     // static methods
     static std::string autodetect_usb_serial_port(std::string const& vendor_id, std::string const& product_id);
+    static std::string start_emulator(std::string const& path);
 
 private:
     Machine           machine_;

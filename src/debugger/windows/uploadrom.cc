@@ -9,9 +9,9 @@ using namespace std::string_literals;
 
 void UploadROM::draw()
 {
-    if (ui_.model().upload_state()) {
+    if (model.upload_state()) {
 
-        auto const& upload = ui_.model().upload_state().value();
+        auto const& upload = model.upload_state().value();
         ImGui::OpenPopup("ROM upload");
 
         ImGui::SetNextWindowSize(ImVec2(400, 0));
@@ -24,7 +24,7 @@ void UploadROM::draw()
             ImGui::ProgressBar(upload.current / (float) upload.total, ImVec2(-FLT_MIN, 0),
                                ("Bytes: "s + std::to_string(upload.current) + " / " + std::to_string(upload.total)).c_str());
 
-            ImGui::Text("Address: 0x%s", ui_.model().fmt_addr(upload.address).c_str());
+            ImGui::Text("Address: 0x%s", model.fmt_addr(upload.address).c_str());
 
             ImGui::EndPopup();
         }

@@ -228,3 +228,38 @@ void FdbgClient::compile_and_write_memory(std::string const& source_filename, bo
     for (auto const& bin: di.binaries)
         write_memory_full(bin.load_pos, bin.rom, validate);
 }
+
+std::string FdbgClient::start_emulator(std::string const& path)
+{
+    // create pipe
+    int pipefd[2];
+    if (pipe(pipefd) != 0)
+        throw std::runtime_error("Error creating pipe: "s + strerror(errno));
+
+    // fork
+    pid_t pid = fork();
+    if (pid == -1)
+        throw std::runtime_error("Error creating fork: "s + strerror(errno));
+
+    if (pid == 0) {   // child process (server, emulator)
+        // redirect stdout to pipe
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+
+        // execute emulator
+        execl(path.c_str(), path.c_str(), nullptr);
+        throw std::runtime_error("Error executing emulator.");
+
+    } else {   // parent process (client)
+        close(pipefd[1]);
+
+        // read bytes from emulator
+        size_t i = 0;
+        char buffer[128] = {0};
+        do {
+            read(pipefd[0], &buffer[i++], 1);
+        } while (buffer[i-1] != 10 && buffer[i-1] != 13);
+
+        return buffer;
+    }
+}

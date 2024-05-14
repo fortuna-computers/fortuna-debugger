@@ -7,14 +7,13 @@
 #include <optional>
 
 #include "libfdbg-client.hh"
-#include "emulator/emulator.hh"
-#include "model/debuginfo.hh"
+#include "config/config.hh"
 
-class DebuggerModel {
+class Model {
     static constexpr size_t PAGE_SZ = 256;
 
 public:
-    ~DebuggerModel();
+    Model();
 
     struct Memory {
         size_t                 pages;
@@ -33,7 +32,7 @@ public:
 
     Memory memory { .pages = 1, .current_page = 0, .data = {{}} };
 
-    void connect_to_emulator();
+    void connect_to_emulator(std::string const& path);
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
 
     void update();
@@ -48,13 +47,18 @@ public:
 
     std::string fmt_addr(uint64_t addr) const;
 
+    Config&        config()  { return config_; }
+    Machine const& machine() const { return client_.machine(); }
+
 private:
     FdbgClient            client_;
-    Emulator              emulator_;
+    Config                config_;
     DebugInfo             debug_;
     std::optional<Upload> upload_;
     bool                  connected_;
     uint8_t               addr_sz_ = 0;
 };
+
+extern Model model;
 
 #endif //MODEL_HH_

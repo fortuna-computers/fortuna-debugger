@@ -187,6 +187,7 @@ FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud)
     FdbgServer* server = fdbg_server_init(machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
     server->fd = fd;
     snprintf(server->port, sizeof server->port, "%s", serial_port);
+    printf("%s\n", server->port);
     return server;
 }
 

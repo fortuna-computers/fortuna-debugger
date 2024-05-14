@@ -10,7 +10,7 @@
 
 class Startup : public Window {
 public:
-    explicit Startup(class UIInterface& ui, bool visible=false);
+    explicit Startup(bool visible=false);
 
     void draw() override;
 

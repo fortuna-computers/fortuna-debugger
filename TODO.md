@@ -48,9 +48,13 @@
 - [x] Move compilation to library
 - [x] Implement Compile & Upload
 - [x] Run emulator independently
-- [ ] What else can be moved to the library
-- [ ] Isolate UI model
+- [x] What else can be moved to the library
+- [x] Start emulator from client
+  - [x] Serial port synchronization
 - [ ] Refactor UI debugger
+  - [ ] Review model
+  - [ ] Create own ini management
+  - [ ] Add emulator path
 - [ ] Lua library (client, server)
 - [ ] Move findserial.py code to C++ library
 
