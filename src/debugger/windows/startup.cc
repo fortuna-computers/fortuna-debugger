@@ -47,7 +47,7 @@ void Startup::draw()
 
     ImGui::SeparatorText("Machine");
 
-    ImGui::Text("Select machine");
+    ImGui::Text("Select machine definition file");
     if (ImGui::Button("Load machine"))
         file_browser_.Open();
     ImGui::SameLine();
@@ -86,11 +86,12 @@ void Startup::draw()
 
         ImGui::SeparatorText("Connect");
 
+        // TODO - disable if fields are not filled out
         if (ImGui::Button("Connect & Upload")) {
             save_config();
             model.compile(source_file_);
             if (connection_type == CT_EMULATOR)
-                model.connect_to_emulator("");    // TODO
+                model.connect_to_emulator(emulator_path_);
             else
                 model.connect_to_serial_port(serial_port_, baud_rate_);
 
