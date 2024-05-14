@@ -96,6 +96,9 @@ void UI::run()
 
         for (auto const& [_, w]: windows_) {
             if (w->visible()) {
+#ifdef DISABLE_ERROR_HANDLING
+                w->draw();
+#else
                 try {
                     w->draw();
                 } catch (std::exception& e) {
@@ -104,6 +107,7 @@ void UI::run()
                     fprintf(stderr, "%s\n", e.what());
                     ((MessageBox *) windows_.at(msg_box_key_).get())->set_message(MessageBox::Type::Error, e.what());
                 }
+#endif
             }
         }
 

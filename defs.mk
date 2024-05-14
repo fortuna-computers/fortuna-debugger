@@ -29,5 +29,5 @@ PROTOBUF_LDFLAGS = `pkg-config --libs protobuf`
 ifdef RELEASE
 	CPPFLAGS += -O3 -DNDEBUG=1
 else
-	CPPFLAGS += -O0 -ggdb -DDEBUG=1
+	CPPFLAGS += -O0 -ggdb -DDEBUG=1 -DDISABLE_ERROR_HANDLING=1
 endif

@@ -2,7 +2,10 @@
 
 #include <lua.hpp>
 
+#include <string>
 #include <stdexcept>
+
+using namespace std::string_literals;
 
 Machine::Machine()
     : L(luaL_newstate())
@@ -18,18 +21,14 @@ Machine::~Machine()
 void Machine::get_field(const char* field, bool mandatory) const
 {
     lua_getfield(L, -1, field);
-    if (mandatory && lua_isnil(L, -1)) {
-        fprintf(stderr, "Field %s missing from lua response.\n", field);
-        exit(1);
-    }
+    if (mandatory && lua_isnil(L, -1))
+        throw std::runtime_error("Field '"s + field + "' missing from lua response");
 }
 
 void Machine::assert_stack(int sz) const
 {
-    if (lua_gettop(L) != sz) {
-        fprintf(stderr, "Lua stack size is different than %d.\n", sz);
-        exit(1);
-    }
+    if (lua_gettop(L) != sz)
+        throw std::runtime_error("Lua stack size is different than "s + std::to_string(sz));
 }
 
 bool Machine::field_bool(const char *field_name, bool mandatory) const
@@ -67,7 +66,7 @@ std::vector<uint8_t> Machine::field_byte_array(const char* field_name, bool mand
     value.reserve(field_len);
     for (size_t i = 0; i < field_len; ++i) {
         lua_rawgeti(L, -1, (lua_Integer) i + 1);
-        value.at(i) = (uint8_t) luaL_checkinteger(L, -1);
+        value.push_back((uint8_t) luaL_checkinteger(L, -1));
         lua_pop(L, 1);
     }
 
@@ -131,7 +130,7 @@ void Machine::load_user_definition(std::string const &filename)
 
 DebugInfo Machine::compile(std::string const& filename) const
 {
-    if (user_definition_loaded_)
+    if (!user_definition_loaded_)
         throw std::runtime_error("User definition not loaded yet");
 
     // execute compilation function
@@ -168,14 +167,14 @@ DebugInfo Machine::compile(std::string const& filename) const
         lua_pop(L, 1);
     }
     lua_pop(L, 1);
-    assert_stack(1);
+    assert_stack(2);
 
     // source lines
 
     get_field("source_lines", false);
 
-    size_t source_lines_n = luaL_len(L, -1);
     if (!lua_isnil(L, -1)) {
+        size_t source_lines_n = luaL_len(L, -1);
         for (size_t i = 0; i < source_lines_n; ++i) {
             lua_rawgeti(L, -1, (lua_Integer) i + 1);
 
@@ -191,14 +190,14 @@ DebugInfo Machine::compile(std::string const& filename) const
         }
     }
     lua_pop(L, 1);
-    assert_stack(1);
+    assert_stack(2);
 
     // symbols
 
     get_field("symbols", false);
 
-    size_t symbols_n = luaL_len(L, -1);
     if (!lua_isnil(L, -1)) {
+        size_t symbols_n = luaL_len(L, -1);
         for (size_t i = 0; i < symbols_n; ++i) {
             lua_rawgeti(L, -1, (lua_Integer) i + 1);
 
@@ -207,7 +206,7 @@ DebugInfo Machine::compile(std::string const& filename) const
             lua_pop(L, 1);
         }
     }
-    lua_pop(L, 1);
+    lua_pop(L, 2);   // also remove debugging info object
     assert_stack(1);
 
     return di;
