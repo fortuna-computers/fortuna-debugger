@@ -51,5 +51,3 @@ int main()
         fdbg_die_if_parent_dies();
     }
 }
-
-

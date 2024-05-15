@@ -52,9 +52,9 @@
 - [x] Start emulator from client
   - [x] Serial port synchronization
 - [ ] Refactor UI debugger
-  - [ ] Review model
+  - [x] Review model
+  - [x] Add emulator path
   - [ ] Create own ini management
-  - [ ] Add emulator path
   - [ ] Fix error when loading machine multiple times
 - [ ] Lua library (client, server)
 - [ ] Move findserial.py code to C++ library

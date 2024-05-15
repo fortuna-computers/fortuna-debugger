@@ -12,6 +12,10 @@ using namespace std::chrono_literals;
 
 int main()
 {
+    printf("[%s]\n", FdbgClient::start_emulator("../../chip8-emulator").c_str());
+
+    for (;;);
+#if 0
     bool server_running = true;
     const uint16_t MACHINE_ID = 0x1234;
 
@@ -93,4 +97,5 @@ int main()
     // finalize
     server_running = false;
     t.join();
+#endif
 }

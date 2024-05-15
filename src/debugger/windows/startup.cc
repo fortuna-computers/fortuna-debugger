@@ -8,22 +8,21 @@
 Startup::Startup(bool visible)
     : Window(visible)
 {
-    /*
-    if (ui.ini_properties_file().get("Connection type") == "hardware")
+    if (model.config().get_str("connection_type") == "hardware")
         connection_type = CT_SERIAL;
 
-    strncpy(machine_path_, ui.ini_properties_file().get("Machine path").c_str(), IM_ARRAYSIZE(machine_path_));
-    strncpy(serial_port_, ui.ini_properties_file().get("Serial port").c_str(), IM_ARRAYSIZE(serial_port_));
-    strncpy(source_file_, ui.ini_properties_file().get("Source file").c_str(), IM_ARRAYSIZE(source_file_));
+    strncpy(machine_path_, model.config().get_str("machine_path").c_str(), IM_ARRAYSIZE(machine_path_));
+    strncpy(emulator_path_, model.config().get_str("emulator_path").c_str(), IM_ARRAYSIZE(emulator_path_));
+    strncpy(serial_port_, model.config().get_str("serial_port").c_str(), IM_ARRAYSIZE(serial_port_));
+    strncpy(source_file_, model.config().get_str("source_file").c_str(), IM_ARRAYSIZE(source_file_));
 
     if (machine_path_[0] != '\0') {
         try {
-            load_machine(machine_path_);
+            model.load_machine(machine_path_);
         } catch (std::exception& e) {
             machine_path_[0] = '\0';
         }
     }
-     */
 
     file_browser_.SetTitle("Choose machine file");
     source_browser_.SetTitle("Choose source file");
@@ -31,13 +30,12 @@ Startup::Startup(bool visible)
 
 void Startup::save_config()
 {
-    /*
-    ui.ini_properties_file().set("Machine path", machine_path_);
-    ui.ini_properties_file().set("Connection type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
-    ui.ini_properties_file().set("Serial port", serial_port_);
-    ui.ini_properties_file().set("Source file", source_file_);
-    ui.ini_properties_file().save();
-     */
+    model.config().set("machine_path", machine_path_);
+    model.config().set("connection_type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
+    model.config().set("serial_port", serial_port_);
+    model.config().set("emulator_port", emulator_path_);
+    model.config().set("source_file", source_file_);
+    model.config().save();
 }
 
 void Startup::draw()
