@@ -33,7 +33,7 @@ void Startup::save_config()
     model.config().set("machine_path", machine_path_);
     model.config().set("connection_type", connection_type == CT_EMULATOR ? "emulator" : "hardware");
     model.config().set("serial_port", serial_port_);
-    model.config().set("emulator_port", emulator_path_);
+    model.config().set("emulator_path", emulator_path_);
     model.config().set("source_file", source_file_);
     model.config().save();
 }
