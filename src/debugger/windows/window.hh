@@ -9,12 +9,16 @@ public:
     virtual ~Window() = default;
 
     [[nodiscard]] bool visible() const { return visible_; }
-    virtual void set_visible(bool visible) { visible_ = visible; }
+    void set_visible(bool visible);
+
+    void reopen_debugging_session();
 
     // implement this
     virtual void draw() = 0;
+    virtual std::string name() const = 0;
+
     virtual void update() {}
-    [[nodiscard]] virtual std::string name() const = 0;
+    virtual bool is_debugging_window() const { return false; }
 
 protected:
     bool visible_;

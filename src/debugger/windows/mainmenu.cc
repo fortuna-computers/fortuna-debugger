@@ -11,7 +11,7 @@ void MainMenu::draw()
     ImGui::SetNextWindowSize(ImVec2(180, 0));
     ImGui::Begin("Main menu", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
 
-    if (model.connected()) {
+    if (model.debugging_session_started()) {
         ImGui::SeparatorText("Debugger");
 
         button("Memory", "memory");

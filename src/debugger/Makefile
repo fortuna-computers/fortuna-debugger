@@ -53,6 +53,7 @@ F_DEBUGGER_SRC = \
         model/model.o \
         ui/properties.o \
         ui/ui.o \
+        windows/window.o \
         windows/configuration.o \
         windows/demo.o \
         windows/mainmenu.o \

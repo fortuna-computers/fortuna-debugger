@@ -1,5 +1,7 @@
 #include "model.hh"
 
+#include "ui/ui.hh"
+
 Model::Model()
 {
     config_.load();
@@ -22,7 +24,8 @@ void Model::connect_to_emulator(std::string const& path)
                 .current = 0,
                 .total = debug_.binaries.front().rom.size(),
                 .address = debug_.binaries.front().load_pos,
-                .verifying = false,
+                .verify = config_.get_bool("verify_upload_rom"),
+                .upload_context = {}
         };
     }
 }
@@ -35,14 +38,34 @@ void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud
     client_.ack(machine().id);
 }
 
-void Model::update()
-{
-}
-
-void Model::initialize_memory()
+void Model::init_debugging_session()
 {
     memory.pages = machine().total_memory / PAGE_SZ;
     change_memory_page(0);
+
+    debugging_session_started_ = true;
+    ui.start_debugging_session();
+}
+
+void Model::update()
+{
+    if (upload_) {
+        auto const& binary = debug_.binaries[upload_->binary_idx];
+        bool in_progress = client_.write_memory_step(upload_->address, binary.rom, upload_->upload_context, upload_->verify);
+        if (in_progress) {
+            upload_->current += MAX_MEMORY_TRANSFER;
+        } else {
+            ++upload_->binary_idx;
+            if (upload_->binary_idx >= upload_->binary_count) {
+                upload_ = {};   // upload complete
+                return;
+            }
+            auto const& new_binary = debug_.binaries[upload_->binary_idx];
+            upload_->current = 0;
+            upload_->total = new_binary.rom.size();
+            upload_->address = new_binary.load_pos;
+        }
+    }
 }
 
 void Model::change_memory_page(int64_t page)

@@ -125,8 +125,9 @@ void UI::set_window_visible(std::string const& name, bool visible)
     windows_.at(name)->set_visible(visible);
 }
 
-void UI::init_debugging_session()
+void UI::start_debugging_session()
 {
-    set_window_visible("memory", true);
-    model.initialize_memory();
+    for (auto& window: windows_)
+        if (window.second->is_debugging_window())
+            window.second->reopen_debugging_session();
 }

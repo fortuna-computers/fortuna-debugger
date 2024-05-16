@@ -22,12 +22,13 @@ public:
     };
 
     struct Upload {
-        size_t   binary_idx;
-        size_t   binary_count;
-        size_t   current;
-        size_t   total;
-        uint64_t address;
-        bool   verifying;
+        size_t             binary_idx;
+        size_t             binary_count;
+        size_t             current;
+        size_t             total;
+        uint64_t           address;
+        bool               verify;
+        FdbgClient::Upload upload_context;
     };
 
     Memory memory { .pages = 1, .current_page = 0, .data = {{}} };
@@ -39,6 +40,7 @@ public:
 
     void update();
 
+    void init_debugging_session();
     void initialize_memory();
     void change_memory_page(int64_t page);
 
@@ -46,6 +48,7 @@ public:
 
     std::optional<Upload> const &upload_state() const { return upload_; }
     bool connected() const { return connected_; }
+    bool debugging_session_started() const { return debugging_session_started_; }
 
     std::string fmt_addr(uint64_t addr) const;
 
@@ -58,6 +61,7 @@ private:
     DebugInfo             debug_;
     std::optional<Upload> upload_;
     bool                  connected_;
+    bool                  debugging_session_started_ = false;
     uint8_t               addr_sz_ = 0;
 };
 

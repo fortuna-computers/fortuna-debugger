@@ -10,6 +10,7 @@ public:
     void draw() override;
 
     std::string name() const override { return "memory"; }
+    bool is_debugging_window() const override { return true; }
 
     void go_to_page_number(int64_t page);
 

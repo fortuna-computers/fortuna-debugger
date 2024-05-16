@@ -18,8 +18,8 @@ public:
 
     void run();
 
-    void set_window_visible(std::string const& name, bool visible) ;
-    void init_debugging_session();
+    void set_window_visible(std::string const& name, bool visible);
+    void start_debugging_session();
 
 private:
     template <typename W> std::string add_window(bool visible=false) {

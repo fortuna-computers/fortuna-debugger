@@ -56,15 +56,19 @@
   - [x] Add emulator path
   - [x] Create own ini management
   - [x] Fix error when loading machine multiple times
-- [ ] Lua library (client, server)
-- [ ] Move findserial.py code to C++ library
 
 # Compilation
 
 - [x] Install and test chip-8 compiler
 - [x] Create interfaces (debugging info, compiler output, ROM, and file list, location in memory)
 - [x] Compile
-- [ ] Upload to ROM
+- [x] Upload to ROM
+
+# Reactory 2
+
+- [ ] Lua library (client, server)
+- [ ] Move findserial.py code to C++ library
+- [ ] Ordering issue when building in parallel
 
 # CPU
 
