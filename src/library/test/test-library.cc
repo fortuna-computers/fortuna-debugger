@@ -12,10 +12,6 @@ using namespace std::chrono_literals;
 
 int main()
 {
-    printf("[%s]\n", FdbgClient::start_emulator("../../chip8-emulator").c_str());
-
-    for (;;);
-#if 0
     bool server_running = true;
     const uint16_t MACHINE_ID = 0x1234;
 
@@ -30,13 +26,20 @@ int main()
     std::thread t([&server_running, &server](){
 
         FdbgServerEvents events = {
-            .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
-                return true;
-            },
-            .read_memory = [](FdbgServer*, uint64_t, uint8_t sz, uint8_t* out_data) {
-                for (size_t i = 0; i < sz; ++i)
-                    out_data[i] = i + 1;
-            },
+                .get_computer_status = [](FdbgServer*) {
+                    return (fdbg_ComputerStatus) {
+                        .pc = 0x30,
+                        .registers = { .size = 0, .bytes = {} },
+                        .stack = { .size = 0, .bytes = {} },
+                    };
+                },
+                .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
+                    return true;
+                },
+                .read_memory = [](FdbgServer*, uint64_t, uint8_t sz, uint8_t* out_data) {
+                    for (size_t i = 0; i < sz; ++i)
+                        out_data[i] = i + 1;
+                },
         };
 
         while (server_running) {
@@ -91,11 +94,18 @@ int main()
         }
 
         printf("==============================================\n");
+
+        {
+            fdbg::ComputerStatus cstatus = client.request_computer_status();
+            if (cstatus.pc() != 0x30)
+                throw std::runtime_error("Incorrect computer status");
+        }
+
+        printf("==============================================\n");
         printf("Client finalized.\n");
     }
 
     // finalize
     server_running = false;
     t.join();
-#endif
 }

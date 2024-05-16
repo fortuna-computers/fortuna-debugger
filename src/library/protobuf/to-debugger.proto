@@ -20,11 +20,18 @@ message ReadMemoryResponse {
   bytes  bytes       = 2;
 };
 
+message ComputerStatus {
+  uint64 pc            = 1;   // program counter
+  bytes  registers     = 2;
+  bytes  stack         = 3;
+};
+
 message ToDebugger {
   Status status = 1;
   oneof message {
     AckResponse         ack_response          = 2;
     WriteMemoryResponse write_memory_response = 3;
     ReadMemoryResponse  read_memory_response  = 4;
+    ComputerStatus      computer_status       = 5;
   }
 }

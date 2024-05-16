@@ -1,1 +1,3 @@
 fdbg.ReadMemoryResponse.bytes max_size:64
+fdbg.ComputerStatus.registers max_size:64
+fdbg.ComputerStatus.stack max_size:32

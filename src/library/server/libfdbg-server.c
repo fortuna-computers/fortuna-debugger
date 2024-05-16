@@ -108,7 +108,16 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 
             case fdbg_ToComputer_ack_tag: {
                 rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
+                rmsg.status = fdbg_Status_OK;
                 rmsg.message.ack_response.id = server->machine_id;
+                break;
+            }
+
+            case fdbg_ToComputer_request_computer_status_tag: {
+                fdbg_ComputerStatus cstatus = events->get_computer_status(server);
+                rmsg.status = fdbg_Status_OK;
+                rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
+                memcpy(&rmsg.message.computer_status, &cstatus, sizeof cstatus);
                 break;
             }
 
@@ -131,6 +140,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
             }
 
             case fdbg_ToComputer_read_memory_tag: {
+                rmsg.status = fdbg_Status_OK;
                 if (msg.message.read_memory.sz > MAX_MEMORY_TRANSFER)
                     msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
                 uint8_t buf[msg.message.read_memory.sz];
@@ -143,9 +153,9 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 rmsg.message.read_memory_response.initial_pos = msg.message.read_memory.initial_addr;
                 rmsg.message.read_memory_response.bytes.size = msg.message.read_memory.sz;
                 memcpy(rmsg.message.read_memory_response.bytes.bytes, buf, msg.message.read_memory.sz);
-                }
                 break;
             }
+        }
 
         return fdbg_send_message(server, &rmsg);
     }

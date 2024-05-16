@@ -67,18 +67,22 @@
 # Bugfixes
 
 - [x] Memory is not uploading
-- [ ] Ordering issue when building in parallel
-- [ ] Configuration: debugging session
-- [ ] ./findserial.py path
+- [x] Ordering issue when building in parallel
+- [x] ./findserial.py path
 
 # CPU
 
+- [x] Protobuf messages
+  - [x] Registers in machine definition
+  - [x] Library request/response
+- [ ] Port CPU code
 - [ ] Stack in memory window
 - [ ] Show PC in memory window
 
 # Reactory 2
 
 - [ ] Lua library (client, server)
+- [ ] Configuration: debugging level
 - [ ] Move findserial.py code to C++ library
 
 

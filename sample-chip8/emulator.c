@@ -8,6 +8,18 @@
 #include "libfdbg-server.h"
 
 static uint8_t* ram;
+static uint16_t pc = 0;
+
+fdbg_ComputerStatus get_computer_status(FdbgServer* server)
+{
+    (void) server;
+
+    fdbg_ComputerStatus cstatus;
+    cstatus.pc = pc;
+    cstatus.registers.size = 0;   // TODO
+    cstatus.stack.size = 0;       // TODO
+    return cstatus;
+}
 
 bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
 {
@@ -41,6 +53,7 @@ int main()
 #endif
 
     FdbgServerEvents events = {
+            .get_computer_status = get_computer_status,
             .write_memory = write_memory,
             .read_memory = read_memory,
     };
