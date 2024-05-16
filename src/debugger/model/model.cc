@@ -16,7 +16,18 @@ void Model::connect_to_emulator(std::string const& path)
 {
     std::string port = FdbgClient::start_emulator(path);
     connect_to_serial_port(port, EMULATOR_BAUD_RATE);
+}
 
+void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud_rate)
+{
+    client_.connect(serial_port, baud_rate);
+    connected_ = true;
+    client_.set_debugging_level(DebuggingLevel::TRACE);
+    client_.ack(machine().id);
+}
+
+void Model::upload_rom_and_start()
+{
     if (!debug_.binaries.empty()) {
         upload_ = Upload {
                 .binary_idx = 0,
@@ -27,15 +38,9 @@ void Model::connect_to_emulator(std::string const& path)
                 .verify = config_.get_bool("verify_upload_rom"),
                 .upload_context = {}
         };
+    } else {
+        init_debugging_session();
     }
-}
-
-void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud_rate)
-{
-    client_.connect(serial_port, baud_rate);
-    connected_ = true;
-    client_.set_debugging_level(DebuggingLevel::TRACE);
-    client_.ack(machine().id);
 }
 
 void Model::init_debugging_session()
@@ -56,8 +61,9 @@ void Model::update()
             upload_->current += MAX_MEMORY_TRANSFER;
         } else {
             ++upload_->binary_idx;
-            if (upload_->binary_idx >= upload_->binary_count) {
-                upload_ = {};   // upload complete
+            if (upload_->binary_idx >= upload_->binary_count) { // upload complete
+                upload_ = {};
+                init_debugging_session();
                 return;
             }
             auto const& new_binary = debug_.binaries[upload_->binary_idx];
@@ -104,3 +110,4 @@ std::string Model::fmt_addr(uint64_t addr) const
     snprintf(buf, sizeof buf, "%0*llX", addr_sz_, addr);
     return buf;
 }
+

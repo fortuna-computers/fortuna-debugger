@@ -94,7 +94,7 @@ void Startup::draw()
                 model.connect_to_serial_port(serial_port_, baud_rate_);
 
             visible_ = false;
-            model.init_debugging_session();
+            model.upload_rom_and_start();
         }
     }
 

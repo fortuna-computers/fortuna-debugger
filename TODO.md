@@ -64,16 +64,23 @@
 - [x] Compile
 - [x] Upload to ROM
 
-# Reactory 2
+# Bugfixes
 
-- [ ] Lua library (client, server)
-- [ ] Move findserial.py code to C++ library
+- [x] Memory is not uploading
 - [ ] Ordering issue when building in parallel
+- [ ] Configuration: debugging session
+- [ ] ./findserial.py path
 
 # CPU
 
 - [ ] Stack in memory window
 - [ ] Show PC in memory window
+
+# Reactory 2
+
+- [ ] Lua library (client, server)
+- [ ] Move findserial.py code to C++ library
+
 
 # Video
 

@@ -1,8 +1,9 @@
+#define RANDOM_MEMORY_AT_START
+
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 
 #include "libfdbg-server.h"
 
@@ -31,11 +32,13 @@ int main()
 {
     FdbgServer* server = fdbg_server_init_pc(0x38f7, EMULATOR_BAUD_RATE);
 
-    ram = malloc(4 * 1024);
+    ram = calloc(4, 1024);
 
+#ifdef RANDOM_MEMORY_AT_START
     srand(time(0));
     for (size_t i = 0; i < 4 * 1024; ++i)
         ram[i] = rand() & 0xff;
+#endif
 
     FdbgServerEvents events = {
             .write_memory = write_memory,
