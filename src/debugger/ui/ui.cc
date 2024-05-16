@@ -18,6 +18,7 @@
 #include "windows/memory.hh"
 #include "windows/configuration.hh"
 #include "windows/uploadrom.hh"
+#include "windows/code.hh"
 
 UI::UI()
 {
@@ -66,6 +67,7 @@ UI::UI()
     add_window<Configuration>();
     add_window<Demo>();
     add_window<Memory>();
+    add_window<Code>();
     add_window<UploadROM>(true);
     msg_box_key_ = add_window<MessageBox>();
 }

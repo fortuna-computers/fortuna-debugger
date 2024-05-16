@@ -113,7 +113,8 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 break;
             }
 
-            case fdbg_ToComputer_request_computer_status_tag: {
+            case fdbg_ToComputer_reset_tag: {
+                events->reset(server);
                 fdbg_ComputerStatus cstatus = events->get_computer_status(server);
                 rmsg.status = fdbg_Status_OK;
                 rmsg.which_message = fdbg_ToDebugger_computer_status_tag;

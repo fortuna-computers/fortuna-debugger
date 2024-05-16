@@ -162,10 +162,10 @@ void FdbgClient::ack(uint32_t id)
         throw std::runtime_error("Invalid id received from server during ack");
 }
 
-fdbg::ComputerStatus FdbgClient::request_computer_status()
+fdbg::ComputerStatus FdbgClient::reset()
 {
     fdbg::ToComputer msg;
-    msg.set_allocated_request_computer_status(new fdbg::RequestComputerStatus());
+    msg.set_allocated_reset(new fdbg::Reset());
 
     return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
 }

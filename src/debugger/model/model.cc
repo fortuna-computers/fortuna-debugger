@@ -45,6 +45,8 @@ void Model::upload_rom_and_start()
 
 void Model::init_debugging_session()
 {
+    computer_status_ = client_.reset();
+
     memory.pages = machine().total_memory / PAGE_SZ;
     change_memory_page(0);
 
@@ -92,9 +94,17 @@ void Model::change_memory_page(int64_t page)
     }
 }
 
+void Model::reset()
+{
+    computer_status_ = client_.reset();
+}
+
 void Model::compile(std::string const& source_file)
 {
     debug_ = client_.machine().compile(source_file);
+
+    for (auto const& file: debug_.files)
+        files_cstr_.push_back(file.c_str());
 
     if (machine().total_memory <= 0xffff)
         addr_sz_ = 4;

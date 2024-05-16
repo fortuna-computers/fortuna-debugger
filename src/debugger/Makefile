@@ -54,6 +54,7 @@ F_DEBUGGER_SRC = \
         ui/properties.o \
         ui/ui.o \
         windows/window.o \
+        windows/code.o \
         windows/configuration.o \
         windows/demo.o \
         windows/mainmenu.o \

@@ -84,7 +84,7 @@ std::vector<std::string> Machine::field_string_array(const char* field_name, boo
     size_t field_len = lua_isnil(L, -1) ? 0 : luaL_len(L, -1);
 
     std::vector<std::string> value;
-    value.reserve(field_len);
+    value.resize(field_len);
     for (size_t i = 0; i < field_len; ++i) {
         lua_rawgeti(L, -1, (lua_Integer) i + 1);
         value.at(i) = luaL_checkstring(L, -1);
@@ -151,7 +151,7 @@ DebugInfo Machine::compile(std::string const& filename) const
     di.success = field_bool("success");
     di.result_info = field_str("result_info", false);
     di.error_info = field_str("error_info", !di.success);
-    di.files = field_string_array("files", false);
+    di.files = field_string_array("files", true);
 
     // binaries
 

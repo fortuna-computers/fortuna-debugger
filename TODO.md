@@ -78,6 +78,7 @@
 - [ ] Port CPU code
 - [ ] Stack in memory window
 - [ ] Show PC in memory window
+- [ ] Recompilation support
 
 # Reactory 2
 

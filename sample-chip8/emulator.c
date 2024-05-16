@@ -21,6 +21,13 @@ fdbg_ComputerStatus get_computer_status(FdbgServer* server)
     return cstatus;
 }
 
+void reset(FdbgServer* server)
+{
+    (void) server;
+
+    pc = 0;
+}
+
 bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
 {
     (void) server;
@@ -54,6 +61,7 @@ int main()
 
     FdbgServerEvents events = {
             .get_computer_status = get_computer_status,
+            .reset = reset,
             .write_memory = write_memory,
             .read_memory = read_memory,
     };

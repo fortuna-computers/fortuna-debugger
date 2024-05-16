@@ -16,13 +16,13 @@ message ReadMemory {
   uint32 sequences    = 3;
 }
 
-message RequestComputerStatus {}
+message Reset {}
 
 message ToComputer {
   oneof message {
-    Ack                   ack                     = 1;
-    RequestComputerStatus request_computer_status = 2;
-    WriteMemory           write_memory            = 3;
-    ReadMemory            read_memory             = 4;
+    Ack         ack          = 1;
+    Reset       reset        = 2;   // response: ComputerStatus
+    WriteMemory write_memory = 3;
+    ReadMemory  read_memory  = 4;
   }
 }

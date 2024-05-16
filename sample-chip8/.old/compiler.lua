@@ -1,5 +1,5 @@
 return function(source_file)
-    return {
+    local result = {
         success = true,
         result_info = "Compilation successful",
         files = { "MAZE.SRC" },
@@ -15,4 +15,6 @@ return function(source_file)
             { rom = { 61, 62, 63 }, load_pos = 30 },
         }
     }
+    print(result.files)
+    return result
 end

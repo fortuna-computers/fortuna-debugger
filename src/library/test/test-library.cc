@@ -33,6 +33,7 @@ int main()
                         .stack = { .size = 0, .bytes = {} },
                     };
                 },
+                .reset = [](FdbgServer*) {},
                 .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
                     return true;
                 },
@@ -96,7 +97,7 @@ int main()
         printf("==============================================\n");
 
         {
-            fdbg::ComputerStatus cstatus = client.request_computer_status();
+            fdbg::ComputerStatus cstatus = client.reset();
             if (cstatus.pc() != 0x30)
                 throw std::runtime_error("Incorrect computer status");
         }

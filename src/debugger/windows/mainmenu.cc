@@ -14,6 +14,7 @@ void MainMenu::draw()
     if (model.debugging_session_started()) {
         ImGui::SeparatorText("Debugger");
 
+        button("Debugger (code)", "code");
         button("Memory", "memory");
     }
 
