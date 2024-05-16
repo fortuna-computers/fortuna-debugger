@@ -204,7 +204,7 @@ const char* fdbg_server_serial_port(FdbgServer* server)
 
 void fdbg_die_if_parent_dies()
 {
-    if (getpid() == 1) {
+    if (getppid() == 1) {
         char filename[512];
         snprintf(filename, sizeof filename, "%s/fdbg.%d", getenv("TMPDIR"), getpid());
         unlink(filename);
