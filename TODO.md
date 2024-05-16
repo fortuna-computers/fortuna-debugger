@@ -54,8 +54,8 @@
 - [ ] Refactor UI debugger
   - [x] Review model
   - [x] Add emulator path
-  - [ ] Create own ini management
-  - [ ] Fix error when loading machine multiple times
+  - [x] Create own ini management
+  - [x] Fix error when loading machine multiple times
 - [ ] Lua library (client, server)
 - [ ] Move findserial.py code to C++ library
 

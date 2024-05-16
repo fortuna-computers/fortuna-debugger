@@ -99,6 +99,8 @@ std::vector<std::string> Machine::field_string_array(const char* field_name, boo
 
 void Machine::load_user_definition(std::string const &filename)
 {
+    lua_settop(L, 0);  // clear the stack
+
     int r = luaL_loadfile(L, filename.c_str());
     if (r != LUA_OK)
         throw std::runtime_error("Lua error loading the machine definition");
