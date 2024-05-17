@@ -14,8 +14,9 @@ struct DebugInfo {
     };
 
     struct SourceLine {
-        std::string line;
         uint64_t    address;
+        std::string line;
+        std::string comment;
     };
 
     bool                                            success;

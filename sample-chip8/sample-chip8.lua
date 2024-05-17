@@ -4,6 +4,7 @@ return {
         id = 0x38f7,
         name = "CHIP-8",
         total_memory = 4 * 1024,
+        comment_separators = ';#'
     },
 
     microcontroller = {
@@ -18,7 +19,7 @@ return {
             result_info = "Compilation successful",
             files = { "MAZE.SRC" },
             source_lines = {
-                { line = "    nop", file_idx=1, line_number=1, address=0x0 },
+                { line = "    nop  ; do nothing", file_idx=1, line_number=1, address=0x0 },
                 { line = "hello:",  file_idx=1, line_number=2 },
                 { line = "    nop", file_idx=1, line_number=3, address=0x1 },
             },

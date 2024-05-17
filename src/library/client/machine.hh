@@ -17,6 +17,7 @@ public:
     uint16_t    id;
     std::string name;
     uint64_t    total_memory;
+    std::string comment_separators;
 
     int         uc_baudrate;
     std::string vendor_id;

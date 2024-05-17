@@ -62,6 +62,7 @@ public:
     Machine const&               machine() const { return client_.machine(); }
     DebugInfo const&             debug() const { return debug_; }
     std::vector<const char*> const& files_cstr() const { return files_cstr_; }
+    fdbg::ComputerStatus const&  computer_status() const { return computer_status_; }
 
     std::string fmt_addr(uint64_t addr) const;
 

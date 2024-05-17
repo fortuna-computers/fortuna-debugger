@@ -115,6 +115,7 @@ void Machine::load_user_definition(std::string const &filename)
     id = field_int("id");
     name = field_str("name");
     total_memory = field_int("total_memory");
+    comment_separators = field_str("comment_separators");
     lua_pop(L, 1);
 
     get_field("microcontroller", false);
@@ -181,6 +182,15 @@ DebugInfo Machine::compile(std::string const& filename) const
             lua_rawgeti(L, -1, (lua_Integer) i + 1);
 
             std::string line = field_str("line");
+            std::string comment;
+            if (!comment_separators.empty()) {
+                size_t p = line.find_first_of(comment_separators);
+                if (p != std::string::npos) {
+                    comment = line.substr(p);
+                    line = line.substr(0, p);
+                }
+            }
+
             size_t file_idx = field_int("file_idx");
             size_t line_nr = field_int("line_number");
 
@@ -188,7 +198,7 @@ DebugInfo Machine::compile(std::string const& filename) const
             uint64_t address = lua_isnil(L, -1) ? DebugInfo::NO_ADDRESS : luaL_checkinteger(L, -1);
             lua_pop(L, 2);  // clear address + current iteration
 
-            di.source_lines[std::pair(file_idx - 1, line_nr)] = { line, address };
+            di.source_lines[std::pair(file_idx - 1, line_nr)] = { address, line, comment };
         }
     }
     lua_pop(L, 1);

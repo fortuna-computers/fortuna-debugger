@@ -76,14 +76,26 @@
   - [x] Registers in machine definition
   - [x] Library request/response
 - [x] Show code in window
-- [ ] Stack in memory window
-- [ ] Show PC in memory window
-- [ ] Recompilation support
-- [ ] Breakpoints
-- [ ] Syntax highlighting
+  - [x] Color PC
+- [x] Syntax highlighting
 - [ ] Step (simple, advanced)
+  - [ ] Protobuf
+  - [ ] Library
+  - [ ] UI
+    - [ ] Move selected line
+- [ ] Breakpoints
+  - [ ] Protobuf
+  - [ ] Library
+  - [ ] UI
+  - [ ] What to do on recompilation/restart?
 - [ ] Cycle
 - [ ] Run
+- [ ] Recompilation support
+
+# Memory changes
+
+- [ ] Stack in memory window
+- [ ] Show PC in memory window
 
 # Reactory 2
 

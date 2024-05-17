@@ -77,6 +77,10 @@ void Code::draw_code()
 
             ImGui::TableSetColumnIndex(0);
             if (sl.address != DebugInfo::NO_ADDRESS) {
+                if (sl.address == model.computer_status().pc()) {
+                    ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, pc_row_color);
+                }
+
                 std::string addr = model.fmt_addr(sl.address);
                 if (ImGui::Selectable(addr.c_str())) {
                     // TODO - deal with breakpoint
@@ -86,72 +90,12 @@ void Code::draw_code()
             // line
 
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", sl.line.c_str());  // TODO - syntax highlighting
-        }
-
-        /*
-        for (auto const& line: code_model_->lines()) {
-
-            ImGui::TableNextRow();
-
-            if (line.address.has_value()) {
-                if (*line.address == emulator_.pc()) {
-                    ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, pc_row_color);
-                    if (scroll_to_pc_) {
-                        ImRect rect { ImGui::GetItemRectMin(), ImGui::GetItemRectMin() };
-                        rect.Expand({ 0, 60 });
-                        ImGui::ScrollToBringRectIntoView(ImGui::GetCurrentWindow(), rect);
-                        scroll_to_pc_ = false;
-                    }
-                }
-
-                bool is_breakpoint = emulator_.is_breakpoint(*line.address);
-
-                if (is_breakpoint)
-                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, bkp_cell_color, 0);
-
-                if (nline == show_this_line_on_next_frame_.value_or(-1)) {
-                    ImGui::SetScrollHereY();
-                    show_this_line_on_next_frame_.reset();
-                }
-
-                ImGui::TableSetColumnIndex(0);
-                char buf[5];
-                sprintf(buf, "%04X", *line.address);
-                if (ImGui::Selectable(buf)) {
-                    if (is_breakpoint)
-                        code_model_->remove_breakpoint(nline);
-                    else
-                        code_model_->add_breakpoint(nline);
-                }
-            }
-
-            ImGui::TableSetColumnIndex(1);
-            char buf[256] = { 0 };
-            int pos = 0;
-
-            for (auto b: line.bytes) {
-                if (pos > sizeof(buf) - 5)
-                    break;
-                pos += sprintf(&buf[pos], "%02X ", b);
-            }
-
-            if (!line.bytes.empty())
-                ImGui::Text("%s", buf);
-
-            ImGui::TableSetColumnIndex(2);
-
-            if (line.comment_start) {
-                ImGui::Text("%s", line.code.substr(0, *line.comment_start).c_str());
+            ImGui::Text("%s", sl.line.c_str());
+            if (!sl.comment.empty()) {
                 ImGui::SameLine(0, 0);
-                ImGui::TextColored(ImVec4(1.0f, 0.7f, 1.0f, 1.0f), "%s", line.code.substr(*line.comment_start).c_str());
-            } else {
-                ImGui::Text("%s", line.code.c_str());
+                ImGui::TextColored(ImVec4(1.0f, 0.7f, 1.0f, 1.0f), "%s", sl.comment.c_str());
             }
-
-            ++nline;
         }
-         */
 
         ImGui::EndTable();
     }
