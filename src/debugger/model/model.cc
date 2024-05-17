@@ -130,3 +130,18 @@ std::string Model::fmt_addr(uint64_t addr) const
     return buf;
 }
 
+void Model::add_breakpoint(uint64_t addr)
+{
+    breakpoints_ = client_.add_breakpoint(addr);
+}
+
+void Model::remove_breakpoint(uint64_t addr)
+{
+    breakpoints_ = client_.remove_breakpoint(addr);
+}
+
+void Model::clear_breakpoints()
+{
+    breakpoints_.clear();
+    client_.clear_breakpoints();
+}

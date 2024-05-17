@@ -5,6 +5,9 @@
 #include <cstdint>
 
 #include <optional>
+#include <set>
+#include <string>
+#include <vector>
 
 #include "libfdbg-client.hh"
 #include "config/config.hh"
@@ -53,18 +56,22 @@ public:
     void change_memory_page(int64_t page);
     void reset();
     void step(bool full);
+    void add_breakpoint(uint64_t addr);
+    void remove_breakpoint(uint64_t addr);
+    void clear_breakpoints();
 
     // getters
 
-    std::optional<Upload> const& upload_state() const { return upload_; }
-    bool                         connected() const { return connected_; }
-    bool                         debugging_session_started() const { return debugging_session_started_; }
-    Config&                      config()  { return config_; }
-    Machine const&               machine() const { return client_.machine(); }
-    DebugInfo const&             debug() const { return debug_; }
+    std::optional<Upload> const&    upload_state() const { return upload_; }
+    bool                            connected() const { return connected_; }
+    bool                            debugging_session_started() const { return debugging_session_started_; }
+    Config&                         config()  { return config_; }
+    Machine const&                  machine() const { return client_.machine(); }
+    DebugInfo const&                debug() const { return debug_; }
     std::vector<const char*> const& files_cstr() const { return files_cstr_; }
     std::vector<const char*> const& symbols_cstr() const { return symbols_cstr_; }
-    fdbg::ComputerStatus const&  computer_status() const { return computer_status_; }
+    fdbg::ComputerStatus const&     computer_status() const { return computer_status_; }
+    std::set<uint64_t> const&       breakpoints() const { return breakpoints_; }
 
     std::string fmt_addr(uint64_t addr) const;
 
@@ -79,6 +86,7 @@ private:
     fdbg::ComputerStatus     computer_status_;
     std::vector<const char*> files_cstr_;
     std::vector<const char*> symbols_cstr_;
+    std::set<uint64_t>       breakpoints_;
 
     void init_debugging_session();
 };

@@ -276,3 +276,36 @@ std::string FdbgClient::start_emulator(std::string const& path)
         return buffer.str();
     }
 }
+
+std::set<uint64_t> FdbgClient::add_breakpoint(uint64_t addr)
+{
+    return breakpoint(fdbg::Breakpoint_Action_ADD, addr);
+}
+
+std::set<uint64_t> FdbgClient::remove_breakpoint(uint64_t addr)
+{
+    return breakpoint(fdbg::Breakpoint_Action_REMOVE, addr);
+}
+
+void FdbgClient::clear_breakpoints()
+{
+    breakpoint(fdbg::Breakpoint_Action_CLEAR_ALL, 0);
+}
+
+std::set<uint64_t> FdbgClient::breakpoint(fdbg::Breakpoint::Action action, uint64_t addr)
+{
+    fdbg::ToComputer msg;
+    auto bkp = new fdbg::Breakpoint();
+    bkp->set_action(action);
+    bkp->set_address(addr);
+    msg.set_allocated_breakpoint(bkp);
+
+    auto rmsg = send_message(msg, fdbg::ToDebugger::kBreakpointList);
+    if (rmsg.status() == fdbg::TOO_MANY_BREAKPOINTS)
+        throw std::runtime_error("Too many breakpoints");
+
+    std::set<uint64_t> ret;
+    for (size_t i = 0; i < rmsg.breakpoint_list().addr_size(); ++i)
+        ret.insert(rmsg.breakpoint_list().addr(i));
+    return ret;
+}

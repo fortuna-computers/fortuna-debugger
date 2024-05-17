@@ -5,6 +5,7 @@ package fdbg;
 enum Status {
   OK = 0;
   ERR_WRITING_MEMORY = 1;
+  TOO_MANY_BREAKPOINTS = 2;
 }
 
 message AckResponse {
@@ -26,6 +27,10 @@ message ComputerStatus {
   bytes  stack         = 3;
 };
 
+message BreakpointList {
+  repeated uint64 addr = 1;
+};
+
 message ToDebugger {
   Status status = 1;
   oneof message {
@@ -33,5 +38,6 @@ message ToDebugger {
     WriteMemoryResponse write_memory_response = 3;
     ReadMemoryResponse  read_memory_response  = 4;
     ComputerStatus      computer_status       = 5;
+    BreakpointList      breakpoint_list       = 6;
   }
 }

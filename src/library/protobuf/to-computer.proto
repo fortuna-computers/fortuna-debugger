@@ -22,6 +22,16 @@ message Step {
   bool full = 1;
 }
 
+message Breakpoint {
+  enum Action {
+    ADD       = 0;
+    REMOVE    = 1;
+    CLEAR_ALL = 2;
+  }
+  uint64 address = 1;
+  Action action  = 2;
+}
+
 message ToComputer {
   oneof message {
     Ack         ack          = 1;
@@ -29,5 +39,6 @@ message ToComputer {
     WriteMemory write_memory = 3;
     ReadMemory  read_memory  = 4;
     Step        step         = 5;   // response: ComputerStatus
+    Breakpoint  breakpoint   = 6;   // response: breakpoint list
   }
 }

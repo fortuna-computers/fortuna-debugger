@@ -15,7 +15,7 @@ K := $(if $(shell pkg-config --modversion lua),,$(error "lua pkg-config file not
 # flags
 #
 
-CPPFLAGS += $(shell pkg-config --cflags lua)
+CPPFLAGS += $(shell pkg-config --cflags lua) -DADDR_TYPE=uint64_t
 LUA_LIBS = $(shell pkg-config --libs lua)
 
 #

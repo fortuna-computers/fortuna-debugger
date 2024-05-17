@@ -102,9 +102,16 @@ void Code::draw_code()
 
             ImGui::TableSetColumnIndex(0);
             if (sl.address != DebugInfo::NO_ADDRESS) {
+
+                bool is_bkp = model.breakpoints().contains(sl.address);
+
+                // colors
                 if (sl.address == model.computer_status().pc())
                     ImGui::TableSetBgColor(ImGuiTableBgTarget_RowBg1, pc_row_color);
+                if (is_bkp)
+                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, bkp_cell_color, 0);
 
+                // scroll to row
                 if (scroll_to_addr_in_next_frame_ && scroll_to_addr_in_next_frame_ == sl.address) {
                     ImRect rect { ImGui::GetItemRectMin(), ImGui::GetItemRectMin() };
                     rect.Expand({ 0, 40 });
@@ -112,9 +119,13 @@ void Code::draw_code()
                     scroll_to_addr_in_next_frame_ = {};
                 }
 
+                // address
                 std::string addr = model.fmt_addr(sl.address);
                 if (ImGui::Selectable(addr.c_str())) {
-                    // TODO - deal with breakpoint
+                    if (is_bkp)
+                        model.remove_breakpoint(sl.address);
+                    else
+                        model.add_breakpoint(sl.address);
                 }
             }
 

@@ -21,19 +21,24 @@
 #include "pb_encode.h"
 
 typedef struct FdbgServer {
-    uint16_t machine_id;
+    uint16_t              machine_id;
     FdbgServerIOCallbacks io_callbacks;
+    ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
 #ifndef MICROCONTROLLER
-    int  fd;
-    char port[256];
+    int                   fd;
+    char                  port[256];
 #endif
 } FdbgServer;
+
+#define NO_BREAKPOINT ((ADDR_TYPE) -1)
 
 FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
 {
     FdbgServer* server = calloc(1, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
+    for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
+        server->breakpoints[i] = NO_BREAKPOINT;
     return server;
 }
 
@@ -165,6 +170,45 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 memcpy(rmsg.message.read_memory_response.bytes.bytes, buf, msg.message.read_memory.sz);
                 break;
             }
+
+            case fdbg_ToComputer_breakpoint_tag: {
+                rmsg.status = fdbg_Status_OK;
+                switch (msg.message.breakpoint.action) {
+                    case fdbg_Breakpoint_Action_ADD:
+                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                            if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address)
+                                break;
+                            if (server->breakpoints[i] == NO_BREAKPOINT) {
+                                server->breakpoints[i] = (ADDR_TYPE) msg.message.breakpoint.address;
+                                break;
+                            }
+                        }
+                        rmsg.status = fdbg_Status_TOO_MANY_BREAKPOINTS;
+                        break;
+                    case fdbg_Breakpoint_Action_REMOVE:
+                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                            if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address) {
+                                server->breakpoints[i] = NO_BREAKPOINT;
+                                break;
+                            }
+                        }
+                        break;
+                    case fdbg_Breakpoint_Action_CLEAR_ALL:
+                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
+                            server->breakpoints[i] = NO_BREAKPOINT;
+                        break;
+                }
+
+                for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                    if (server->breakpoints[i] != NO_BREAKPOINT) {
+                        ++rmsg.message.breakpoint_list.addr_count;
+                        rmsg.message.breakpoint_list.addr[i] = server->breakpoints[i];
+                    }
+                }
+
+                break;
+            }
+
         }
 
         return fdbg_send_message(server, &rmsg);
