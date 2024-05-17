@@ -28,6 +28,13 @@ void reset(FdbgServer* server)
     pc = 0;
 }
 
+void step(FdbgServer* server, bool full)
+{
+    (void) server; (void) full;
+
+    ++pc;
+}
+
 bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
 {
     (void) server;
@@ -62,6 +69,7 @@ int main()
     FdbgServerEvents events = {
             .get_computer_status = get_computer_status,
             .reset = reset,
+            .step = step,
             .write_memory = write_memory,
             .read_memory = read_memory,
     };

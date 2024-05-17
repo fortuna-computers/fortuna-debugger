@@ -52,6 +52,7 @@ public:
 
     void change_memory_page(int64_t page);
     void reset();
+    void step(bool full);
 
     // getters
 
@@ -62,6 +63,7 @@ public:
     Machine const&               machine() const { return client_.machine(); }
     DebugInfo const&             debug() const { return debug_; }
     std::vector<const char*> const& files_cstr() const { return files_cstr_; }
+    std::vector<const char*> const& symbols_cstr() const { return symbols_cstr_; }
     fdbg::ComputerStatus const&  computer_status() const { return computer_status_; }
 
     std::string fmt_addr(uint64_t addr) const;
@@ -76,6 +78,7 @@ private:
     uint8_t                  addr_sz_ = 0;
     fdbg::ComputerStatus     computer_status_;
     std::vector<const char*> files_cstr_;
+    std::vector<const char*> symbols_cstr_;
 
     void init_debugging_session();
 };

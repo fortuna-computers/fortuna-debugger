@@ -41,6 +41,7 @@ namespace Key {
     constexpr ImGuiKey PageUp = (ImGuiKey) 0x10a;
     constexpr ImGuiKey PageDown = (ImGuiKey) 0x10b;
     constexpr ImGuiKey F2 = (ImGuiKey) 0x123;
+    constexpr ImGuiKey F6 = (ImGuiKey) 0x127;
     constexpr ImGuiKey F7 = (ImGuiKey) 0x128;
     constexpr ImGuiKey F8 = (ImGuiKey) 0x129;
     constexpr ImGuiKey F9 = (ImGuiKey) 0x12a;

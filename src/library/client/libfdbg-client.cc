@@ -170,6 +170,16 @@ fdbg::ComputerStatus FdbgClient::reset()
     return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
 }
 
+fdbg::ComputerStatus FdbgClient::step(bool full)
+{
+    fdbg::ToComputer msg;
+    auto step = new fdbg::Step();
+    step->set_full(full);
+    msg.set_allocated_step(step);
+
+    return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
+}
+
 void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
 {
     if (data.size() > MAX_MEMORY_TRANSFER)

@@ -18,11 +18,16 @@ message ReadMemory {
 
 message Reset {}
 
+message Step {
+  bool full = 1;
+}
+
 message ToComputer {
   oneof message {
     Ack         ack          = 1;
     Reset       reset        = 2;   // response: ComputerStatus
     WriteMemory write_memory = 3;
     ReadMemory  read_memory  = 4;
+    Step        step         = 5;   // response: ComputerStatus
   }
 }

@@ -99,12 +99,21 @@ void Model::reset()
     computer_status_ = client_.reset();
 }
 
+void Model::step(bool full)
+{
+    computer_status_ = client_.step(full);
+}
+
 void Model::compile(std::string const& source_file)
 {
     debug_ = client_.machine().compile(source_file);
 
     for (auto const& file: debug_.files)
         files_cstr_.push_back(file.c_str());
+    for (auto const& symbol: debug_.symbols)
+        symbols_cstr_.push_back(symbol.first.c_str());
+    std::sort(symbols_cstr_.begin(), symbols_cstr_.end(), [](const char* a, const char* b) { return std::string(a) < std::string(b); });
+    symbols_cstr_.insert(symbols_cstr_.begin(), "");
 
     if (machine().total_memory <= 0xffff)
         addr_sz_ = 4;

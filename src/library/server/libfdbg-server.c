@@ -122,6 +122,15 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 break;
             }
 
+            case fdbg_ToComputer_step_tag: {
+                events->step(server, msg.message.step.full);
+                fdbg_ComputerStatus cstatus = events->get_computer_status(server);
+                rmsg.status = fdbg_Status_OK;
+                rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
+                memcpy(&rmsg.message.computer_status, &cstatus, sizeof cstatus);
+                break;
+            }
+
             case fdbg_ToComputer_write_memory_tag: {
                 if (msg.message.write_memory.bytes.size > MAX_MEMORY_TRANSFER)
                     msg.message.write_memory.bytes.size = MAX_MEMORY_TRANSFER;

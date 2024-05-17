@@ -51,7 +51,7 @@
 - [x] What else can be moved to the library
 - [x] Start emulator from client
   - [x] Serial port synchronization
-- [ ] Refactor UI debugger
+- [x] Refactor UI debugger
   - [x] Review model
   - [x] Add emulator path
   - [x] Create own ini management
@@ -78,11 +78,11 @@
 - [x] Show code in window
   - [x] Color PC
 - [x] Syntax highlighting
-- [ ] Step (simple, advanced)
-  - [ ] Protobuf
-  - [ ] Library
-  - [ ] UI
-    - [ ] Move selected line
+- [x] Step (simple, advanced)
+  - [x] Protobuf
+  - [x] Library
+  - [x] UI
+    - [x] Move selected line
 - [ ] Breakpoints
   - [ ] Protobuf
   - [ ] Library
