@@ -188,7 +188,7 @@ DebugInfo Machine::compile(std::string const& filename) const
             uint64_t address = lua_isnil(L, -1) ? DebugInfo::NO_ADDRESS : luaL_checkinteger(L, -1);
             lua_pop(L, 2);  // clear address + current iteration
 
-            di.source_lines[std::pair(file_idx, line_nr)] = { line, address };
+            di.source_lines[std::pair(file_idx - 1, line_nr)] = { line, address };
         }
     }
     lua_pop(L, 1);

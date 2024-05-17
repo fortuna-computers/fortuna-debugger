@@ -64,8 +64,7 @@ void Code::draw_code()
         ImGui::TableSetupColumn("Code", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableHeadersRow();
 
-        size_t nline = 1;
-        for (;;) {
+        for (size_t nline = 1; ; ++nline) {
             auto it = model.debug().source_lines.find(std::make_pair(selected_file_, nline));
             if (it == model.debug().source_lines.end())
                 break;
@@ -74,11 +73,23 @@ void Code::draw_code()
 
             ImGui::TableNextRow();
 
-            ImGui::TableSetColumnIndex(0);
-            std::string addr = model.fmt_addr(sl.address);
+            // address
 
+            ImGui::TableSetColumnIndex(0);
+            if (sl.address != DebugInfo::NO_ADDRESS) {
+                std::string addr = model.fmt_addr(sl.address);
+                if (ImGui::Selectable(addr.c_str())) {
+                    // TODO - deal with breakpoint
+                }
+            }
+
+            // line
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%s", sl.line.c_str());  // TODO - syntax highlighting
         }
 
+        /*
         for (auto const& line: code_model_->lines()) {
 
             ImGui::TableNextRow();
@@ -140,6 +151,7 @@ void Code::draw_code()
 
             ++nline;
         }
+         */
 
         ImGui::EndTable();
     }

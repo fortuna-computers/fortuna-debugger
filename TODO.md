@@ -70,15 +70,20 @@
 - [x] Ordering issue when building in parallel
 - [x] ./findserial.py path
 
-# CPU
+# Code
 
 - [x] Protobuf messages
   - [x] Registers in machine definition
   - [x] Library request/response
-- [ ] Port CPU code
+- [x] Show code in window
 - [ ] Stack in memory window
 - [ ] Show PC in memory window
 - [ ] Recompilation support
+- [ ] Breakpoints
+- [ ] Syntax highlighting
+- [ ] Step (simple, advanced)
+- [ ] Cycle
+- [ ] Run
 
 # Reactory 2
 
