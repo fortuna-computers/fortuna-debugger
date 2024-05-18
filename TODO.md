@@ -83,19 +83,35 @@
   - [x] Library
   - [x] UI
     - [x] Move selected line
-- [ ] Breakpoints
-  - [ ] Protobuf
-  - [ ] Library
-  - [ ] UI
-  - [ ] What to do on recompilation/restart?
-- [ ] Cycle
-- [ ] Run
-- [ ] Recompilation support
+- [x] Breakpoints
+  - [x] Protobuf
+  - [x] Library
+  - [x] UI
+  - [ ] Clear breakpoints button
+
+# Registers
+
+- [ ] Registers/flags window
+
+# Cycle
+
+- [ ] Cycle window
 
 # Memory changes
 
 - [ ] Stack in memory window
 - [ ] Show PC in memory window
+
+# Run
+
+- [ ] Run
+- [ ] Pause
+- [ ] Next
+
+# Recompilation
+
+- [ ] Watch source code
+- [ ] Recompilation support
 
 # Reactory 2
 
@@ -103,6 +119,7 @@
 - [ ] Configuration: debugging level
 - [ ] Move findserial.py code to C++ library
 
+# Terminal
 
 # Video
 

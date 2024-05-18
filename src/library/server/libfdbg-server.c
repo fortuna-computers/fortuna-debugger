@@ -132,7 +132,11 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 fdbg_ComputerStatus cstatus = events->get_computer_status(server);
                 rmsg.status = fdbg_Status_OK;
                 rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
-                memcpy(&rmsg.message.computer_status, &cstatus, sizeof cstatus);
+                rmsg.message.computer_status.registers_count = cstatus.registers_count;
+                // memcpy(rmsg.message.computer_status.registers, cstatus.registers, cstatus.registers_count * sizeof(uint64_t));
+                rmsg.message.computer_status.flags_count = cstatus.flags_count;
+                // memcpy(rmsg.message.computer_status.flags, cstatus.flags, cstatus.flags_count * sizeof(uint64_t));
+                rmsg.message.computer_status.stack = cstatus.stack;
                 break;
             }
 
@@ -177,10 +181,10 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                     case fdbg_Breakpoint_Action_ADD:
                         for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
                             if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address)
-                                break;
+                                goto bkp_done;
                             if (server->breakpoints[i] == NO_BREAKPOINT) {
                                 server->breakpoints[i] = (ADDR_TYPE) msg.message.breakpoint.address;
-                                break;
+                                goto bkp_done;
                             }
                         }
                         rmsg.status = fdbg_Status_TOO_MANY_BREAKPOINTS;
@@ -189,7 +193,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                         for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
                             if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address) {
                                 server->breakpoints[i] = NO_BREAKPOINT;
-                                break;
+                                goto bkp_done;
                             }
                         }
                         break;
@@ -199,10 +203,13 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                         break;
                 }
 
+bkp_done:
+                rmsg.which_message = fdbg_ToDebugger_breakpoint_list_tag;
+                size_t j = 0;
                 for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
                     if (server->breakpoints[i] != NO_BREAKPOINT) {
                         ++rmsg.message.breakpoint_list.addr_count;
-                        rmsg.message.breakpoint_list.addr[i] = server->breakpoints[i];
+                        rmsg.message.breakpoint_list.addr[j++] = server->breakpoints[i];
                     }
                 }
 

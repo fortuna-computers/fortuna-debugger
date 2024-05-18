@@ -1,4 +1,5 @@
-fdbg.ReadMemoryResponse.bytes max_size:64
-fdbg.ComputerStatus.registers max_size:64
-fdbg.ComputerStatus.stack max_size:32
-fdbg.BreakpointList.addr max_count:16
+fdbg.ReadMemoryResponse.bytes   max_size:64
+fdbg.ComputerStatus.registers   max_count:32
+fdbg.ComputerStatus.flags       max_count:16
+fdbg.ComputerStatus.stack       max_size:16
+fdbg.BreakpointList.addr        max_count:16

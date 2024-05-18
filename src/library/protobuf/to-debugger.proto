@@ -22,9 +22,10 @@ message ReadMemoryResponse {
 };
 
 message ComputerStatus {
-  uint64 pc            = 1;   // program counter
-  bytes  registers     = 2;
-  bytes  stack         = 3;
+  uint64          pc        = 1;   // program counter
+  repeated uint64 registers = 2;
+  repeated bool   flags     = 3;
+  bytes           stack     = 4;
 };
 
 message BreakpointList {

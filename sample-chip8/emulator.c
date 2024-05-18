@@ -9,6 +9,9 @@
 
 static uint8_t* ram;
 static uint16_t pc = 0;
+static bool     has_values = false;
+static uint16_t a = 0;
+static bool eq = false, z = false;
 
 fdbg_ComputerStatus get_computer_status(FdbgServer* server)
 {
@@ -16,8 +19,16 @@ fdbg_ComputerStatus get_computer_status(FdbgServer* server)
 
     fdbg_ComputerStatus cstatus;
     cstatus.pc = pc;
-    cstatus.registers.size = 0;   // TODO
-    cstatus.stack.size = 0;       // TODO
+    cstatus.registers_count = 0;
+    cstatus.flags_count = 0;
+    if (has_values) {
+        cstatus.registers_count = 1;
+        cstatus.registers[0] = a;
+        cstatus.flags_count = 2;
+        cstatus.flags[0] = eq;
+        cstatus.flags[1] = z;
+    }
+    cstatus.stack.size = 0;
     return cstatus;
 }
 
@@ -33,6 +44,7 @@ void step(FdbgServer* server, bool full)
     (void) server; (void) full;
 
     ++pc;
+    has_values = full;
 }
 
 bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)

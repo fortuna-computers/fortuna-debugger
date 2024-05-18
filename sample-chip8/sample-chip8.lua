@@ -4,7 +4,11 @@ return {
         id = 0x38f7,
         name = "CHIP-8",
         total_memory = 4 * 1024,
-        comment_separators = ';#',
+        comment_separators = ";#",
+        registers = {
+            { name = "A", size = 16 },
+        },
+        flags = { "EQ", "Z" },
     },
 
     microcontroller = {

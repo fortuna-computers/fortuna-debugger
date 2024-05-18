@@ -29,8 +29,6 @@ int main()
                 .get_computer_status = [](FdbgServer*) {
                     return (fdbg_ComputerStatus) {
                         .pc = 0x30,
-                        .registers = { .size = 0, .bytes = {} },
-                        .stack = { .size = 0, .bytes = {} },
                     };
                 },
                 .reset = [](FdbgServer*) {},
