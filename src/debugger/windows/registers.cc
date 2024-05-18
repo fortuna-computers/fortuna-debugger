@@ -6,7 +6,7 @@
 
 void Registers::draw()
 {
-    ImGui::Begin("Registers", &visible_, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("Registers", &visible_, ImGuiWindowFlags_AlwaysAutoResize);
 
     ImGui::SeparatorText("Registers");
 
@@ -31,10 +31,15 @@ void Registers::draw()
 
     ImGui::SeparatorText("Flags");
 
-    for (size_t i = 0; i < model.machine().flags.size(); ++i) {
-        if ((size_t) model.machine().flags.size() <= i) {
-            bool v = model.computer_status().flags(i);
+    if (model.computer_status().flags_size() == 0) {
+        ImGui::Text("Not up to date");
+    } else {
+        for (size_t i = 0; i < model.machine().flags.size(); ++i) {
+            bool v = false;
+            if (i < (size_t) model.computer_status().flags_size())
+                v = model.computer_status().flags(i);
             ImGui::Checkbox(model.machine().flags.at(i).c_str(), &v);
+            ImGui::SameLine();
         }
     }
 

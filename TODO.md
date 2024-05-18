@@ -92,7 +92,7 @@
 
 # Registers
 
-- [ ] Registers/flags window
+- [x] Registers/flags window
 
 # Cycle
 

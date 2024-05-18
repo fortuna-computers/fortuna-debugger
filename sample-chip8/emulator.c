@@ -11,7 +11,7 @@ static uint8_t* ram;
 static uint16_t pc = 0;
 static bool     has_values = false;
 static uint16_t a = 0;
-static bool eq = false, z = false;
+static bool eq = true, z = false;
 
 fdbg_ComputerStatus get_computer_status(FdbgServer* server)
 {
