@@ -88,6 +88,7 @@
   - [x] Library
   - [x] UI
   - [ ] Clear breakpoints button
+- [ ] What else is missing?
 
 # Registers
 
@@ -118,6 +119,8 @@
 - [ ] Lua library (client, server)
 - [ ] Configuration: debugging level
 - [ ] Move findserial.py code to C++ library
+- [ ] Move emulator to Lua (?) and possible call C code from it
+  - [ ] LuaJIT
 
 # Terminal
 

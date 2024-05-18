@@ -132,11 +132,7 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 fdbg_ComputerStatus cstatus = events->get_computer_status(server);
                 rmsg.status = fdbg_Status_OK;
                 rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
-                rmsg.message.computer_status.registers_count = cstatus.registers_count;
-                // memcpy(rmsg.message.computer_status.registers, cstatus.registers, cstatus.registers_count * sizeof(uint64_t));
-                rmsg.message.computer_status.flags_count = cstatus.flags_count;
-                // memcpy(rmsg.message.computer_status.flags, cstatus.flags, cstatus.flags_count * sizeof(uint64_t));
-                rmsg.message.computer_status.stack = cstatus.stack;
+                memcpy(&rmsg.message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
                 break;
             }
 
@@ -202,7 +198,6 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                             server->breakpoints[i] = NO_BREAKPOINT;
                         break;
                 }
-
 bkp_done:
                 rmsg.which_message = fdbg_ToDebugger_breakpoint_list_tag;
                 size_t j = 0;

@@ -19,6 +19,10 @@ public:
     uint64_t    total_memory;
     std::string comment_separators;
 
+    struct Register { std::string name; uint8_t size; };
+    std::vector<Register>    registers;
+    std::vector<std::string> flags;
+
     int         uc_baudrate;
     std::string vendor_id;
     std::string product_id;
@@ -27,7 +31,7 @@ private:
     struct lua_State* L;
     bool   user_definition_loaded_ = false;
 
-    void                     get_field(const char* field, bool mandatory=true) const;
+    bool                     get_field(const char* field, bool mandatory=true) const;
     bool                     field_bool(const char* field, bool mandatory=true) const;
     int                      field_int(const char* field, bool mandatory=true) const;
     std::string              field_str(const char* field, bool mandatory=true) const;

@@ -18,11 +18,12 @@ Machine::~Machine()
     lua_close(L);
 }
 
-void Machine::get_field(const char* field, bool mandatory) const
+bool Machine::get_field(const char* field, bool mandatory) const
 {
     lua_getfield(L, -1, field);
     if (mandatory && lua_isnil(L, -1))
         throw std::runtime_error("Field '"s + field + "' missing from lua response");
+    return !lua_isnil(L, -1);
 }
 
 void Machine::assert_stack(int sz) const
@@ -112,14 +113,31 @@ void Machine::load_user_definition(std::string const &filename)
     assert_stack(1);
 
     get_field("machine");
+
     id = field_int("id");
     name = field_str("name");
     total_memory = field_int("total_memory");
     comment_separators = field_str("comment_separators");
+
+    if (get_field("registers", false)) {
+        size_t registers_n = luaL_len(L, -1);
+        registers.reserve(registers_n);
+        for (size_t i = 0; i < registers_n; ++i) {
+            lua_rawgeti(L, -1, (lua_Integer) i + 1);
+            registers.push_back({
+                    .name = field_str("name"),
+                    .size = (uint8_t) field_int("size")
+            });
+            lua_pop(L, 1);
+        }
+    }
     lua_pop(L, 1);
 
-    get_field("microcontroller", false);
-    if (!lua_isnil(L, -1)) {
+    flags = field_string_array("flags", false);
+
+    lua_pop(L, 1);
+
+    if (get_field("microcontroller", false)) {
         uc_baudrate = field_int("uart_baud_rate", false);
         vendor_id = field_str("vendor_id", false);
         product_id = field_str("product_id", false);

@@ -15,6 +15,7 @@ void MainMenu::draw()
         ImGui::SeparatorText("Debugger");
 
         button("Debugger (code)", "code");
+        button("Registers", "registers");
         button("Memory", "memory");
     }
 

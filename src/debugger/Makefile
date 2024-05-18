@@ -60,6 +60,7 @@ F_DEBUGGER_SRC = \
         windows/mainmenu.o \
         windows/memory.o \
         windows/messagebox.o \
+        windows/registers.o \
         windows/startup.o \
         windows/uploadrom.o \
         ${IMGUI_SRC}
