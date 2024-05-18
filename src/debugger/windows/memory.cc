@@ -38,7 +38,7 @@ void Memory::draw()
 
         draw_memory_table();
 
-        // TODO - draw_stack();
+        draw_stack();
     }
     ImGui::End();
 }
@@ -49,10 +49,8 @@ void Memory::draw_memory_table() const
                            | ImGuiTableFlags_NoBordersInBody
                            | ImGuiTableFlags_RowBg
                            | ImGuiTableFlags_ScrollY;
-    /*
+
     static ImU32 pc_bg_color = ImGui::GetColorU32(ImVec4(0.2f, 0.6f, 0.2f, 0.65f));
-    static ImU32 sp_bg_color = ImGui::GetColorU32(ImVec4(0.6f, 0.2f, 0.2f, 0.65f));
-     */
 
     ImVec2 size = ImVec2(-FLT_MIN, 293);
     if (ImGui::BeginTable("##ram", 18, tbl_flags, size)) {
@@ -78,17 +76,13 @@ void Memory::draw_memory_table() const
 
             // data
             std::string ascii;
-            for (int i = 0; i < 0x10; ++i) {
+            for (uint8_t i = 0; i < 0x10; ++i) {
                 ImGui::TableSetColumnIndex(i + 1);
                 std::optional<uint8_t> byte = model.memory.data[line * 16 + i];
                 if (byte.has_value()) {
                     bool needs_pop = false;
-                    /* TODO
-                    if (addr + i == emulator_.z80().PC.W)
+                    if (addr + i == model.computer_status().pc())
                         ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, pc_bg_color);
-                    else if (addr + i == emulator_.z80().SP.W)
-                        ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, sp_bg_color);
-                    */
                     if (*byte == 0) {
                         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(ImColor(128, 128, 128)));
                         needs_pop = true;
@@ -116,16 +110,11 @@ void Memory::draw_memory_table() const
 
 void Memory::draw_stack() const
 {
-    /* TODO
-    char stack[512] = "Stack: ";
+    char stack[10 + (8 * 3)] = "Stack: ";
     size_t n = strlen(stack);
-    for (uint16_t i = 0; i < 28; i += 2) {
-        uint16_t data = emulator_.ram_get(emulator_.z80().SP.W + i);
-        data |= emulator_.ram_get(emulator_.z80().SP.W + i + 1) << 8;
-        n += sprintf(&stack[n], "%04X ", data);
-    }
+    for (unsigned char data : model.computer_status().stack())
+        n += sprintf(&stack[n], "%02X ", data);
     ImGui::Text("%s", stack);
-     */
 }
 
 void Memory::go_to_page_number(int64_t page)

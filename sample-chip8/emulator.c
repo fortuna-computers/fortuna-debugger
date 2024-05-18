@@ -21,14 +21,16 @@ fdbg_ComputerStatus get_computer_status(FdbgServer* server)
     cstatus.pc = pc;
     cstatus.registers_count = 0;
     cstatus.flags_count = 0;
+    cstatus.stack.size = 0;
     if (has_values) {
         cstatus.registers_count = 1;
         cstatus.registers[0] = a;
         cstatus.flags_count = 2;
         cstatus.flags[0] = eq;
         cstatus.flags[1] = z;
+        cstatus.stack.size = 8;
+        memcpy(cstatus.stack.bytes, ram, 8);
     }
-    cstatus.stack.size = 0;
     return cstatus;
 }
 

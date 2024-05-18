@@ -94,14 +94,14 @@
 
 - [x] Registers/flags window
 
+# Memory changes
+
+- [x] Stack in memory window
+- [x] Show PC in memory window
+
 # Cycle
 
 - [ ] Cycle window
-
-# Memory changes
-
-- [ ] Stack in memory window
-- [ ] Show PC in memory window
 
 # Run
 

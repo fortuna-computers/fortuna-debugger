@@ -100,6 +100,15 @@ static int fdbg_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
     }
 }
 
+static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* events, fdbg_ToDebugger* msg)
+{
+    fdbg_ComputerStatus cstatus = events->get_computer_status(server);
+
+    msg->status = fdbg_Status_OK;
+    msg->which_message = fdbg_ToDebugger_computer_status_tag;
+    memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
+}
+
 int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 {
     bool error = false;
@@ -120,19 +129,13 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 
             case fdbg_ToComputer_reset_tag: {
                 events->reset(server);
-                fdbg_ComputerStatus cstatus = events->get_computer_status(server);
-                rmsg.status = fdbg_Status_OK;
-                rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
-                memcpy(&rmsg.message.computer_status, &cstatus, sizeof cstatus);
+                fdbg_add_computer_status(server, events, &rmsg);
                 break;
             }
 
             case fdbg_ToComputer_step_tag: {
                 events->step(server, msg.message.step.full);
-                fdbg_ComputerStatus cstatus = events->get_computer_status(server);
-                rmsg.status = fdbg_Status_OK;
-                rmsg.which_message = fdbg_ToDebugger_computer_status_tag;
-                memcpy(&rmsg.message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
+                fdbg_add_computer_status(server, events, &rmsg);
                 break;
             }
 
