@@ -27,8 +27,8 @@ void Code::draw_buttons()
     }
     ImGui::PopButtonRepeat();
     ImGui::SameLine();
-    if (ImGui::Button("Run (F9)") || ImGui::IsKeyPressed(Key::F9, false)) {
-    }
+    if (ImGui::Button("Run (F9)") || ImGui::IsKeyPressed(Key::F9, false))
+        model.run(false);
     ImGui::SameLine();
 
     // reset
@@ -147,7 +147,7 @@ void Code::draw_footer()
         }
         ImGui::SameLine();
         if (ImGui::Button("Run forever"))
-            ;
+            model.run(true);
         ImGui::SameLine();
         if (ImGui::Button("Clear bkps"))
             model.clear_breakpoints();

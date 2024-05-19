@@ -74,6 +74,12 @@ void Model::update()
             upload_->address = new_binary.load_pos;
         }
     }
+
+    if (running_) {
+        auto cr = client_.run_status();
+        running_ = cr.running();
+        computer_status_.set_pc(cr.pc());
+    }
 }
 
 void Model::change_memory_page(int64_t page)
@@ -155,4 +161,16 @@ void Model::clear_breakpoints()
 {
     breakpoints_.clear();
     client_.clear_breakpoints();
+}
+
+void Model::run(bool forever)
+{
+    client_.run(forever);
+    running_ = true;
+}
+
+void Model::pause()
+{
+    computer_status_ = client_.pause();
+    running_ = false;
 }

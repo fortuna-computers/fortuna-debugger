@@ -118,6 +118,7 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
 {
     bool error = false;
     fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+    rmsg.status = fdbg_Status_OK;
 
     switch ((*msg).which_message) {
 
@@ -140,18 +141,24 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
             break;
         }
     }
+
+    if (fdbg_send_message(server, &rmsg) != 0)
+        error = true;
+
+    if (error)
+        rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
 }
 
 static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
 {
     bool error = false;
     fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+    rmsg.status = fdbg_Status_OK;
 
     switch ((*msg).which_message) {
 
         case fdbg_ToComputer_ack_tag: {
             rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
-            rmsg.status = fdbg_Status_OK;
             rmsg.message.ack_response.id = server->machine_id;
             break;
         }

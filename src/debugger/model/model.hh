@@ -62,6 +62,8 @@ public:
     void clear_breakpoints();
     void cycle();
     void clear_cycles() { cycles_.clear(); }
+    void run(bool forever=false);
+    void pause();
 
     // getters
 
@@ -76,6 +78,7 @@ public:
     fdbg::ComputerStatus const&            computer_status() const { return computer_status_; }
     std::set<uint64_t> const&              breakpoints() const { return breakpoints_; }
     std::deque<fdbg::CycleResponse> const& cycles() const { return cycles_; }
+    bool                                   running() const { return running_; }
 
     std::string fmt_addr(uint64_t addr) const;
 
@@ -92,6 +95,7 @@ private:
     std::vector<const char*>         symbols_cstr_;
     std::set<uint64_t>               breakpoints_;
     std::deque<fdbg::CycleResponse>  cycles_;
+    bool                             running_ = false;
 
     void init_debugging_session();
 };
