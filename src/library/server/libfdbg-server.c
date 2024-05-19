@@ -169,6 +169,8 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         }
 
         case fdbg_ToComputer_run_tag: {
+            if (msg->message.run.forever && events->run_forever)
+                events->run_forever(server);   // should not return
             server->running = true;
             break;
         }

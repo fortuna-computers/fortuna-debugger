@@ -32,6 +32,7 @@ typedef struct FdbgServerEvents {
     ADDR_TYPE           (*step)(FdbgServer* server, bool full);
     bool                (*write_memory)(FdbgServer* server, ADDR_TYPE pos, uint8_t* data, uint8_t sz, ADDR_TYPE* first_failed);
     void                (*read_memory)(FdbgServer* server, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
+    void                (*run_forever)(FdbgServer* server);
 } FdbgServerEvents;
 
 FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
