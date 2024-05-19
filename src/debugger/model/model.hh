@@ -80,6 +80,8 @@ public:
     std::deque<fdbg::CycleResponse> const& cycles() const { return cycles_; }
     bool                                   running() const { return running_; }
 
+    std::optional<std::pair<size_t, size_t>> scroll_to_line_ {};
+
     std::string fmt_addr(uint64_t addr) const;
 
 private:
@@ -98,6 +100,7 @@ private:
     bool                             running_ = false;
 
     void init_debugging_session();
+    void scroll_to_pc();
 };
 
 extern Model model;

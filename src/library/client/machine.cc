@@ -238,6 +238,7 @@ DebugInfo Machine::compile(std::string const& filename) const
             lua_pop(L, 2);  // clear address + current iteration
 
             di.source_lines[std::pair(file_idx - 1, line_nr)] = { address, line, comment };
+            di.addresses[address] = std::pair(file_idx - 1, line_nr);
         }
     }
     lua_pop(L, 1);

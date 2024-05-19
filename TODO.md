@@ -105,13 +105,13 @@
 
 # Run
 
-- [ ] Run
+- [x] Run
   - [x] Start running
     - [x] UI running (restrict buttons, show running indication)
   - [ ] Breakpoint hit
   - [ ] Scroll to position when breakpoint hit/pause
   - [ ] Get run updates
-- [ ] Pause
+- [x] Pause
 - [ ] Next
 
 # Recompilation

@@ -79,6 +79,8 @@ void Model::update()
         auto cr = client_.run_status();
         running_ = cr.running();
         computer_status_.set_pc(cr.pc());
+        if (!running_)
+            scroll_to_pc();
     }
 }
 
@@ -104,12 +106,14 @@ void Model::reset()
 {
     // TODO - check response size vs machine size
     computer_status_ = client_.reset();
+    scroll_to_pc();
 }
 
 void Model::step(bool full)
 {
     // TODO - check response size vs machine size
     computer_status_ = client_.step(full);
+    scroll_to_pc();
 }
 
 void Model::cycle()
@@ -119,6 +123,7 @@ void Model::cycle()
     if (cycle_response.pc())
         computer_status_.set_pc(cycle_response.pc());
     cycles_.push_front(cycle_response);
+    scroll_to_pc();
 }
 
 void Model::compile(std::string const& source_file)
@@ -176,4 +181,12 @@ void Model::pause()
 {
     computer_status_ = client_.pause();
     running_ = false;
+    scroll_to_pc();
+}
+
+void Model::scroll_to_pc()
+{
+    try {
+        scroll_to_line_ = debug_.addresses.at(computer_status_.pc());
+    } catch (std::out_of_range&) {}
 }

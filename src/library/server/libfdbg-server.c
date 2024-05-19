@@ -237,6 +237,8 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
             switch ((*msg).message.breakpoint.action) {
                 case fdbg_Breakpoint_Action_ADD:
                     for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                        if (server->breakpoints[i] == 0)
+                            continue;  // no breakpoints on zero
                         if (server->breakpoints[i] == (ADDR_TYPE) (*msg).message.breakpoint.address)
                             goto bkp_done;
                         if (server->breakpoints[i] == NO_BREAKPOINT) {
@@ -288,8 +290,17 @@ bkp_done:
 
 static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
 {
-    for (size_t i = 0; i < server->run_steps; ++i)
-        server->last_pc = events->step(server, false);  // TODO - check for breakpoint hits
+    for (size_t i = 0; i < server->run_steps; ++i) {
+
+        server->last_pc = events->step(server, false);
+
+        for (size_t j = 0; j < MAX_BREAKPOINTS; ++j) {
+            if (server->last_pc == server->breakpoints[j]) {
+                server->running = false;
+                return;
+            }
+        }
+    }
 }
 
 void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)

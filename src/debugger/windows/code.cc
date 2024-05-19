@@ -19,10 +19,8 @@ void Code::draw_buttons()
 {
     disable_on_run([&]() {
         ImGui::PushButtonRepeat(true);
-        if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true)) {
+        if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true))
             model.step(true);
-            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
-        }
         ImGui::SameLine();
         if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true)) {
         }
@@ -44,10 +42,8 @@ void Code::draw_buttons()
         ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.0f, 0.6f, 0.6f));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.7f, 0.7f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.8f, 0.8f));
-        if (ImGui::Button("Reset (F2)") || ImGui::IsKeyPressed(Key::F2, false)) {
+        if (ImGui::Button("Reset (F2)") || ImGui::IsKeyPressed(Key::F2, false))
             model.reset();
-            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
-        }
         ImGui::PopStyleColor(3);
     });
 
@@ -64,7 +60,8 @@ void Code::draw_buttons()
     ImGui::SetNextItemWidth(200.f);
     if (ImGui::Combo("##symbol", &selected_symbol_, model.symbols_cstr().data(), model.symbols_cstr().size())) {
         try {
-            scroll_to_addr_in_next_frame_ = model.debug().symbols.at(model.symbols_cstr().at(selected_symbol_));
+            uint64_t address = model.debug().symbols.at(model.symbols_cstr().at(selected_symbol_));
+            model.scroll_to_line_ = model.debug().addresses.at(address);
         } catch (std::out_of_range&) {}
         selected_symbol_ = 0;
     }
@@ -72,6 +69,9 @@ void Code::draw_buttons()
 
 void Code::draw_code()
 {
+    if (model.scroll_to_line_)
+        selected_file_ = model.scroll_to_line_->first;
+
     // table
     static int tbl_flags = ImGuiTableFlags_BordersOuterH
                            | ImGuiTableFlags_BordersOuterV
@@ -115,14 +115,6 @@ void Code::draw_code()
                 if (is_bkp)
                     ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, bkp_cell_color, 0);
 
-                // scroll to row
-                if (scroll_to_addr_in_next_frame_ && scroll_to_addr_in_next_frame_ == sl.address) {
-                    ImRect rect { ImGui::GetItemRectMin(), ImGui::GetItemRectMin() };
-                    rect.Expand({ 0, 40 });
-                    ImGui::ScrollToBringRectIntoView(ImGui::GetCurrentWindow(), rect);
-                    scroll_to_addr_in_next_frame_ = {};
-                }
-
                 // address
                 std::string addr = model.fmt_addr(sl.address);
                 if (ImGui::Selectable(addr.c_str()) && !model.running()) {
@@ -141,20 +133,29 @@ void Code::draw_code()
                 ImGui::SameLine(0, 0);
                 ImGui::TextColored(ImVec4(1.0f, 0.7f, 1.0f, 1.0f), "%s", sl.comment.c_str());
             }
+
+            // scroll to row
+
+            if (model.scroll_to_line_ && model.scroll_to_line_->second == nline) {
+                ImRect rect { ImGui::GetItemRectMin(), ImGui::GetItemRectMin() };
+                rect.Expand({ 0, 40 });
+                ImGui::ScrollToBringRectIntoView(ImGui::GetCurrentWindow(), rect);
+            }
+
         }
 
         ImGui::EndTable();
     }
+
+    model.scroll_to_line_.reset();
 }
 
 void Code::draw_footer()
 {
     disable_on_run([&]() {
         if (show_more_) {
-            if (ImGui::Button("Simple step")) {
+            if (ImGui::Button("Simple step"))
                 model.step(false);
-                scroll_to_addr_in_next_frame_ = model.computer_status().pc();
-            }
             ImGui::SameLine();
             if (ImGui::Button("Run forever"))
                 model.run(true);
