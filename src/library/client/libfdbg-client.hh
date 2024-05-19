@@ -31,6 +31,7 @@ public:
     void                 write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
     std::vector<uint8_t> read_memory(uint64_t pos, uint8_t sz, uint8_t sequences=1);
     fdbg::ComputerStatus step(bool full);
+    fdbg::CycleResponse  cycle();
 
     // higher-level calls to server
     struct Upload { size_t next = 0; };

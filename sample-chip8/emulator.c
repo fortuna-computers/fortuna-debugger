@@ -41,6 +41,21 @@ void reset(FdbgServer* server)
     pc = 0;
 }
 
+fdbg_CycleResponse cycle(FdbgServer* server)
+{
+    (void) server;
+
+    fdbg_CycleResponse c;
+    c.bytes_count = 2;
+    c.bytes[0].has = true;
+    c.bytes[0].value = 0xa4;
+    c.bytes[1].has = false;
+    c.bits_count = 2;
+    c.bits[0] = true;
+    c.bits[1] = false;
+    return c;
+}
+
 void step(FdbgServer* server, bool full)
 {
     (void) server; (void) full;
@@ -84,6 +99,7 @@ int main()
             .get_computer_status = get_computer_status,
             .reset = reset,
             .step = step,
+            .cycle = cycle,
             .write_memory = write_memory,
             .read_memory = read_memory,
     };

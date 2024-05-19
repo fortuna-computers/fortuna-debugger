@@ -17,6 +17,7 @@ void MainMenu::draw()
         button("Debugger (code)", "code");
         button("Registers", "registers");
         button("Memory", "memory");
+        button("Cycles", "cycles");
     }
 
     ImGui::SeparatorText("Config");

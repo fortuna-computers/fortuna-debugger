@@ -4,11 +4,19 @@ return {
         id = 0x38f7,
         name = "CHIP-8",
         total_memory = 4 * 1024,
+    },
+
+    debugger = {
         comment_separators = ";#",
         registers = {
             { name = "A", size = 16 },
         },
         flags = { "EQ", "Z" },
+        cycle_bytes = {
+            { name = "ADDR", size = 16 },
+            { name = "DATA", size = 8 },
+        },
+        cycle_bits = { "R", "XY" },
     },
 
     microcontroller = {

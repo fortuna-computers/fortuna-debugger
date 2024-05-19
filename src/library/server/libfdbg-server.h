@@ -23,6 +23,7 @@ typedef struct FdbgServerIOCallbacks {
 
 typedef struct FdbgServerEvents {
     fdbg_ComputerStatus (*get_computer_status)(FdbgServer* server);
+    fdbg_CycleResponse  (*cycle)(FdbgServer* server);
     void                (*reset)(FdbgServer* server);
     void                (*step)(FdbgServer* server, bool full);
     bool                (*write_memory)(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed);

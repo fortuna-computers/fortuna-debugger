@@ -23,6 +23,9 @@ public:
     std::vector<Register>    registers;
     std::vector<std::string> flags;
 
+    std::vector<Register>    cycle_bytes;
+    std::vector<std::string> cycle_bits;
+
     int         uc_baudrate;
     std::string vendor_id;
     std::string product_id;

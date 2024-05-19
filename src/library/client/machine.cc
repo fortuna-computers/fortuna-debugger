@@ -117,6 +117,11 @@ void Machine::load_user_definition(std::string const &filename)
     id = field_int("id");
     name = field_str("name");
     total_memory = field_int("total_memory");
+
+    lua_pop(L, 1);
+
+    get_field("debugger", false);
+
     comment_separators = field_str("comment_separators");
 
     if (get_field("registers", false)) {
@@ -134,6 +139,22 @@ void Machine::load_user_definition(std::string const &filename)
     lua_pop(L, 1);
 
     flags = field_string_array("flags", false);
+
+    if (get_field("cycle_bytes", false)) {
+        size_t cycle_bytes_n = luaL_len(L, -1);
+        cycle_bytes.reserve(cycle_bytes_n);
+        for (size_t i = 0; i < cycle_bytes_n; ++i) {
+            lua_rawgeti(L, -1, (lua_Integer) i + 1);
+            cycle_bytes.push_back({
+                    .name = field_str("name"),
+                    .size = (uint8_t) field_int("size")
+            });
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
+
+    cycle_bits = field_string_array("cycle_bits", false);
 
     lua_pop(L, 1);
 

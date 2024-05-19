@@ -139,6 +139,14 @@ int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
                 break;
             }
 
+            case fdbg_ToComputer_cycle_tag: {
+                fdbg_CycleResponse response = events->cycle(server);
+                rmsg.status = fdbg_Status_OK;
+                rmsg.which_message = fdbg_ToDebugger_cycle_response_tag;
+                memcpy(&rmsg.message.cycle_response, &response, sizeof(fdbg_CycleResponse));
+                break;
+            }
+
             case fdbg_ToComputer_write_memory_tag: {
                 if (msg.message.write_memory.bytes.size > MAX_MEMORY_TRANSFER)
                     msg.message.write_memory.bytes.size = MAX_MEMORY_TRANSFER;

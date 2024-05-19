@@ -22,6 +22,8 @@ message Step {
   bool full = 1;
 }
 
+message Cycle {}
+
 message Breakpoint {
   enum Action {
     ADD       = 0;
@@ -34,11 +36,12 @@ message Breakpoint {
 
 message ToComputer {
   oneof message {
-    Ack         ack          = 1;
+    Ack         ack          = 1;   // response: AckResponse
     Reset       reset        = 2;   // response: ComputerStatus
-    WriteMemory write_memory = 3;
-    ReadMemory  read_memory  = 4;
-    Step        step         = 5;   // response: ComputerStatus
-    Breakpoint  breakpoint   = 6;   // response: breakpoint list
+    WriteMemory write_memory = 3;   // response: WriteMemoryResponse
+    ReadMemory  read_memory  = 4;   // response: ReadMemoryResponse
+    Cycle       cycle        = 5;   // response: CycleResult
+    Step        step         = 6;   // response: ComputerStatus
+    Breakpoint  breakpoint   = 7;   // response: breakpoint list
   }
 }

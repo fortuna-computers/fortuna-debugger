@@ -20,6 +20,7 @@
 #include "windows/uploadrom.hh"
 #include "windows/code.hh"
 #include "windows/registers.hh"
+#include "windows/cycles.hh"
 
 UI::UI()
 {
@@ -70,6 +71,7 @@ UI::UI()
     add_window<Memory>();
     add_window<Code>();
     add_window<Registers>();
+    add_window<Cycles>();
     add_window<UploadROM>(true);
     msg_box_key_ = add_window<MessageBox>();
 }

@@ -96,12 +96,23 @@ void Model::change_memory_page(int64_t page)
 
 void Model::reset()
 {
+    // TODO - check response size vs machine size
     computer_status_ = client_.reset();
 }
 
 void Model::step(bool full)
 {
+    // TODO - check response size vs machine size
     computer_status_ = client_.step(full);
+}
+
+void Model::cycle()
+{
+    // TODO - check response size vs machine size
+    auto cycle_response = client_.cycle();
+    if (cycle_response.pc())
+        computer_status_.set_pc(cycle_response.pc());
+    cycles_.push_front(cycle_response);
 }
 
 void Model::compile(std::string const& source_file)

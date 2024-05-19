@@ -101,7 +101,7 @@
 
 # Cycle
 
-- [ ] Cycle window
+- [x] Cycle window
 
 # Run
 
@@ -116,7 +116,9 @@
 
 # Reactory 2
 
+- [ ] Check if responses from server are correct (ex. number of registers match)
 - [ ] Lua library (client, server)
+- [ ] Choose theme
 - [ ] Configuration: debugging level
 - [ ] Move findserial.py code to C++ library
 - [ ] Move emulator to Lua (?) and possible call C code from it

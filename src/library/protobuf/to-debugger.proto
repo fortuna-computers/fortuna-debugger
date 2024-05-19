@@ -28,6 +28,17 @@ message ComputerStatus {
   bytes           stack     = 4;
 };
 
+message OptionalUint {
+  bool   has = 1;
+  uint64 value = 2;
+};
+
+message CycleResponse {
+  uint64                pc = 1;
+  repeated OptionalUint bytes = 2;
+  repeated bool         bits = 3;
+};
+
 message BreakpointList {
   repeated uint64 addr = 1;
 };
@@ -40,5 +51,6 @@ message ToDebugger {
     ReadMemoryResponse  read_memory_response  = 4;
     ComputerStatus      computer_status       = 5;
     BreakpointList      breakpoint_list       = 6;
+    CycleResponse       cycle_response        = 7;
   }
 }
