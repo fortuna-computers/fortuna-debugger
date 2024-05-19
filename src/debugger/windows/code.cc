@@ -17,30 +17,39 @@ void Code::draw()
 
 void Code::draw_buttons()
 {
-    ImGui::PushButtonRepeat(true);
-    if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true)) {
-        model.step(true);
-        scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+    disable_on_run([&]() {
+        ImGui::PushButtonRepeat(true);
+        if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true)) {
+            model.step(true);
+            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true)) {
+        }
+        ImGui::PopButtonRepeat();
+    });
+
+    ImGui::SameLine();
+    if (model.running()) {
+        if (ImGui::Button("Pause (F9)") || ImGui::IsKeyPressed(Key::F9, false))
+            model.pause();
+    } else {
+        if (ImGui::Button("Run (F9)") || ImGui::IsKeyPressed(Key::F9, false))
+            model.run(false);
     }
-    ImGui::SameLine();
-    if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true)) {
-    }
-    ImGui::PopButtonRepeat();
-    ImGui::SameLine();
-    if (ImGui::Button("Run (F9)") || ImGui::IsKeyPressed(Key::F9, false))
-        model.run(false);
-    ImGui::SameLine();
 
     // reset
-    ImGui::SameLine();
-    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.0f, 0.6f, 0.6f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.7f, 0.7f));
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.8f, 0.8f));
-    if (ImGui::Button("Reset (F2)") || ImGui::IsKeyPressed(Key::F2, false)) {
-        model.reset();
-        scroll_to_addr_in_next_frame_ = model.computer_status().pc();
-    }
-    ImGui::PopStyleColor(3);
+    disable_on_run([&]() {
+        ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.0f, 0.6f, 0.6f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.7f, 0.7f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.0f / 7.0f, 0.8f, 0.8f));
+        if (ImGui::Button("Reset (F2)") || ImGui::IsKeyPressed(Key::F2, false)) {
+            model.reset();
+            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+        }
+        ImGui::PopStyleColor(3);
+    });
 
     // more
     ImGui::SameLine(0.0f, 30.f);
@@ -116,7 +125,7 @@ void Code::draw_code()
 
                 // address
                 std::string addr = model.fmt_addr(sl.address);
-                if (ImGui::Selectable(addr.c_str())) {
+                if (ImGui::Selectable(addr.c_str()) && !model.running()) {
                     if (is_bkp)
                         model.remove_breakpoint(sl.address);
                     else
@@ -140,18 +149,20 @@ void Code::draw_code()
 
 void Code::draw_footer()
 {
-    if (show_more_) {
-        if (ImGui::Button("Simple step")) {
-            model.step(false);
-            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+    disable_on_run([&]() {
+        if (show_more_) {
+            if (ImGui::Button("Simple step")) {
+                model.step(false);
+                scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Run forever"))
+                model.run(true);
+            ImGui::SameLine();
+            if (ImGui::Button("Clear bkps"))
+                model.clear_breakpoints();
         }
-        ImGui::SameLine();
-        if (ImGui::Button("Run forever"))
-            model.run(true);
-        ImGui::SameLine();
-        if (ImGui::Button("Clear bkps"))
-            model.clear_breakpoints();
-    }
+    });
 
     ImGui::Text("Click on the address to set a breakpoint.");
 }

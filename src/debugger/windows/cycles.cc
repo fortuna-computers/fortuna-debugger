@@ -7,9 +7,11 @@
 void Cycles::draw()
 {
     if (ImGui::Begin("Cycles", &visible_)) {
-        if (ImGui::Button("Cycle"))
-            model.cycle();
-        ImGui::SameLine();
+        disable_on_run([&]() {
+            if (ImGui::Button("Cycle"))
+                model.cycle();
+            ImGui::SameLine();
+        });
         if (ImGui::Button("Clear"))
             model.clear_cycles();
 

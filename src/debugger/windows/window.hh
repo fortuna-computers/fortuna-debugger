@@ -3,6 +3,9 @@
 
 #include <string>
 
+#include "imgui.h"
+#include "model/model.hh"
+
 class Window {
 public:
     explicit Window(bool visible=false) : visible_(visible) {}
@@ -21,6 +24,12 @@ public:
     virtual bool is_debugging_window() const { return false; }
 
 protected:
+    template<typename F> void disable_on_run(F f) {
+        if (model.running()) ImGui::BeginDisabled();
+        f();
+        if (model.running()) ImGui::EndDisabled();
+    }
+
     bool visible_;
 };
 

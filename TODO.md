@@ -107,7 +107,7 @@
 
 - [ ] Run
   - [x] Start running
-    - [ ] UI running (restrict buttons)
+    - [ ] UI running (restrict buttons, show running indication)
   - [ ] Scroll to position when breakpoint hit/pause
   - [ ] Breakpoint hit
   - [ ] Get run updates

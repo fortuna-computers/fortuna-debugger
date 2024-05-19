@@ -14,30 +14,31 @@ void Memory::draw()
         ImGui::Text("Page: (PgUp)");
         ImGui::SameLine();
 
-        if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
-            go_to_page_number(((int64_t) model.memory.current_page) - 1);
-        ImGui::SameLine();
+        disable_on_run([&]() {
+            if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
+                go_to_page_number(((int64_t) model.memory.current_page) - 1);
+            ImGui::SameLine();
 
-        char buf[3];
-        snprintf(buf, 3, "%02zX", model.memory.current_page);
-        ImGui::PushItemWidth(24.0);
-        ImGui::InputText("##page", buf, sizeof buf, ImGuiInputTextFlags_CallbackEdit,
-                         [](ImGuiInputTextCallbackData* data) {
-                             auto* m = reinterpret_cast<Memory*>(data->UserData);
-                             unsigned long new_page = strtoul(data->Buf, nullptr, 16);
-                             if (new_page != ULONG_MAX)
-                                 m->go_to_page_number(new_page);
-                             return 0;
-                         }, this);
-        ImGui::PopItemWidth();
-        ImGui::SameLine();
-        if (ImGui::Button(">") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageDown)))
-            go_to_page_number(model.memory.current_page + 1);
-        ImGui::SameLine();
-        ImGui::Text("(PgDown)");
+            char buf[3];
+            snprintf(buf, 3, "%02zX", model.memory.current_page);
+            ImGui::PushItemWidth(24.0);
+            ImGui::InputText("##page", buf, sizeof buf, ImGuiInputTextFlags_CallbackEdit,
+                             [](ImGuiInputTextCallbackData* data) {
+                                 auto* m = reinterpret_cast<Memory*>(data->UserData);
+                                 unsigned long new_page = strtoul(data->Buf, nullptr, 16);
+                                 if (new_page != ULONG_MAX)
+                                     m->go_to_page_number(new_page);
+                                 return 0;
+                             }, this);
+            ImGui::PopItemWidth();
+            ImGui::SameLine();
+            if (ImGui::Button(">") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageDown)))
+                go_to_page_number(model.memory.current_page + 1);
+            ImGui::SameLine();
+            ImGui::Text("(PgDown)");
+        });
 
         draw_memory_table();
-
         draw_stack();
     }
     ImGui::End();
