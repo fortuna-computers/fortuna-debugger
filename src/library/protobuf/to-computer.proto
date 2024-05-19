@@ -34,14 +34,25 @@ message Breakpoint {
   Action action  = 2;
 }
 
+message Run {
+  bool forever = 1;
+}
+
+message GetRunStatus {}
+
+message Pause {}
+
 message ToComputer {
   oneof message {
-    Ack         ack          = 1;   // response: AckResponse
-    Reset       reset        = 2;   // response: ComputerStatus
-    WriteMemory write_memory = 3;   // response: WriteMemoryResponse
-    ReadMemory  read_memory  = 4;   // response: ReadMemoryResponse
-    Cycle       cycle        = 5;   // response: CycleResult
-    Step        step         = 6;   // response: ComputerStatus
-    Breakpoint  breakpoint   = 7;   // response: breakpoint list
+    Ack          ack            = 1;   // response: AckResponse
+    Reset        reset          = 2;   // response: ComputerStatus
+    WriteMemory  write_memory   = 3;   // response: WriteMemoryResponse
+    ReadMemory   read_memory    = 4;   // response: ReadMemoryResponse
+    Cycle        cycle          = 5;   // response: CycleResult
+    Step         step           = 6;   // response: ComputerStatus
+    Breakpoint   breakpoint     = 7;   // response: breakpoint list
+    Run          run            = 8;   // response: status ok
+    GetRunStatus get_run_status = 9;   // response: RunStatus
+    Pause        pause          = 10;  // response: ComputerStatus
   }
 }

@@ -63,10 +63,10 @@ std::string FdbgClient::autodetect_usb_serial_port(std::string const& vendor_id,
     return port;
 }
 
-fdbg::ToDebugger FdbgClient::send_message(fdbg::ToComputer const& msg, bool check_for_errors)
+fdbg::ToDebugger FdbgClient::send_message(fdbg::ToComputer const& msg, fdbg::ToDebugger::MessageCase message_type)
 {
     send(msg);
-    return receive(check_for_errors);
+    return receive(message_type);
 }
 
 void FdbgClient::send(fdbg::ToComputer const& msg)
@@ -97,7 +97,7 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
         throw std::runtime_error("Error writing to serial.");
 }
 
-fdbg::ToDebugger FdbgClient::receive(bool check_for_errors)
+fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)
 {
 start:
     uint8_t sz;
@@ -145,8 +145,18 @@ start:
     if (debugging_level_ != DebuggingLevel::NORMAL)
         printf("<- %s", msg.DebugString().c_str());
 
-    if (check_for_errors && msg.status() != fdbg::Status::OK)
-        throw std::runtime_error("Operation failed with error " + std::to_string(msg.status()));
+    switch (msg.status()) {
+        case fdbg::ERR_WRITING_MEMORY:   throw std::runtime_error("Error writing to memory");
+        case fdbg::TOO_MANY_BREAKPOINTS: throw std::runtime_error("Too many breakpoints");
+        case fdbg::INVALID_MESSAGE:      throw std::runtime_error("Invalid message (message type does not exist)");
+        case fdbg::UNEXPECTED_MESSAGE:   throw std::runtime_error("Unexpected message (message exists but is not accepted at this time");
+        case fdbg::IO_SERIAL_ERROR:      throw std::runtime_error("I/O serial error reported by the computer");
+        default:
+            break;
+    }
+
+    if (message_type != fdbg::ToDebugger::MESSAGE_NOT_SET && msg.message_case() != message_type)
+        throw std::runtime_error("Invalid message received from computer (unexpected response type)");
 
     return msg;
 }
@@ -187,6 +197,29 @@ fdbg::CycleResponse FdbgClient::cycle()
     return send_message(msg, fdbg::ToDebugger::kCycleResponse).cycle_response();
 }
 
+void FdbgClient::run(bool forever)
+{
+    fdbg::ToComputer msg;
+    auto run = new fdbg::Run();
+    run->set_forever(forever);
+    msg.set_allocated_run(run);
+    send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
+}
+
+fdbg::RunStatus FdbgClient::run_status()
+{
+    fdbg::ToComputer msg;
+    msg.set_allocated_get_run_status(new fdbg::GetRunStatus());
+    return send_message(msg, fdbg::ToDebugger::kRunStatus).run_status();
+}
+
+fdbg::ComputerStatus FdbgClient::pause()
+{
+    fdbg::ToComputer msg;
+    msg.set_allocated_pause(new fdbg::Pause());
+    return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
+}
+
 void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
 {
     if (data.size() > MAX_MEMORY_TRANSFER)
@@ -201,7 +234,7 @@ void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data
     fdbg::ToComputer msg;
     msg.set_allocated_write_memory(write_memory);
 
-    auto response = send_message(msg, false);
+    auto response = send_message(msg, fdbg::ToDebugger::kWriteMemoryResponse);
 
     if (response.status() != fdbg::Status::OK)
         throw std::runtime_error(std::format("Error writing memory: first byte failed is 0x{:x}", response.write_memory_response().first_failed_pos()));

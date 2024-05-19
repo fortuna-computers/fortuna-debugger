@@ -33,7 +33,7 @@ typedef struct FdbgServerEvents {
 FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
 void        fdbg_server_free(FdbgServer* server);
 
-int         fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
+void        fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
 #ifndef MICROCONTROLLER
 

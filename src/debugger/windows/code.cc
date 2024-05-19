@@ -18,27 +18,18 @@ void Code::draw()
 void Code::draw_buttons()
 {
     ImGui::PushButtonRepeat(true);
-    if (ImGui::Button("Step (F6)") || ImGui::IsKeyPressed(Key::F6, true)) {
-        model.step(false);
-        scroll_to_addr_in_next_frame_ = model.computer_status().pc();
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Full step (F7)") || ImGui::IsKeyPressed(Key::F7, true)) {
+    if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true)) {
         model.step(true);
         scroll_to_addr_in_next_frame_ = model.computer_status().pc();
     }
-    /*
     ImGui::SameLine();
     if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true)) {
     }
-     */
     ImGui::PopButtonRepeat();
-    /*
     ImGui::SameLine();
     if (ImGui::Button("Run (F9)") || ImGui::IsKeyPressed(Key::F9, false)) {
     }
     ImGui::SameLine();
-     */
 
     // reset
     ImGui::SameLine();
@@ -50,6 +41,10 @@ void Code::draw_buttons()
         scroll_to_addr_in_next_frame_ = model.computer_status().pc();
     }
     ImGui::PopStyleColor(3);
+
+    // more
+    ImGui::SameLine(0.0f, 30.f);
+    ImGui::Checkbox("More...", &show_more_);
 
     // file dropdown
     ImGui::SetNextItemWidth(180.f);
@@ -81,7 +76,7 @@ void Code::draw_code()
     static ImU32 pc_row_color = ImGui::GetColorU32(ImVec4(0.3f, 0.7f, 0.3f, 0.65f));
     static ImU32 bkp_cell_color = ImGui::GetColorU32(ImVec4(0.8f, 0.2f, 0.2f, 0.65f));
 
-    ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetContentRegionAvail().y - 19);
+    ImVec2 size = ImVec2(-FLT_MIN, ImGui::GetContentRegionAvail().y - 19 - (show_more_ ? 23 :0 ));
     if (ImGui::BeginTable("##code", 2, tbl_flags, size)) {
 
         ImGui::TableSetupScrollFreeze(0, 1); // Make top row always visible
@@ -145,5 +140,18 @@ void Code::draw_code()
 
 void Code::draw_footer()
 {
+    if (show_more_) {
+        if (ImGui::Button("Simple step")) {
+            model.step(false);
+            scroll_to_addr_in_next_frame_ = model.computer_status().pc();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Run forever"))
+            ;
+        ImGui::SameLine();
+        if (ImGui::Button("Clear bkps"))
+            model.clear_breakpoints();
+    }
+
     ImGui::Text("Click on the address to set a breakpoint.");
 }

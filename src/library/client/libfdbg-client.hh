@@ -32,6 +32,9 @@ public:
     std::vector<uint8_t> read_memory(uint64_t pos, uint8_t sz, uint8_t sequences=1);
     fdbg::ComputerStatus step(bool full);
     fdbg::CycleResponse  cycle();
+    void                 run(bool forever=false);
+    fdbg::RunStatus      run_status();
+    fdbg::ComputerStatus pause();
 
     // higher-level calls to server
     struct Upload { size_t next = 0; };
@@ -56,10 +59,10 @@ private:
     int               fd_;
     DebuggingLevel    debugging_level_ = DebuggingLevel::NORMAL;
 
-    fdbg::ToDebugger send_message(fdbg::ToComputer const& msg, bool check_for_errors=true);
+    fdbg::ToDebugger send_message(fdbg::ToComputer const& msg, fdbg::ToDebugger::MessageCase message_type=fdbg::ToDebugger::MessageCase::MESSAGE_NOT_SET);
 
     void             send(fdbg::ToComputer const& msg);
-    fdbg::ToDebugger receive(bool check_for_errors);
+    fdbg::ToDebugger receive(fdbg::ToDebugger::MessageCase message_type);
 
     std::set<uint64_t> breakpoint(fdbg::Breakpoint::Action action, uint64_t addr);
 };

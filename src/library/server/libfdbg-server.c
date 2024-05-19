@@ -109,7 +109,7 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
 }
 
-int fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
+void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 {
     bool error = false;
 
@@ -222,12 +222,19 @@ bkp_done:
                 break;
             }
 
+            default: {
+                rmsg.status = fdbg_Status_INVALID_MESSAGE;
+                break;
+            }
+
         }
 
-        return fdbg_send_message(server, &rmsg);
-    }
+        if (fdbg_send_message(server, &rmsg) != 0)
+            error = true;
 
-    return error ? -1 : 0;
+        if (error)
+            rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
+    }
 }
 
 #ifndef MICROCONTROLLER

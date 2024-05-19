@@ -105,11 +105,7 @@ int main()
     };
 
     for (;;) {
-        if (fdbg_server_next(server, &events) != 0) {
-            fprintf(stderr, "server: error reading data\n");
-            exit(1);
-        }
-
+        fdbg_server_next(server, &events);
         fdbg_die_if_parent_dies();
     }
 }

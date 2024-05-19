@@ -42,10 +42,7 @@ int main()
         };
 
         while (server_running) {
-            if (fdbg_server_next(server, &events) != 0) {
-                fprintf(stderr, "server: error reading data\n");
-                exit(1);
-            }
+            fdbg_server_next(server, &events);
         }
 
         fdbg_server_free(server);

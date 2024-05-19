@@ -106,6 +106,9 @@
 # Run
 
 - [ ] Run
+  - [ ] Start running
+    - [ ] UI running (restrict buttons)
+  - [ ] Get run updates
 - [ ] Pause
 - [ ] Next
 
