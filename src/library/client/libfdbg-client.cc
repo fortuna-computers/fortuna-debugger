@@ -205,6 +205,13 @@ void FdbgClient::run(bool forever)
     send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
 }
 
+void FdbgClient::next()
+{
+    fdbg::ToComputer msg;
+    msg.set_allocated_next(new fdbg::Next());
+    send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
+}
+
 fdbg::RunStatus FdbgClient::run_status()
 {
     fdbg::ToComputer msg;

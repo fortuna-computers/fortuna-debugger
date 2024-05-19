@@ -33,6 +33,7 @@ public:
     fdbg::ComputerStatus step(bool full);
     fdbg::CycleResponse  cycle();
     void                 run(bool forever=false);
+    void                 next();
     fdbg::RunStatus      run_status();
     fdbg::ComputerStatus pause();
 

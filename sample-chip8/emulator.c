@@ -53,6 +53,12 @@ fdbg_CycleResponse cycle(FdbgServer* server)
     return c;
 }
 
+uint64_t next_instruction(FdbgServer* server)
+{
+    (void) server;
+    return pc + 2;
+}
+
 uint64_t step(FdbgServer* server, bool full)
 {
     (void) server; (void) full;
@@ -101,6 +107,7 @@ int main()
             .cycle = cycle,
             .write_memory = write_memory,
             .read_memory = read_memory,
+            .next_instruction = next_instruction,
     };
 
     for (;;) {

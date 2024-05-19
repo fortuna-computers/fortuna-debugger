@@ -10,14 +10,20 @@ void Registers::draw()
 
         ImGui::SeparatorText("Registers");
 
-        if (ImGui::BeginTable("##regs", model.machine().registers.size(), ImGuiTableFlags_Borders)) {
+        if (ImGui::BeginTable("##regs", model.machine().registers.size() + 1, ImGuiTableFlags_Borders)) {
+
+            ImGui::TableSetupColumn("PC", 0);
             for (auto const& reg: model.machine().registers)
                 ImGui::TableSetupColumn(reg.name.c_str(), 0);
             ImGui::TableHeadersRow();
             ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", model.fmt_addr(model.computer_status().pc()).c_str());
+
             for (size_t i = 0; i < model.machine().registers.size(); ++i) {
                 auto const& reg = model.machine().registers.at(i);
-                ImGui::TableSetColumnIndex((int) i);
+                ImGui::TableSetColumnIndex((int) i + 1);
                 if ((size_t) model.computer_status().registers_size() <= i) {
                     char unknown[] = "????????";
                     unknown[reg.size / 4] = '\0';

@@ -17,15 +17,20 @@ void Code::draw()
 
 void Code::draw_buttons()
 {
+    bool next = false;
+
     disable_on_run([&]() {
         ImGui::PushButtonRepeat(true);
         if (ImGui::Button("Step (F7)") || ImGui::IsKeyPressed(Key::F7, true))
             model.step(true);
         ImGui::SameLine();
-        if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true)) {
-        }
+        if (ImGui::Button("Next (F8)") || ImGui::IsKeyPressed(Key::F8, true))
+            next = true;  // do it out of the lambda
         ImGui::PopButtonRepeat();
     });
+
+    if (next)
+        model.next();
 
     ImGui::SameLine();
     if (model.running()) {

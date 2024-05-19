@@ -64,6 +64,7 @@ public:
     void clear_cycles() { cycles_.clear(); }
     void run(bool forever=false);
     void pause();
+    void next();
 
     // getters
 
@@ -101,6 +102,8 @@ private:
 
     void init_debugging_session();
     void scroll_to_pc();
+
+    void set_running_state();
 };
 
 extern Model model;

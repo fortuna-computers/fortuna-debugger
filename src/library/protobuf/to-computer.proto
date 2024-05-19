@@ -38,6 +38,8 @@ message Run {
   bool forever = 1;
 }
 
+message Next {}
+
 message GetRunStatus {}
 
 message Pause {}
@@ -52,7 +54,8 @@ message ToComputer {
     Step         step           = 6;   // response: ComputerStatus
     Breakpoint   breakpoint     = 7;   // response: breakpoint list
     Run          run            = 8;   // response: status ok
-    GetRunStatus get_run_status = 9;   // response: RunStatus
-    Pause        pause          = 10;  // response: ComputerStatus
+    Next         next           = 9;   // response: status ok
+    GetRunStatus get_run_status = 10;  // response: RunStatus
+    Pause        pause          = 11;  // response: ComputerStatus
   }
 }

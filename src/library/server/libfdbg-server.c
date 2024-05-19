@@ -25,6 +25,7 @@ typedef struct FdbgServer {
     FdbgServerIOCallbacks io_callbacks;
     ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
     bool                  running;
+    ADDR_TYPE             next_bkp;
     uint32_t              run_steps;
     ADDR_TYPE             last_pc;
 #ifndef MICROCONTROLLER
@@ -41,6 +42,7 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     server->machine_id = machine_id;
     server->io_callbacks = cb;
     server->running = false;
+    server->next_bkp = NO_BREAKPOINT;
     server->run_steps = 512;
     for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
         server->breakpoints[i] = NO_BREAKPOINT;
@@ -124,6 +126,7 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
 
         case fdbg_ToComputer_pause_tag: {
             server->running = false;
+            server->next_bkp = NO_BREAKPOINT;
             fdbg_add_computer_status(server, events, &rmsg);
             break;
         }
@@ -178,6 +181,12 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         case fdbg_ToComputer_run_tag: {
             if (msg->message.run.forever && events->run_forever)
                 events->run_forever(server);   // should not return
+            server->running = true;
+            break;
+        }
+
+        case fdbg_ToComputer_next_tag: {
+            server->next_bkp = events->next_instruction(server);
             server->running = true;
             break;
         }
@@ -293,6 +302,12 @@ static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
     for (size_t i = 0; i < server->run_steps; ++i) {
 
         server->last_pc = events->step(server, false);
+
+        if (server->last_pc == server->next_bkp) {
+            server->next_bkp = NO_BREAKPOINT;
+            server->running = false;
+            return;
+        }
 
         for (size_t j = 0; j < MAX_BREAKPOINTS; ++j) {
             if (server->last_pc == server->breakpoints[j]) {

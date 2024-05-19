@@ -171,10 +171,21 @@ void Model::clear_breakpoints()
 void Model::run(bool forever)
 {
     client_.run(forever);
+    set_running_state();
+}
+
+void Model::set_running_state()
+{
     running_ = true;
     computer_status_.clear_flags();
     computer_status_.clear_stack();
     computer_status_.clear_registers();
+}
+
+void Model::next()
+{
+    client_.next();
+    set_running_state();
 }
 
 void Model::pause()
