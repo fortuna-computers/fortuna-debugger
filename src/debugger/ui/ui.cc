@@ -92,6 +92,10 @@ void UI::run()
 {
     while (!glfwWindowShouldClose(glfw_window_)) {
 
+        blink_count_++;
+        if (blink_count_ % 50 == 0)
+            Window::blink = !Window::blink;
+
         model.update();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

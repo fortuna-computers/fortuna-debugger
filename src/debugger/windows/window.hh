@@ -23,6 +23,8 @@ public:
     virtual void update() {}
     virtual bool is_debugging_window() const { return false; }
 
+    static bool blink;
+
 protected:
     template<typename F> void disable_on_run(F f) {
         if (model.running()) ImGui::BeginDisabled();

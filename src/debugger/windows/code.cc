@@ -164,5 +164,8 @@ void Code::draw_footer()
         }
     });
 
-    ImGui::Text("Click on the address to set a breakpoint.");
+    if (!model.running())
+        ImGui::Text("Click on the address to set a breakpoint.");
+    else if (Window::blink)
+        ImGui::Text("Running...");
 }

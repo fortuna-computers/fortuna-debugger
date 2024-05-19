@@ -2,6 +2,8 @@
 
 #include "model/model.hh"
 
+bool Window::blink = false;
+
 void Window::set_visible(bool visible)
 {
     visible_ = visible;

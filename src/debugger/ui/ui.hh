@@ -33,6 +33,7 @@ private:
     ImGuiContext*      context_;
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
+    size_t             blink_count_ = 0;
 };
 
 extern UI ui;
