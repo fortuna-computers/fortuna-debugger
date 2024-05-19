@@ -24,6 +24,9 @@ typedef struct FdbgServer {
     uint16_t              machine_id;
     FdbgServerIOCallbacks io_callbacks;
     ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
+    bool                  running;
+    uint32_t              run_steps;
+    ADDR_TYPE             last_pc;
 #ifndef MICROCONTROLLER
     int                   fd;
     char                  port[256];
@@ -37,6 +40,8 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     FdbgServer* server = calloc(1, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
+    server->running = false;
+    server->run_steps = 512;
     for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
         server->breakpoints[i] = NO_BREAKPOINT;
     return server;
@@ -109,131 +114,189 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
 }
 
+static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
+{
+    bool error = false;
+    fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+
+    switch ((*msg).which_message) {
+
+        case fdbg_ToComputer_pause_tag: {
+            server->running = false;
+            fdbg_add_computer_status(server, events, &rmsg);
+            break;
+        }
+
+        case fdbg_ToComputer_get_run_status_tag: {
+            rmsg.which_message = fdbg_ToDebugger_run_status_tag;
+            rmsg.message.run_status.running = true;
+            rmsg.message.run_status.pc = server->last_pc;
+            // TODO - add IO events
+            break;
+        }
+
+        default: {
+            rmsg.status = fdbg_Status_INVALID_MESSAGE;
+            break;
+        }
+    }
+}
+
+static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
+{
+    bool error = false;
+    fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+
+    switch ((*msg).which_message) {
+
+        case fdbg_ToComputer_ack_tag: {
+            rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
+            rmsg.status = fdbg_Status_OK;
+            rmsg.message.ack_response.id = server->machine_id;
+            break;
+        }
+
+        case fdbg_ToComputer_reset_tag: {
+            events->reset(server);
+            fdbg_add_computer_status(server, events, &rmsg);
+            break;
+        }
+
+        case fdbg_ToComputer_step_tag: {
+            events->step(server, (*msg).message.step.full);
+            fdbg_add_computer_status(server, events, &rmsg);
+            break;
+        }
+
+        case fdbg_ToComputer_run_tag: {
+            server->running = true;
+            break;
+        }
+
+        case fdbg_ToComputer_get_run_status_tag: {
+            rmsg.which_message = fdbg_ToDebugger_run_status_tag;
+            rmsg.message.run_status.running = false;
+            rmsg.message.run_status.pc = events->get_computer_status(server).pc;
+            break;
+        }
+
+        case fdbg_ToComputer_cycle_tag: {
+            fdbg_CycleResponse response = events->cycle(server);
+            rmsg.status = fdbg_Status_OK;
+            rmsg.which_message = fdbg_ToDebugger_cycle_response_tag;
+            memcpy(&rmsg.message.cycle_response, &response, sizeof(fdbg_CycleResponse));
+            break;
+        }
+
+        case fdbg_ToComputer_write_memory_tag: {
+            if ((*msg).message.write_memory.bytes.size > MAX_MEMORY_TRANSFER)
+                (*msg).message.write_memory.bytes.size = MAX_MEMORY_TRANSFER;
+            bool status = false;
+            ADDR_TYPE first_failed = (*msg).message.write_memory.initial_addr;
+            if (events->write_memory) {
+                status = events->write_memory(server,
+                                              (*msg).message.write_memory.initial_addr, (*msg).message.write_memory.bytes.bytes,
+                                              (*msg).message.write_memory.bytes.size, &first_failed);
+            }
+
+            rmsg.which_message = fdbg_ToDebugger_write_memory_response_tag;
+            rmsg.status = status ? fdbg_Status_OK : fdbg_Status_ERR_WRITING_MEMORY;
+            if (!status)
+                rmsg.message.write_memory_response.first_failed_pos = first_failed;
+            break;
+        }
+
+        case fdbg_ToComputer_read_memory_tag: {
+            rmsg.status = fdbg_Status_OK;
+            if ((*msg).message.read_memory.sz > MAX_MEMORY_TRANSFER)
+                (*msg).message.read_memory.sz = MAX_MEMORY_TRANSFER;
+            uint8_t buf[(*msg).message.read_memory.sz];
+            if (events->read_memory)
+                events->read_memory(server, (*msg).message.read_memory.initial_addr, (*msg).message.read_memory.sz, buf);
+            else
+                memset(buf, 0, (*msg).message.read_memory.sz);
+
+            rmsg.which_message = fdbg_ToDebugger_read_memory_response_tag;
+            rmsg.message.read_memory_response.initial_pos = (*msg).message.read_memory.initial_addr;
+            rmsg.message.read_memory_response.bytes.size = (*msg).message.read_memory.sz;
+            memcpy(rmsg.message.read_memory_response.bytes.bytes, buf, (*msg).message.read_memory.sz);
+            break;
+        }
+
+        case fdbg_ToComputer_breakpoint_tag: {
+            rmsg.status = fdbg_Status_OK;
+            switch ((*msg).message.breakpoint.action) {
+                case fdbg_Breakpoint_Action_ADD:
+                    for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                        if (server->breakpoints[i] == (ADDR_TYPE) (*msg).message.breakpoint.address)
+                            goto bkp_done;
+                        if (server->breakpoints[i] == NO_BREAKPOINT) {
+                            server->breakpoints[i] = (ADDR_TYPE) (*msg).message.breakpoint.address;
+                            goto bkp_done;
+                        }
+                    }
+                    rmsg.status = fdbg_Status_TOO_MANY_BREAKPOINTS;
+                    break;
+                case fdbg_Breakpoint_Action_REMOVE:
+                    for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                        if (server->breakpoints[i] == (ADDR_TYPE) (*msg).message.breakpoint.address) {
+                            server->breakpoints[i] = NO_BREAKPOINT;
+                            goto bkp_done;
+                        }
+                    }
+                    break;
+                case fdbg_Breakpoint_Action_CLEAR_ALL:
+                    for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
+                        server->breakpoints[i] = NO_BREAKPOINT;
+                    break;
+            }
+bkp_done:
+            rmsg.which_message = fdbg_ToDebugger_breakpoint_list_tag;
+            size_t j = 0;
+            for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
+                if (server->breakpoints[i] != NO_BREAKPOINT) {
+                    ++rmsg.message.breakpoint_list.addr_count;
+                    rmsg.message.breakpoint_list.addr[j++] = server->breakpoints[i];
+                }
+            }
+
+            break;
+        }
+
+        default: {
+            rmsg.status = fdbg_Status_INVALID_MESSAGE;
+            break;
+        }
+
+    }
+
+    if (fdbg_send_message(server, &rmsg) != 0)
+        error = true;
+
+    if (error)
+        rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
+}
+
+static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
+{
+    for (size_t i = 0; i < server->run_steps; ++i)
+        server->last_pc = events->step(server, false);  // TODO - check for breakpoint hits
+}
+
 void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 {
+    if (server->running)
+        fdbg_run_steps(server, events);
+
     bool error = false;
 
     fdbg_ToComputer msg;
     if (fdbg_receive_next_message(server, &msg, &error)) {
 
-        fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
-
-        switch (msg.which_message) {
-
-            case fdbg_ToComputer_ack_tag: {
-                rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
-                rmsg.status = fdbg_Status_OK;
-                rmsg.message.ack_response.id = server->machine_id;
-                break;
-            }
-
-            case fdbg_ToComputer_reset_tag: {
-                events->reset(server);
-                fdbg_add_computer_status(server, events, &rmsg);
-                break;
-            }
-
-            case fdbg_ToComputer_step_tag: {
-                events->step(server, msg.message.step.full);
-                fdbg_add_computer_status(server, events, &rmsg);
-                break;
-            }
-
-            case fdbg_ToComputer_cycle_tag: {
-                fdbg_CycleResponse response = events->cycle(server);
-                rmsg.status = fdbg_Status_OK;
-                rmsg.which_message = fdbg_ToDebugger_cycle_response_tag;
-                memcpy(&rmsg.message.cycle_response, &response, sizeof(fdbg_CycleResponse));
-                break;
-            }
-
-            case fdbg_ToComputer_write_memory_tag: {
-                if (msg.message.write_memory.bytes.size > MAX_MEMORY_TRANSFER)
-                    msg.message.write_memory.bytes.size = MAX_MEMORY_TRANSFER;
-                bool status = false;
-                uint64_t first_failed = msg.message.write_memory.initial_addr;
-                if (events->write_memory) {
-                    status = events->write_memory(server,
-                            msg.message.write_memory.initial_addr, msg.message.write_memory.bytes.bytes,
-                            msg.message.write_memory.bytes.size, &first_failed);
-                }
-
-                rmsg.which_message = fdbg_ToDebugger_write_memory_response_tag;
-                rmsg.status = status ? fdbg_Status_OK : fdbg_Status_ERR_WRITING_MEMORY;
-                if (!status)
-                    rmsg.message.write_memory_response.first_failed_pos = first_failed;
-                break;
-            }
-
-            case fdbg_ToComputer_read_memory_tag: {
-                rmsg.status = fdbg_Status_OK;
-                if (msg.message.read_memory.sz > MAX_MEMORY_TRANSFER)
-                    msg.message.read_memory.sz = MAX_MEMORY_TRANSFER;
-                uint8_t buf[msg.message.read_memory.sz];
-                if (events->read_memory)
-                    events->read_memory(server, msg.message.read_memory.initial_addr, msg.message.read_memory.sz, buf);
-                else
-                    memset(buf, 0, msg.message.read_memory.sz);
-
-                rmsg.which_message = fdbg_ToDebugger_read_memory_response_tag;
-                rmsg.message.read_memory_response.initial_pos = msg.message.read_memory.initial_addr;
-                rmsg.message.read_memory_response.bytes.size = msg.message.read_memory.sz;
-                memcpy(rmsg.message.read_memory_response.bytes.bytes, buf, msg.message.read_memory.sz);
-                break;
-            }
-
-            case fdbg_ToComputer_breakpoint_tag: {
-                rmsg.status = fdbg_Status_OK;
-                switch (msg.message.breakpoint.action) {
-                    case fdbg_Breakpoint_Action_ADD:
-                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
-                            if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address)
-                                goto bkp_done;
-                            if (server->breakpoints[i] == NO_BREAKPOINT) {
-                                server->breakpoints[i] = (ADDR_TYPE) msg.message.breakpoint.address;
-                                goto bkp_done;
-                            }
-                        }
-                        rmsg.status = fdbg_Status_TOO_MANY_BREAKPOINTS;
-                        break;
-                    case fdbg_Breakpoint_Action_REMOVE:
-                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
-                            if (server->breakpoints[i] == (ADDR_TYPE) msg.message.breakpoint.address) {
-                                server->breakpoints[i] = NO_BREAKPOINT;
-                                goto bkp_done;
-                            }
-                        }
-                        break;
-                    case fdbg_Breakpoint_Action_CLEAR_ALL:
-                        for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
-                            server->breakpoints[i] = NO_BREAKPOINT;
-                        break;
-                }
-bkp_done:
-                rmsg.which_message = fdbg_ToDebugger_breakpoint_list_tag;
-                size_t j = 0;
-                for (size_t i = 0; i < MAX_BREAKPOINTS; ++i) {
-                    if (server->breakpoints[i] != NO_BREAKPOINT) {
-                        ++rmsg.message.breakpoint_list.addr_count;
-                        rmsg.message.breakpoint_list.addr[j++] = server->breakpoints[i];
-                    }
-                }
-
-                break;
-            }
-
-            default: {
-                rmsg.status = fdbg_Status_INVALID_MESSAGE;
-                break;
-            }
-
-        }
-
-        if (fdbg_send_message(server, &rmsg) != 0)
-            error = true;
-
-        if (error)
-            rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
+        if (server->running)
+            fdbg_handle_msg_running(server, events, &msg);
+        else
+            fdbg_handle_msg_paused(server, events, &msg);
     }
 }
 

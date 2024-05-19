@@ -108,6 +108,7 @@
 - [ ] Run
   - [ ] Start running
     - [ ] UI running (restrict buttons)
+  - [ ] Breakpoint hit
   - [ ] Get run updates
 - [ ] Pause
 - [ ] Next

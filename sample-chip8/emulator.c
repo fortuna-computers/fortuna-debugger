@@ -17,11 +17,8 @@ fdbg_ComputerStatus get_computer_status(FdbgServer* server)
 {
     (void) server;
 
-    fdbg_ComputerStatus cstatus;
+    fdbg_ComputerStatus cstatus = fdbg_ComputerStatus_init_zero;
     cstatus.pc = pc;
-    cstatus.registers_count = 0;
-    cstatus.flags_count = 0;
-    cstatus.stack.size = 0;
     if (has_values) {
         cstatus.registers_count = 1;
         cstatus.registers[0] = a;
@@ -45,7 +42,7 @@ fdbg_CycleResponse cycle(FdbgServer* server)
 {
     (void) server;
 
-    fdbg_CycleResponse c;
+    fdbg_CycleResponse c = fdbg_CycleResponse_init_zero;
     c.bytes_count = 2;
     c.bytes[0].has = true;
     c.bytes[0].value = 0xa4;
@@ -56,12 +53,14 @@ fdbg_CycleResponse cycle(FdbgServer* server)
     return c;
 }
 
-void step(FdbgServer* server, bool full)
+uint64_t step(FdbgServer* server, bool full)
 {
     (void) server; (void) full;
 
     ++pc;
     has_values = full;
+
+    return pc;
 }
 
 bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)

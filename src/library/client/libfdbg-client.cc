@@ -148,8 +148,7 @@ start:
     switch (msg.status()) {
         case fdbg::ERR_WRITING_MEMORY:   throw std::runtime_error("Error writing to memory");
         case fdbg::TOO_MANY_BREAKPOINTS: throw std::runtime_error("Too many breakpoints");
-        case fdbg::INVALID_MESSAGE:      throw std::runtime_error("Invalid message (message type does not exist)");
-        case fdbg::UNEXPECTED_MESSAGE:   throw std::runtime_error("Unexpected message (message exists but is not accepted at this time");
+        case fdbg::INVALID_MESSAGE:      throw std::runtime_error("Invalid message (message type does not exist or was sent at the wrong time)");
         case fdbg::IO_SERIAL_ERROR:      throw std::runtime_error("I/O serial error reported by the computer");
         default:
             break;
