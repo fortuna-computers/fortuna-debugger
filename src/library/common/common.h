@@ -5,6 +5,7 @@
 #define MAX_MEMORY_TRANSFER 64
 #define MAX_MESSAGE_SZ     254
 #define MAX_BREAKPOINTS     16
+#define MAX_EVENTS          32
 
 #define READY_SIGNAL 0xff
 

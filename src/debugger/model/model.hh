@@ -86,6 +86,8 @@ public:
 
     std::string fmt_addr(uint64_t addr) const;
 
+    void set_debugging_level(DebuggingLevel level);
+
 private:
     FdbgClient                       client_;
     Config                           config_;

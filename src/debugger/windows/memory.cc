@@ -114,7 +114,7 @@ void Memory::draw_stack() const
     char stack[10 + (8 * 3)] = "Stack: ";
     size_t n = strlen(stack);
     for (unsigned char data : model.computer_status().stack())
-        n += sprintf(&stack[n], "%02X ", data);
+        n += snprintf(&stack[n], sizeof stack - n, "%02X ", data);
     ImGui::Text("%s", stack);
 }
 

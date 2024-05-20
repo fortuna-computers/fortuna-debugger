@@ -351,7 +351,7 @@ std::set<uint64_t> FdbgClient::breakpoint(fdbg::Breakpoint::Action action, uint6
         throw std::runtime_error("Too many breakpoints");
 
     std::set<uint64_t> ret;
-    for (size_t i = 0; i < rmsg.breakpoint_list().addr_size(); ++i)
+    for (size_t i = 0; i < (size_t) rmsg.breakpoint_list().addr_size(); ++i)
         ret.insert(rmsg.breakpoint_list().addr(i));
     return ret;
 }

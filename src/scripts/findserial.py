@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# This script will attempt to find either the MEGA2560 debugger or the Pico I/O board 
-# and return the serial port.
-
 import re
 import sys
 import platform

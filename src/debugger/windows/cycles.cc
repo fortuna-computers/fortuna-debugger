@@ -19,7 +19,6 @@ void Cycles::draw()
 
             // headers
 
-            int i = 0;
             ImGui::TableSetupColumn("#");
             for (auto const& bytes: model.machine().cycle_bytes)
                 ImGui::TableSetupColumn(bytes.name.c_str());

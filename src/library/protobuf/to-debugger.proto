@@ -45,10 +45,15 @@ message BreakpointList {
   repeated uint64 addr = 1;
 };
 
+message Event {
+  uint64 address = 1;
+  uint32 data = 2;
+};
+
 message RunStatus {
-  bool   running = 1;
-  uint64 pc = 2;
-  // TODO - IO events
+  bool           running = 1;
+  uint64         pc = 2;
+  repeated Event event = 3;
 };
 
 message ToDebugger {

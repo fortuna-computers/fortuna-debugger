@@ -121,17 +121,26 @@
 
 # Reactory 2
 
-- [ ] Check if responses from server are correct (ex. number of registers match)
-- [ ] Lua library (client, server)
-- [ ] Choose theme
-- [ ] Configuration: debugging level
-- [ ] Move findserial.py code to C++ library
-- [ ] Move emulator to Lua (?) and possible call C code from it
-  - [ ] LuaJIT
-- [ ] Improve theme management
+- [x] Check if responses from server are correct (ex. number of registers match)
+- [x] Choose theme
+- [x] Configuration: debugging level
+- [ ] Check for message sizes
 
 # Terminal
+
+- [ ] Logic for send special commands
+- [ ] Logic for managing special commands from Lua
+- [ ] Terminal UI
 
 # Video
 
 # Other devices
+
+- [ ] Multiple memories (for SDCard, etc...)
+
+# Refactory 3
+
+- [ ] Improve theme management
+- [ ] Lua library (client, server)
+
+# CHIP-8 emulator

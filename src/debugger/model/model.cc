@@ -10,6 +10,7 @@ Model::Model()
 void Model::load_machine(std::string const& file)
 {
     client_.load_user_definition(file);
+    client_.set_debugging_level((DebuggingLevel) config_.get_int("debugging_level"));
 }
 
 void Model::connect_to_emulator(std::string const& path)
@@ -129,6 +130,12 @@ void Model::cycle()
 {
     // TODO - check response size vs machine size
     auto cycle_response = client_.cycle();
+
+    if (cycle_response.bytes_size() != 0 && (size_t) cycle_response.bytes_size() != machine().cycle_bytes.size())
+        throw std::runtime_error("The number of bytes sent by the computer doesn't match the number of bytes in the machine definition.");
+    if (cycle_response.bits_size() != 0 && (size_t) cycle_response.bits_size() != machine().cycle_bits.size())
+        throw std::runtime_error("The number of bits sent by the computer doesn't match the number of bits in the machine definition.");
+
     if (cycle_response.pc())
         computer_status_.set_pc(cycle_response.pc());
     cycles_.push_front(cycle_response);
@@ -217,9 +224,14 @@ void Model::scroll_to_pc()
 
 void Model::set_computer_status(fdbg::ComputerStatus const &computer_status)
 {
-    if (computer_status.registers_size() != 0 && computer_status.registers_size() != machine().registers.size())
+    if (computer_status.registers_size() != 0 && (size_t) computer_status.registers_size() != machine().registers.size())
         throw std::runtime_error("The number of register sent by the computer doesn't match the number of registers in the machine definition.");
-    if (computer_status.flags_size() != 0 && computer_status.flags_size() != machine().flags.size())
+    if (computer_status.flags_size() != 0 && (size_t) computer_status.flags_size() != machine().flags.size())
         throw std::runtime_error("The number of flags sent by the computer doesn't match the number of flags in the machine definition.");
     computer_status_ = computer_status;
+}
+
+void Model::set_debugging_level(DebuggingLevel level)
+{
+    client_.set_debugging_level(level);
 }
