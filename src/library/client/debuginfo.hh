@@ -28,6 +28,7 @@ struct DebugInfo {
     std::map<std::pair<size_t, size_t>, SourceLine> source_lines;
     std::unordered_map<std::string, uint64_t>       symbols;
     std::unordered_map<uint64_t, std::pair<size_t, size_t>> addresses;
+    std::vector<std::string>                        files_to_watch;
 
     static constexpr uint64_t NO_ADDRESS = UINT64_MAX;
 };

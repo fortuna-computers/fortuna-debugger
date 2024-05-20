@@ -112,11 +112,11 @@
   - [x] Scroll to position when breakpoint hit/pause
   - [x] Get run updates
 - [x] Pause
-- [ ] Next
+- [x] Next
 
 # Recompilation
 
-- [ ] Watch source code
+- [ ] Watch source cod
 - [ ] Recompilation support
 
 # Reactory 2

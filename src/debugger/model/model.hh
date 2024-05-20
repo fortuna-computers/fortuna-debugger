@@ -12,6 +12,7 @@
 
 #include "libfdbg-client.hh"
 #include "config/config.hh"
+#include "filewatcher/filewatcher.hh"
 
 class Model {
     static constexpr size_t PAGE_SZ = 256;

@@ -192,6 +192,7 @@ DebugInfo Machine::compile(std::string const& filename) const
     di.result_info = field_str("result_info", false);
     di.error_info = field_str("error_info", !di.success);
     di.files = field_string_array("files", true);
+    di.files_to_watch = field_string_array("files_to_watch", false);
 
     // binaries
 

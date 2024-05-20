@@ -50,6 +50,7 @@ IMGUI_SRC = \
 F_DEBUGGER_SRC = \
         main.o \
         config/config.o \
+        filewatcher/filewatcher.o \
         model/model.o \
         ui/properties.o \
         ui/ui.o \
