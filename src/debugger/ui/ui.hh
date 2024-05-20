@@ -20,6 +20,7 @@ public:
 
     void set_window_visible(std::string const& name, bool visible);
     void start_debugging_session();
+    void update_theme();
 
 private:
     template <typename W> std::string add_window(bool visible=false) {
@@ -34,6 +35,7 @@ private:
     std::string        msg_box_key_;
     std::map<std::string, std::unique_ptr<Window>> windows_ {};
     size_t             blink_count_ = 0;
+    size_t             theme_ = 0;
 };
 
 extern UI ui;

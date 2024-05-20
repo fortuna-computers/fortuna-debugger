@@ -100,11 +100,15 @@ private:
     std::set<uint64_t>               breakpoints_;
     std::deque<fdbg::CycleResponse>  cycles_;
     bool                             running_ = false;
+    FileWatcher                      file_watcher_;
+    size_t                           update_count_ = 0;
+    std::string                      source_file_;
 
     void init_debugging_session();
     void scroll_to_pc();
 
     void set_running_state();
+    void set_computer_status(fdbg::ComputerStatus const& computer_status);
 };
 
 extern Model model;

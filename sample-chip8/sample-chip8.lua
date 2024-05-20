@@ -50,7 +50,7 @@ return {
             binaries = {
                 { rom = { 61, 62, 63 }, load_pos = 30 },
             },
-            sources_to_watch = { "sample-chip8/rom/MAZE.SRC" },
+            files_to_watch = { "sample-chip8/rom/MAZE.SRC" },
         }
     end
 

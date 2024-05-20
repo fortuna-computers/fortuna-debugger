@@ -1,44 +1,32 @@
 #include "filewatcher/filewatcher.hh"
 
-#include <chrono>
-using namespace std::chrono_literals;
-
-static constexpr auto INTERVAL = 500ms;
-
-FileWatcher::~FileWatcher()
+void FileWatcher::update_files(std::vector<std::string> const &files)
 {
-    running_ = false;
-    thread_.join();
+    files_.clear();
+    for (std::string const& filename: files)
+        files_[filename] = std::filesystem::last_write_time(filename);
 }
 
-void FileWatcher::update_file_list(std::vector<std::string> const &file_list)
+void FileWatcher::run_verify()
 {
-    const std::lock_guard<std::mutex> lock(file_list_mutex_);
+    if (updated_)
+        return;  // don't run if we already know files changed
+    if (thread_.joinable())
+        thread_.join();  // makes sure we're not running one verify in top of another
 
-    file_list_.clear();
-    for (std::string const& file: file_list)
-        file_list_[file] = std::filesystem::last_write_time(file);
-}
-
-void FileWatcher::reset()
-{
-    files_updated_ = false;
-}
-
-void FileWatcher::run()
-{
     thread_ = std::thread([this]() {
-        for (;;) {
-            const std::lock_guard<std::mutex> lock(file_list_mutex_);
-            for (auto& f: file_list_) {
-                auto filetime = std::filesystem::last_write_time(f.first);
-                if (f.second != filetime) {
-                    files_updated_ = true;
-                    f.second = filetime;
-                }
+        for (auto& file: files_) {
+            auto tm = std::filesystem::last_write_time(file.first);
+            if (tm > file.second) {
+                file.second = tm;
+                updated_ = true;
             }
-            std::this_thread::sleep_for(INTERVAL);
         }
     });
 }
 
+FileWatcher::~FileWatcher()
+{
+    if (thread_.joinable())
+        thread_.join();
+}

@@ -60,7 +60,6 @@ UI::UI()
     ImGuiIO* io_ = &ImGui::GetIO();
     ImGui_ImplGlfw_InitForOpenGL(glfw_window_, true);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
-    ImGui::StyleColorsDark();
     io_->KeyRepeatRate = 0.1f;
 
     // add windows
@@ -74,6 +73,8 @@ UI::UI()
     add_window<Cycles>();
     add_window<UploadROM>(true);
     msg_box_key_ = add_window<MessageBox>();
+
+    update_theme();
 }
 
 UI::~UI()
@@ -98,6 +99,10 @@ void UI::run()
 
         model.update();
 
+        if (theme_ == 0)
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        else if (theme_ == 1)
+            glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -140,4 +145,13 @@ void UI::start_debugging_session()
     for (auto& window: windows_)
         if (window.second->is_debugging_window())
             window.second->reopen_debugging_session();
+}
+
+void UI::update_theme()
+{
+    theme_ = model.config().get_int("theme");
+    if (theme_ == 0)
+        ImGui::StyleColorsDark();
+    else if (theme_ == 1)
+        ImGui::StyleColorsLight();
 }

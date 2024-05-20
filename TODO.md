@@ -116,8 +116,8 @@
 
 # Recompilation
 
-- [ ] Watch source cod
-- [ ] Recompilation support
+- [x] Watch source code
+- [x] Recompilation support
 
 # Reactory 2
 
@@ -128,6 +128,7 @@
 - [ ] Move findserial.py code to C++ library
 - [ ] Move emulator to Lua (?) and possible call C code from it
   - [ ] LuaJIT
+- [ ] Improve theme management
 
 # Terminal
 

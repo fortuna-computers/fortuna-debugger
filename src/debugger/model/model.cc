@@ -45,7 +45,7 @@ void Model::upload_rom_and_start()
 
 void Model::init_debugging_session()
 {
-    computer_status_ = client_.reset();
+    set_computer_status(client_.reset());
 
     memory.pages = machine().total_memory / PAGE_SZ;
     change_memory_page(0);
@@ -82,6 +82,17 @@ void Model::update()
         if (!running_)
             scroll_to_pc();
     }
+
+    if (update_count_ % 40 == 0)  // every ~600ms
+        file_watcher_.run_verify();
+
+    if (file_watcher_.updated()) {
+        compile(source_file_);
+        file_watcher_.reset();
+        upload_rom_and_start();
+    }
+
+    ++update_count_;
 }
 
 void Model::change_memory_page(int64_t page)
@@ -104,15 +115,13 @@ void Model::change_memory_page(int64_t page)
 
 void Model::reset()
 {
-    // TODO - check response size vs machine size
-    computer_status_ = client_.reset();
+    set_computer_status(client_.reset());
     scroll_to_pc();
 }
 
 void Model::step(bool full)
 {
-    // TODO - check response size vs machine size
-    computer_status_ = client_.step(full);
+    set_computer_status(client_.step(full));
     scroll_to_pc();
 }
 
@@ -143,6 +152,10 @@ void Model::compile(std::string const& source_file)
         addr_sz_ = 6;
     else
         addr_sz_ = 8;
+
+    file_watcher_.update_files(debug_.files_to_watch);
+
+    source_file_ = source_file;
 }
 
 std::string Model::fmt_addr(uint64_t addr) const
@@ -200,4 +213,13 @@ void Model::scroll_to_pc()
     try {
         scroll_to_line_ = debug_.addresses.at(computer_status_.pc());
     } catch (std::out_of_range&) {}
+}
+
+void Model::set_computer_status(fdbg::ComputerStatus const &computer_status)
+{
+    if (computer_status.registers_size() != 0 && computer_status.registers_size() != machine().registers.size())
+        throw std::runtime_error("The number of register sent by the computer doesn't match the number of registers in the machine definition.");
+    if (computer_status.flags_size() != 0 && computer_status.flags_size() != machine().flags.size())
+        throw std::runtime_error("The number of flags sent by the computer doesn't match the number of flags in the machine definition.");
+    computer_status_ = computer_status;
 }
