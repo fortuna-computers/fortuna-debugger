@@ -87,8 +87,8 @@
   - [x] Protobuf
   - [x] Library
   - [x] UI
-  - [ ] Clear breakpoints button
-- [ ] What else is missing?
+  - [x] Clear breakpoints button
+- [x] What else is missing?
 
 # Registers
 
@@ -140,6 +140,7 @@
 
 # Refactory 3
 
+- [ ] Cycle in reverse order
 - [ ] Improve theme management
 - [ ] Lua library (client, server)
 

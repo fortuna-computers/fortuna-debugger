@@ -316,7 +316,7 @@ std::string FdbgClient::start_emulator(std::string const& path)
         std::this_thread::sleep_for(200ms);
 
         // read bytes from emulator
-        std::ifstream f(std::string(getenv("TMPDIR")) + "/fdbg." + std::to_string(pid));
+        std::ifstream f("/tmp/fdbg." + std::to_string(pid));
         std::stringstream buffer;
         buffer << f.rdbuf();
         return buffer.str();

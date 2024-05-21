@@ -371,7 +371,7 @@ FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud)
     snprintf(server->port, sizeof server->port, "%s", serial_port);
 
     char filename[512];
-    snprintf(filename, sizeof filename, "%s/fdbg.%d", getenv("TMPDIR"), getpid());
+    snprintf(filename, sizeof filename, "/tmp/fdbg.%d", getpid());
     FILE* f = fopen(filename, "w");
     fprintf(f, "%s", server->port);
     fclose(f);
@@ -388,7 +388,7 @@ void fdbg_die_if_parent_dies()
 {
     if (getppid() == 1) {
         char filename[512];
-        snprintf(filename, sizeof filename, "%s/fdbg.%d", getenv("TMPDIR"), getpid());
+        snprintf(filename, sizeof filename, "/tmp/fdbg.%d", getpid());
         unlink(filename);
         exit(0);
     }

@@ -1,6 +1,7 @@
 #include "config.hh"
 
 #include <fstream>
+#include <iomanip>
 #include <string>
 
 using namespace std::string_literals;
