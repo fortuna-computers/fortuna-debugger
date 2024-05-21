@@ -160,7 +160,7 @@ start:
     return msg;
 }
 
-void FdbgClient::ack(uint32_t id)
+fdbg::AckResponse FdbgClient::ack(uint32_t id)
 {
     fdbg::ToComputer msg;
     msg.set_allocated_ack(new fdbg::Ack());
@@ -169,6 +169,8 @@ void FdbgClient::ack(uint32_t id)
 
     if (response.ack_response().id() != id)
         throw std::runtime_error("Invalid id received from server during ack");
+
+    return response.ack_response();
 }
 
 fdbg::ComputerStatus FdbgClient::reset()

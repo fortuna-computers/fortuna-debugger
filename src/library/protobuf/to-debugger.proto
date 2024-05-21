@@ -11,7 +11,10 @@ enum Status {
 }
 
 message AckResponse {
-  uint32 id = 1;
+  uint32 id             = 1;
+  uint32 server_sz      = 2;
+  uint32 to_computer_sz = 3;
+  uint32 to_debugger_sz = 4;
 }
 
 message WriteMemoryResponse {

@@ -163,6 +163,9 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         case fdbg_ToComputer_ack_tag: {
             rmsg.which_message = fdbg_ToDebugger_ack_response_tag;
             rmsg.message.ack_response.id = server->machine_id;
+            rmsg.message.ack_response.server_sz = sizeof(FdbgServer);
+            rmsg.message.ack_response.to_computer_sz = sizeof(fdbg_ToComputer);
+            rmsg.message.ack_response.to_debugger_sz = sizeof(fdbg_ToDebugger);
             break;
         }
 

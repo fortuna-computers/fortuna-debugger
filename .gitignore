@@ -38,3 +38,4 @@ imgui.ini
 
 /findserial.py
 /chip8-emulator
+.*.swp
