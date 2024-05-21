@@ -1,9 +1,9 @@
 #include "libfdbg-server.h"
 
-#define MAX(a,b) \
+#define MIN(a,b) \
    ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
-     _a > _b ? _a : _b; })
+     _a < _b ? _a : _b; })
 
 #ifndef MICROCONTROLLER
 #  if __APPLE__
@@ -121,10 +121,8 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     msg->status = fdbg_Status_OK;
     msg->which_message = fdbg_ToDebugger_computer_status_tag;
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
-    msg->message.computer_status.events_count = MAX(server->event_count, 2);
-    memcpy(msg->message.computer_status.events, server->event_queue, MAX(server->event_count, 2) * sizeof(fdbg_Event));
-
-    server->event_count = 0;
+    msg->message.computer_status.events_count = MIN(server->event_count, 2);
+    memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, 2) * sizeof(fdbg_Event));
 }
 
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
@@ -190,6 +188,7 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         case fdbg_ToComputer_step_tag: {
             events->step(server, (*msg).message.step.full);
             fdbg_add_computer_status(server, events, &rmsg);
+            server->event_count = 0;
             break;
         }
 
@@ -210,8 +209,8 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
             rmsg.which_message = fdbg_ToDebugger_run_status_tag;
             rmsg.message.run_status.running = false;
             rmsg.message.run_status.pc = events->get_computer_status(server).pc;
-            rmsg.message.run_status.events_count = MAX(server->event_count, MAX_EVENTS);
-            memcpy(rmsg.message.run_status.events, server->event_queue, MAX(server->event_count, MAX_EVENTS) * sizeof(fdbg_Event));
+            rmsg.message.run_status.events_count = MIN(server->event_count, MAX_EVENTS);
+            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS) * sizeof(fdbg_Event));
             server->event_count = 0;
             break;
         }
