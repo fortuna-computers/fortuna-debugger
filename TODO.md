@@ -124,11 +124,13 @@
 - [x] Check if responses from server are correct (ex. number of registers match)
 - [x] Choose theme
 - [x] Configuration: debugging level
-- [ ] Check for message sizes
+- [x] Check for message sizes
 
 # Terminal
 
 - [ ] Logic for send special commands
+  - [x] Protobuf
+  - [ ] Server logic
 - [ ] Logic for managing special commands from Lua
 - [ ] Terminal UI
 
@@ -143,5 +145,6 @@
 - [ ] Cycle in reverse order
 - [ ] Improve theme management
 - [ ] Lua library (client, server)
+- [ ] Increase message size (2 bytes for message size, stream some messages ToDebugger)
 
 # CHIP-8 emulator

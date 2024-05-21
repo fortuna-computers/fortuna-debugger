@@ -1,5 +1,10 @@
 #include "libfdbg-server.h"
 
+#define MAX(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+
 #ifndef MICROCONTROLLER
 #  if __APPLE__
 #    include <util.h>
@@ -24,10 +29,12 @@ typedef struct FdbgServer {
     uint16_t              machine_id;
     FdbgServerIOCallbacks io_callbacks;
     ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
-    bool                  running;
     ADDR_TYPE             next_bkp;
     uint32_t              run_steps;
     ADDR_TYPE             last_pc;
+    fdbg_Event            event_queue[MAX_EVENTS];
+    uint8_t               event_count;
+    bool                  running;
 #ifndef MICROCONTROLLER
     int                   fd;
     char                  port[256];
@@ -114,6 +121,10 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     msg->status = fdbg_Status_OK;
     msg->which_message = fdbg_ToDebugger_computer_status_tag;
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
+    msg->message.computer_status.events_count = MAX(server->event_count, 2);
+    memcpy(msg->message.computer_status.events, server->event_queue, MAX(server->event_count, 2) * sizeof(fdbg_Event));
+
+    server->event_count = 0;
 }
 
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
@@ -171,6 +182,7 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
 
         case fdbg_ToComputer_reset_tag: {
             events->reset(server);
+            server->event_count = 0;
             fdbg_add_computer_status(server, events, &rmsg);
             break;
         }
@@ -198,6 +210,9 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
             rmsg.which_message = fdbg_ToDebugger_run_status_tag;
             rmsg.message.run_status.running = false;
             rmsg.message.run_status.pc = events->get_computer_status(server).pc;
+            rmsg.message.run_status.events_count = MAX(server->event_count, MAX_EVENTS);
+            memcpy(rmsg.message.run_status.events, server->event_queue, MAX(server->event_count, MAX_EVENTS) * sizeof(fdbg_Event));
+            server->event_count = 0;
             break;
         }
 
@@ -304,6 +319,9 @@ static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
 {
     for (size_t i = 0; i < server->run_steps; ++i) {
 
+        if (server->event_count == (MAX_EVENTS - 1))
+            return;  // we're not running any steps while there are pending events
+
         server->last_pc = events->step(server, false);
 
         if (server->last_pc == server->next_bkp) {
@@ -335,6 +353,16 @@ void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
             fdbg_handle_msg_running(server, events, &msg);
         else
             fdbg_handle_msg_paused(server, events, &msg);
+    }
+}
+
+bool fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data)
+{
+    if (server->event_count < MAX_EVENTS - 1) {
+        server->event_queue[server->event_count++] = (fdbg_Event) { address, data };
+        return true;
+    } else {
+        return false;
     }
 }
 

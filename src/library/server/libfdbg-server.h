@@ -41,6 +41,8 @@ void        fdbg_server_free(FdbgServer* server);
 
 void        fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
+bool        fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data);
+
 #ifndef MICROCONTROLLER
 
 FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud);

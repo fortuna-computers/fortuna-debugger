@@ -31,6 +31,7 @@ message ComputerStatus {
   repeated uint64 registers = 2;
   repeated bool   flags     = 3;
   bytes           stack     = 4;
+  repeated Event  events    = 5;
 };
 
 message OptionalUint {
@@ -49,14 +50,14 @@ message BreakpointList {
 };
 
 message Event {
-  uint64 address = 1;
+  uint32 address = 1;
   uint32 data = 2;
 };
 
 message RunStatus {
   bool           running = 1;
   uint64         pc = 2;
-  repeated Event event = 3;
+  repeated Event events = 3;
 };
 
 message ToDebugger {
