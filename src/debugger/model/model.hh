@@ -111,6 +111,8 @@ private:
 
     void set_running_state();
     void set_computer_status(fdbg::ComputerStatus const& computer_status);
+
+    void do_event(fdbg::Event const &event);
 };
 
 extern Model model;

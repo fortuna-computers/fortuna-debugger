@@ -81,6 +81,8 @@ void Model::update()
     if (running_) {
         auto cr = client_.run_status();
         running_ = cr.running();
+        for (int i = 0; i < cr.events_size(); ++i)
+            do_event(cr.events(i));
         computer_status_.set_pc(cr.pc());
         if (!running_)
             scroll_to_pc();
@@ -124,7 +126,10 @@ void Model::reset()
 
 void Model::step(bool full)
 {
-    set_computer_status(client_.step(full));
+    fdbg::ComputerStatus computer_status = client_.step(full);
+    for (int i = 0; i < computer_status.events_size(); ++i)
+        do_event(computer_status.events(i));
+    set_computer_status(computer_status);
     scroll_to_pc();
 }
 
@@ -236,4 +241,8 @@ void Model::set_computer_status(fdbg::ComputerStatus const &computer_status)
 void Model::set_debugging_level(DebuggingLevel level)
 {
     client_.set_debugging_level(level);
+}
+
+void Model::do_event(fdbg::Event const &event)
+{
 }

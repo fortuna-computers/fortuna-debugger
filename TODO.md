@@ -128,9 +128,10 @@
 
 # Terminal
 
-- [ ] Logic for send special commands
+- [x] Logic for send special commands
   - [x] Protobuf
-  - [ ] Server logic
+  - [x] Server logic
+  - [ ] Client
 - [ ] Logic for managing special commands from Lua
 - [ ] Terminal UI
 

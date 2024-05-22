@@ -25,6 +25,10 @@ return {
         product_id = "000a",
     },
 
+    do_event = function(computer, address, value)
+        print(address, value)
+    end,
+
     compile = function(source_file)
         return {
             success = true,
