@@ -264,3 +264,13 @@ DebugInfo Machine::compile(std::string const& filename) const
 
     return di;
 }
+
+void Machine::setup_model_callbacks(ITerminal* terminal) const
+{
+
+}
+
+void Machine::do_event(uint32_t addr, uint32_t data) const
+{
+    // TODO
+}

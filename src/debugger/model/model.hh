@@ -13,6 +13,7 @@
 #include "libfdbg-client.hh"
 #include "config/config.hh"
 #include "filewatcher/filewatcher.hh"
+#include "terminalmodel.hh"
 
 class Model {
     static constexpr size_t PAGE_SZ = 256;
@@ -105,6 +106,7 @@ private:
     FileWatcher                      file_watcher_;
     size_t                           update_count_ = 0;
     std::string                      source_file_;
+    TerminalModel                    terminal_model_;
 
     void init_debugging_session();
     void scroll_to_pc();

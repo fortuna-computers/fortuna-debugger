@@ -52,6 +52,7 @@ F_DEBUGGER_SRC = \
         config/config.o \
         filewatcher/filewatcher.o \
         model/model.o \
+        model/terminalmodel.o \
         ui/properties.o \
         ui/ui.o \
         windows/window.o \

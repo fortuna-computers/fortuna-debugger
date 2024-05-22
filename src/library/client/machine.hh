@@ -5,14 +5,17 @@
 #include <string>
 #include <vector>
 #include "debuginfo.hh"
+#include "ievents.hh"
 
 class Machine {
 public:
     Machine();
     ~Machine();
 
-    void load_user_definition(std::string const& filename);
+    void      load_user_definition(std::string const& filename);
     DebugInfo compile(std::string const& filename) const;
+    void      setup_model_callbacks(ITerminal* terminal) const;
+    void      do_event(uint32_t addr, uint32_t data) const;
 
     uint16_t    id;
     std::string name;

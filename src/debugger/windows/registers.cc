@@ -29,7 +29,7 @@ void Registers::draw()
                     unknown[reg.size / 4] = '\0';
                     ImGui::Text("%s", unknown);
                 } else {
-                    ImGui::Text("%0*llX", reg.size / 4, model.computer_status().registers(i));
+                    ImGui::Text("%0*lX", reg.size / 4, model.computer_status().registers(i));
                 }
             }
         }

@@ -27,9 +27,9 @@ int main()
 
         FdbgServerEvents events = {
                 .get_computer_status = [](FdbgServer*) {
-                    return (fdbg_ComputerStatus) {
-                        .pc = 0x30,
-                    };
+                    fdbg_ComputerStatus cs {0};
+                    cs.pc = 0x30;
+                    return cs;
                 },
                 .reset = [](FdbgServer*) {},
                 .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
