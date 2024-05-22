@@ -267,10 +267,36 @@ DebugInfo Machine::compile(std::string const& filename) const
 
 void Machine::setup_model_callbacks(ITerminal* terminal) const
 {
+    int top = lua_gettop(L);
 
+    lua_newtable(L);
+
+    lua_newtable(L);
+    lua_pushlightuserdata(L, terminal); lua_setfield(L, -2, "__ptr");
+    lua_setfield(L, -2, "terminal");
+
+    lua_setglobal(L, "__computer");
+
+    assert_stack(top);
 }
 
 void Machine::do_event(uint32_t addr, uint32_t data) const
 {
-    // TODO
+    assert_stack(1);
+
+    lua_getfield(L, -1, "do_event");
+    if (lua_isnil(L, -1)) {
+        lua_pop(L, 1);
+        return;
+    }
+
+    lua_getglobal(L, "__computer");
+    lua_pushinteger(L, addr);
+    lua_pushinteger(L, data);
+
+    int r = lua_pcall(L, 3, 0, 0);
+    if (r != LUA_OK)
+        throw std::runtime_error(lua_tostring(L, -1));
+
+    assert_stack(1);
 }

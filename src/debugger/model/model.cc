@@ -10,8 +10,9 @@ Model::Model()
 void Model::load_machine(std::string const& file)
 {
     client_.load_user_definition(file);
-    client_.setup_model_callbacks(&terminal_model_);
     client_.set_debugging_level((DebuggingLevel) config_.get_int("debugging_level"));
+
+    client_.machine().setup_model_callbacks(&terminal_model_);
 }
 
 void Model::connect_to_emulator(std::string const& path)

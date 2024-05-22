@@ -147,5 +147,7 @@
 - [ ] Improve theme management
 - [ ] Lua library (client, server)
 - [ ] Increase message size (2 bytes for message size, stream some messages ToDebugger)
+- [ ] LuaJIT and emulator in Lua (FFI support?)
+- [ ] Unix socket support (for emulator faster speed), TCP socket (for microcontroller wifi support)
 
 # CHIP-8 emulator
