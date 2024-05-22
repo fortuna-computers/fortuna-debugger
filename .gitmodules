@@ -10,3 +10,6 @@
 	path = src/contrib/imgui-filebrowser
 	url = https://github.com/AirGuanZ/imgui-filebrowser.git
 	ignore = dirty
+[submodule "src/contrib/libtmt"]
+	path = src/contrib/libtmt
+	url = https://github.com/deadpixi/libtmt

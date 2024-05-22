@@ -135,6 +135,8 @@
 - [ ] Logic for managing special commands from Lua
 - [ ] Terminal UI
 
+# Terminal input
+
 # Video
 
 # Other devices
@@ -144,10 +146,12 @@
 # Refactory 3
 
 - [ ] Cycle in reverse order
+- [ ] Logging into a Window (see Demo -> Configuration -> Capture)
 - [ ] Improve theme management
 - [ ] Lua library (client, server)
 - [ ] Increase message size (2 bytes for message size, stream some messages ToDebugger)
 - [ ] LuaJIT and emulator in Lua (FFI support?)
 - [ ] Unix socket support (for emulator faster speed), TCP socket (for microcontroller wifi support)
+- [ ] Windows are keeping visible on restart, even after closed
 
 # CHIP-8 emulator

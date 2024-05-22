@@ -21,6 +21,7 @@
 #include "windows/code.hh"
 #include "windows/registers.hh"
 #include "windows/cycles.hh"
+#include "windows/terminal.hh"
 
 UI::UI()
 {
@@ -72,6 +73,7 @@ UI::UI()
     add_window<Registers>();
     add_window<Cycles>();
     add_window<UploadROM>(true);
+    add_window<Terminal>();
     msg_box_key_ = add_window<MessageBox>();
 
     update_theme();

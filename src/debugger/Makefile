@@ -48,6 +48,7 @@ IMGUI_SRC = \
         ${CONTRIB}/glad/src/gl.o
 
 F_DEBUGGER_SRC = \
+		${CONTRIB}/libtmt/tmt.o \
         main.o \
         config/config.o \
         filewatcher/filewatcher.o \
@@ -65,6 +66,7 @@ F_DEBUGGER_SRC = \
         windows/messagebox.o \
         windows/registers.o \
         windows/startup.o \
+        windows/terminal.o \
         windows/uploadrom.o \
         ${IMGUI_SRC}
 
