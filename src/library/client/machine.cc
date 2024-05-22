@@ -265,6 +265,23 @@ DebugInfo Machine::compile(std::string const& filename) const
     return di;
 }
 
+static ITerminal* to_terminal(lua_State* L) {
+    if (!lua_istable(L, 1))
+        goto not_iterminal;
+    lua_getfield(L, 1, "__ptr");
+    if (lua_isnil(L, -1))
+        goto not_iterminal;
+
+    {
+        auto terminal = (ITerminal *) lua_touserdata(L, -1);
+        lua_pop(L, 1);
+        return terminal;
+    }
+
+not_iterminal:
+    throw std::runtime_error("First parameter doesn't seem to be a Terminal. Are you sure you're using `computer.terminal:my_method()` ?");
+}
+
 void Machine::setup_model_callbacks(ITerminal* terminal) const
 {
     int top = lua_gettop(L);
@@ -273,6 +290,10 @@ void Machine::setup_model_callbacks(ITerminal* terminal) const
 
     lua_newtable(L);
     lua_pushlightuserdata(L, terminal); lua_setfield(L, -2, "__ptr");
+
+    lua_pushcfunction(L, [](lua_State* LL) { to_terminal(LL)->add_char(luaL_checkstring(LL, 2)[0]); return 0; });
+    lua_setfield(L, -2, "add_char");
+
     lua_setfield(L, -2, "terminal");
 
     lua_setglobal(L, "__computer");

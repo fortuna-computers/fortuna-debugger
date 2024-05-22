@@ -5,6 +5,7 @@
 
 class TerminalModel : public ITerminal {
 public:
+    void add_char(char c) override;
 };
 
 #endif

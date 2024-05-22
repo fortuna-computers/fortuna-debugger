@@ -25,7 +25,6 @@ void Model::connect_to_serial_port(const std::string &serial_port, uint32_t baud
 {
     client_.connect(serial_port, baud_rate);
     connected_ = true;
-    client_.set_debugging_level(DebuggingLevel::TRACE);
     auto ack = client_.ack(machine().id);
     printf("Connection acknowledged. Memory use: %d bytes from server, %d bytes for ToComputer buffer, %d bytes for ToDebugger buffer.\n",
            ack.server_sz(), ack.to_computer_sz(), ack.to_debugger_sz());

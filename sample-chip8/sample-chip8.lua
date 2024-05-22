@@ -26,7 +26,7 @@ return {
     },
 
     do_event = function(computer, address, value)
-        print(address, value)
+        computer.terminal:add_char('H')
     end,
 
     compile = function(source_file)

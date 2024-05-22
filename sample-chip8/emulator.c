@@ -63,7 +63,7 @@ uint64_t step(FdbgServer* server, bool full)
 {
     (void) server; (void) full;
 
-    if (pc == 1)
+    // if (pc == 1)
         fdbg_server_push_event(server, 0x4812, 0xaf);
 
     ++pc;
