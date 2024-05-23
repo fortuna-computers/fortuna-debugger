@@ -131,9 +131,20 @@
 - [x] Logic for send special commands
   - [x] Protobuf
   - [x] Server logic
-  - [ ] Client
-- [ ] Logic for managing special commands from Lua
+  - [x] Client
+- [x] Logic for managing special commands from Lua
 - [ ] Terminal UI
+  - [x] Terminal
+  - [ ] ANSI terminal library
+- [ ] Rename events to Output events 
+- [ ] Reorganize events (actual events instead of IO codes)
+
+# Detour
+
+- [ ] Understand how to send stream messages
+- [ ] Read/write RAM stream
+- [ ] Computer status registers and flags stream
+- [ ] Events stream
 
 # Terminal input
 
