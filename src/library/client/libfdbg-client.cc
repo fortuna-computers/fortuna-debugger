@@ -74,7 +74,7 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
     std::string message;
     msg.SerializeToString(&message);
 
-    uint8_t sz = (uint8_t) message.length();
+    auto sz = message.length();
 
     if (message.size() > MAX_MESSAGE_SZ)
         throw std::runtime_error("Message too large: "s + msg.DebugString());
@@ -102,13 +102,13 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
 
     ssize_t r = write(fd_, &sz1, 1);
     if (r < 0)
-        throw std::runtime_error("Error writing to serial.");
+        throw std::runtime_error("Error writing to serial: "s + strerror(errno));
+    if (sz > 0x7f)
+        write(fd_, &sz2, 1);
+
     r = write(fd_, message.data(), message.length());
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
-
-    if (sz > 0x7f)
-        write(fd_, &sz2, 1);
 }
 
 fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)

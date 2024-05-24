@@ -87,7 +87,7 @@ int main()
         {
             std::vector<uint8_t> data(100);
             std::generate(data.begin(), data.end(), []() { return rand(); });
-            // client.write_memory_full(0, data);
+            client.write_memory_full(0, data);
         }
 
         printf("==============================================\n");
