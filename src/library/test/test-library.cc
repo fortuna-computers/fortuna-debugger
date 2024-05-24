@@ -66,7 +66,6 @@ int main()
         printf("Machine id: 0x%04X\n", client.machine().id);
         printf("Machine name: %s\n", client.machine().name.c_str());
 
-        /*
         printf("==============================================\n");
 
         client.connect(port, EMULATOR_BAUD_RATE);
@@ -82,17 +81,15 @@ int main()
             if (data != data2)
                 throw std::runtime_error("Data does not match.");
         }
-         */
 
         printf("==============================================\n");
 
         {
             std::vector<uint8_t> data(100);
             std::generate(data.begin(), data.end(), []() { return rand(); });
-            client.write_memory_full(0, data);
+            // client.write_memory_full(0, data);
         }
 
-        /*
         printf("==============================================\n");
 
         {
@@ -103,7 +100,6 @@ int main()
 
         printf("==============================================\n");
         printf("Client finalized.\n");
-         */
     }
 
     // finalize

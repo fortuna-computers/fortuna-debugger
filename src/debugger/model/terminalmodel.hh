@@ -4,6 +4,8 @@
 #include "client/ievents.hh"
 
 #include <array>
+#include <utility>
+#include <cstddef>
 
 class TerminalModel : public ITerminal {
 public:
