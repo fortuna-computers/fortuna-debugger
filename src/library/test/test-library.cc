@@ -17,8 +17,9 @@ int main()
 
     // start and run server
 
-    FdbgServer* server = fdbg_server_init_pc(MACHINE_ID, EMULATOR_BAUD_RATE);
-    std::string port = fdbg_server_serial_port(server);
+    FdbgServer server;
+    fdbg_server_init_pc(&server, MACHINE_ID, EMULATOR_BAUD_RATE);
+    std::string port = fdbg_server_serial_port(&server);
     printf("Server started and listening in port '%s'.\n", port.c_str());
 
     std::this_thread::sleep_for(100ms);
@@ -27,7 +28,7 @@ int main()
 
         FdbgServerEvents events = {
                 .get_computer_status = [](FdbgServer*) {
-                    fdbg_ComputerStatus cs {0};
+                    fdbg_ComputerStatus cs = fdbg_ComputerStatus_init_zero;
                     cs.pc = 0x30;
                     return cs;
                 },
@@ -42,10 +43,10 @@ int main()
         };
 
         while (server_running) {
-            fdbg_server_next(server, &events);
+            fdbg_server_next(&server, &events);
         }
 
-        fdbg_server_free(server);
+        fdbg_server_close(&server);
 
         printf("Server finalized.\n");
     });

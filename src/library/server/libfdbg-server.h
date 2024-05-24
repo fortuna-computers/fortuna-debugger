@@ -36,16 +36,32 @@ typedef struct FdbgServerEvents {
     ADDR_TYPE           (*next_instruction)(FdbgServer* server);
 } FdbgServerEvents;
 
-FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb);
-void        fdbg_server_free(FdbgServer* server);
+typedef struct FdbgServer {
+    uint16_t              machine_id;
+    FdbgServerIOCallbacks io_callbacks;
+    ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
+    ADDR_TYPE             next_bkp;
+    uint32_t              run_steps;
+    ADDR_TYPE             last_pc;
+    fdbg_Event            event_queue[MAX_EVENTS];
+    uint8_t               event_count;
+    bool                  running;
+#ifndef MICROCONTROLLER
+    int                   fd;
+    char                  port[256];
+#endif
+} FdbgServer;
 
-void        fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
+void fdbg_server_init(FdbgServer* server, uint16_t machine_id, FdbgServerIOCallbacks cb);
+void fdbg_server_close(FdbgServer* server);
 
-bool        fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data);
+void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
+
+bool fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data);
 
 #ifndef MICROCONTROLLER
 
-FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud);
+bool        fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud);
 const char* fdbg_server_serial_port(FdbgServer* server);
 void        fdbg_die_if_parent_dies();
 

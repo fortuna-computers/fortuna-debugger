@@ -139,12 +139,13 @@
 - [ ] Rename events to Output events 
 - [ ] Reorganize events (actual events instead of IO codes)
 
-# Detour
+# Protobuf modifications
 
-- [ ] Understand how to send stream messages
-- [ ] Read/write RAM stream
-- [ ] Computer status registers and flags stream
-- [ ] Events stream
+- [ ] Remove malloc from server
+- [ ] Autogenerate max from options file (?)
+- [ ] Reduce int sizes
+- [ ] Increase message size (2 bytes or protobuf format)
+  - [ ] Increase size of the arrays (max 2 kB)
 
 # Terminal input
 

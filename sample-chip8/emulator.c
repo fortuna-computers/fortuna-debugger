@@ -93,7 +93,8 @@ void read_memory(FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data
 
 int main()
 {
-    FdbgServer* server = fdbg_server_init_pc(0x38f7, EMULATOR_BAUD_RATE);
+    FdbgServer server;
+    fdbg_server_init_pc(&server, 0x38f7, EMULATOR_BAUD_RATE);
 
     ram = calloc(4, 1024);
 
@@ -114,7 +115,7 @@ int main()
     };
 
     for (;;) {
-        fdbg_server_next(server, &events);
+        fdbg_server_next(&server, &events);
         fdbg_die_if_parent_dies();
     }
 }

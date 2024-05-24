@@ -25,27 +25,11 @@
 #include "pb_decode.h"
 #include "pb_encode.h"
 
-typedef struct FdbgServer {
-    uint16_t              machine_id;
-    FdbgServerIOCallbacks io_callbacks;
-    ADDR_TYPE             breakpoints[MAX_BREAKPOINTS];
-    ADDR_TYPE             next_bkp;
-    uint32_t              run_steps;
-    ADDR_TYPE             last_pc;
-    fdbg_Event            event_queue[MAX_EVENTS];
-    uint8_t               event_count;
-    bool                  running;
-#ifndef MICROCONTROLLER
-    int                   fd;
-    char                  port[256];
-#endif
-} FdbgServer;
-
 #define NO_BREAKPOINT ((ADDR_TYPE) -1)
 
-FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
+void fdbg_server_init(FdbgServer* server, uint16_t machine_id, FdbgServerIOCallbacks cb)
 {
-    FdbgServer* server = calloc(1, sizeof(FdbgServer));
+    memset(server, 0, sizeof(FdbgServer));
     server->machine_id = machine_id;
     server->io_callbacks = cb;
     server->running = false;
@@ -53,15 +37,13 @@ FdbgServer* fdbg_server_init(uint16_t machine_id, FdbgServerIOCallbacks cb)
     server->run_steps = 512;
     for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
         server->breakpoints[i] = NO_BREAKPOINT;
-    return server;
 }
 
-void fdbg_server_free(FdbgServer* server)
+void fdbg_server_close(FdbgServer* server)
 {
 #ifndef MICROCONTROLLER
     close(server->fd);
 #endif
-    free(server);
 }
 
 static uint8_t fdbg_read_sync(FdbgServer* server)
@@ -384,19 +366,19 @@ static void write_byte_pc(FdbgServer* server, uint8_t data)
     write(server->fd, &data, 1);
 }
 
-FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud)
+bool fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud)
 {
     int fd, slave_fd;
 
     char serial_port[256];
 
     if (openpty(&fd, &slave_fd, serial_port, NULL, NULL) == -1)
-        return NULL;
+        return false;
 
     if (configure_terminal_settings(fd, baud) < 0)
-        return NULL;
+        return false;
 
-    FdbgServer* server = fdbg_server_init(machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
+    fdbg_server_init(server, machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
     server->fd = fd;
     snprintf(server->port, sizeof server->port, "%s", serial_port);
 
@@ -406,7 +388,7 @@ FdbgServer* fdbg_server_init_pc(uint16_t machine_id, uint32_t baud)
     fprintf(f, "%s", server->port);
     fclose(f);
 
-    return server;
+    return true;
 }
 
 const char* fdbg_server_serial_port(FdbgServer* server)
