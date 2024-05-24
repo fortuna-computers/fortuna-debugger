@@ -126,6 +126,14 @@
 - [x] Configuration: debugging level
 - [x] Check for message sizes
 
+# Protobuf modifications
+
+- [x] Remove malloc from server
+- [x] Autogenerate max from options file (?)
+- [ ] Increase message size (2 bytes or protobuf format)
+  - [ ] Increase size of the arrays (max 2 kB)
+- [ ] Reduce int sizes
+
 # Terminal
 
 - [x] Logic for send special commands
@@ -138,14 +146,6 @@
   - [ ] ANSI terminal library
 - [ ] Rename events to Output events 
 - [ ] Reorganize events (actual events instead of IO codes)
-
-# Protobuf modifications
-
-- [ ] Remove malloc from server
-- [ ] Autogenerate max from options file (?)
-- [ ] Reduce int sizes
-- [ ] Increase message size (2 bytes or protobuf format)
-  - [ ] Increase size of the arrays (max 2 kB)
 
 # Terminal input
 
