@@ -79,29 +79,44 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
     if (message.size() > MAX_MESSAGE_SZ)
         throw std::runtime_error("Message too large: "s + msg.DebugString());
 
+    uint8_t sz1, sz2;
+    if (sz <= 0x7f) {
+        sz1 = sz;
+    } else {
+        sz1 = ((sz & 0x7f) | 0x80);
+        sz2 = (sz >> 7);
+    }
+
     if (debugging_level_ != DebuggingLevel::NORMAL) {
         printf("-> %s", msg.DebugString().c_str());
         if (debugging_level_ == DebuggingLevel::TRACE) {
-            printf("=> [%02hhX]", sz);
+            if (sz <= 0x7f)
+                printf("=> [%02X]", sz1);
+            else
+                printf("=> [%02X %02X]", sz1, sz2);
             for (char c: message)
-                printf(" %02hhX", (uint8_t) c);
+                printf(" %02X", (uint8_t) c);
             printf("\n");
         }
     }
 
-    ssize_t r = write(fd_, &sz, 1);
+    ssize_t r = write(fd_, &sz1, 1);
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
     r = write(fd_, message.data(), message.length());
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
+
+    if (sz > 0x7f)
+        write(fd_, &sz2, 1);
 }
 
 fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)
 {
 start:
-    uint8_t sz;
-    ssize_t r = read(fd_, &sz, 1);
+    // read size
+    uint8_t sz1;
+    ssize_t r = read(fd_, &sz1, 1);
     if (r == 0) {
         std::this_thread::sleep_for(10us);
         goto start;
@@ -109,9 +124,23 @@ start:
         throw std::runtime_error("Error reading message size from serial: "s + strerror(errno));
     }
 
-    if (debugging_level_ == DebuggingLevel::TRACE)
-        printf("<= [%02hhX]", sz);
+    uint16_t sz;
+    uint8_t sz2;
+    if (sz1 & (1 << 7)) {
+        read(fd_, &sz2, 1);
+        sz = ((uint16_t) sz2 << 7) | (sz1 & 0x7f);
+    } else {
+        sz = sz1;
+    }
 
+    if (debugging_level_ == DebuggingLevel::TRACE) {
+        if (sz1 & (1 << 7))
+            printf("<= [%02X %02X]", sz1, sz2);
+        else
+            printf("<= [%02X]", sz1);
+    }
+
+    // read message
     if (sz > MAX_MESSAGE_SZ)
         throw std::runtime_error("Message received too big (" + std::to_string(sz) + " )");
 

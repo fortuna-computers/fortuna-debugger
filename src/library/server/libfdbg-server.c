@@ -62,6 +62,7 @@ static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, 
 {
     *error = false;
 
+    // get size
     uint16_t sz = server->io_callbacks.read_byte_async(server);
     if (sz == SERIAL_ERROR) {
         *error = true;
@@ -69,11 +70,15 @@ static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, 
     } else if (sz == SERIAL_NO_DATA) {
         return false;
     }
+    if (sz & (1 << 7))
+        sz = (server->io_callbacks.read_byte_async(server) << 7) | (sz & 0x7f);
 
+    // read message
     uint8_t buf[sz];
     for (size_t i = 0; i < sz; ++i)
         buf[i] = fdbg_read_sync(server);
 
+    // parse message
     pb_istream_t stream = pb_istream_from_buffer(buf, sz);
     return pb_decode(&stream, fdbg_ToComputer_fields, msg);
 }
@@ -85,7 +90,12 @@ static int fdbg_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
     pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof buf);
     bool status = pb_encode(&stream, fdbg_ToDebugger_fields, msg);
     if (status) {
-        server->io_callbacks.write_byte(server, stream.bytes_written & 0xff);
+        if (stream.bytes_written <= 0x7f) {
+            server->io_callbacks.write_byte(server, stream.bytes_written);
+        } else {
+            server->io_callbacks.write_byte(server, (stream.bytes_written & 0x7f) | 0x80);
+            server->io_callbacks.write_byte(server, stream.bytes_written >> 7);
+        }
 
         for (size_t i = 0; i < stream.bytes_written; ++i)
             server->io_callbacks.write_byte(server, buf[i]);
@@ -103,8 +113,8 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     msg->status = fdbg_Status_OK;
     msg->which_message = fdbg_ToDebugger_computer_status_tag;
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
-    msg->message.computer_status.events_count = MIN(server->event_count, 2);
-    memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, 2) * sizeof(fdbg_Event));
+    msg->message.computer_status.events_count = MIN(server->event_count, MAX_EVENTS_STEP);
+    memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STEP) * sizeof(fdbg_Event));
 }
 
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
