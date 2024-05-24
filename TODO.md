@@ -130,17 +130,17 @@
 
 - [x] Remove malloc from server
 - [x] Autogenerate max from options file (?)
-- [ ] Increase message size (2 bytes or protobuf format)
-  - [ ] Increase size of the arrays (max 2 kB)
+- [x] Increase message size (2 bytes or protobuf format)
+  - [x] Increase size of the arrays (max 2 kB)
 - [ ] Reduce int sizes
 
 # Terminal
 
-- [x] Logic for send special commands
-  - [x] Protobuf
-  - [x] Server logic
-  - [x] Client
-- [x] Logic for managing special commands from Lua
+- [ ] Logic for send special commands
+  - [ ] Protobuf
+  - [ ] Server logic
+  - [ ] Client
+- [ ] Logic for managing special commands from Lua
 - [ ] Terminal UI
   - [x] Terminal
   - [ ] ANSI terminal library

@@ -111,7 +111,7 @@ void Memory::draw_memory_table() const
 
 void Memory::draw_stack() const
 {
-    char stack[10 + (8 * 3)] = "Stack: ";
+    char stack[512] = "Stack: ";
     size_t n = strlen(stack);
     for (unsigned char data : model.computer_status().stack())
         n += snprintf(&stack[n], sizeof stack - n, "%02X ", data);

@@ -25,8 +25,8 @@ fdbg_ComputerStatus get_computer_status(FdbgServer* server)
         cstatus.flags_count = 2;
         cstatus.flags[0] = eq;
         cstatus.flags[1] = z;
-        cstatus.stack.size = 8;
-        memcpy(cstatus.stack.bytes, ram, 8);
+        cstatus.stack.size = STACK_SZ;
+        memcpy(cstatus.stack.bytes, ram, STACK_SZ);
     }
     return cstatus;
 }
