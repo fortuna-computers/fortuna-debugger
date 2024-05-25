@@ -23,7 +23,7 @@ void Terminal::draw()
 
                 // draw cursor
                 if (m.cursor() == std::make_pair(y, x)) {
-                    auto br = ImGui::GetItemRectMax(); br.x++; br.y++;
+                    auto br = ImGui::GetItemRectMax(); br.x += 2; br.y++;
                     ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetItemRectMin(), br, IM_COL32(0, 196, 0, 128));
                 }
 
@@ -37,7 +37,18 @@ void Terminal::draw()
 
         // draw borders
         topleft.x -= 2; topleft.y -= 1; bottomright.x += 4; bottomright.y += 2;
-        ImGui::GetWindowDrawList()->AddRect(topleft, bottomright, IM_COL32(0, 0, 0, 255));
+        ImGui::GetWindowDrawList()->AddRect(topleft, bottomright, IM_COL32(128, 128, 128, 255));
+
+        // options
+        if (ImGui::Combo("Mode", (int *) &mode_, "ANSI\0Raw\0\0", ImGuiComboFlags_WidthFitPreview))
+            model.terminal_model().set_mode(mode_);
+        if (mode_ == TerminalModel::M_RAW)
+            if (ImGui::Combo("New line", (int *) &new_line_, "CR (13)\0LF (10)\0CR+LF (13+10)\0\0", ImGuiComboFlags_WidthFitPreview))
+                model.terminal_model().set_new_line(new_line_);
+
+        // buttons
+        if (ImGui::Button("Clear screen"))
+            model.terminal_model().clear();
 
         ImGui::End();
     }

@@ -82,7 +82,7 @@ public:
     std::set<uint64_t> const&              breakpoints() const { return breakpoints_; }
     std::deque<fdbg::CycleResponse> const& cycles() const { return cycles_; }
     bool                                   running() const { return running_; }
-    TerminalModel const&                   terminal_model() const { return terminal_model_; }
+    TerminalModel&                         terminal_model() { return terminal_model_; }
 
     std::optional<std::pair<size_t, size_t>> scroll_to_line_ {};
 

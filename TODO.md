@@ -142,10 +142,13 @@
   - [x] Client/server
 - [ ] Terminal UI
   - [x] Terminal
-    - [ ] Choose raw/ANSI
-    - [ ] New line (CR, LF, CR+LF)
+    - [x] Choose raw/ANSI
+    - [x] New line (CR, LF, CR+LF)
+  - [x] Clear button
+  - [ ] Write to the terminal
+    - [ ] ANSI
+    - [ ] Raw
   - [ ] ANSI terminal library
-  - [ ] Clear button
   - [ ] Save terminal config
 - [ ] Keyboard input
 
