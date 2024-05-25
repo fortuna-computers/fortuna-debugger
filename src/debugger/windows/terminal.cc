@@ -22,7 +22,7 @@ void Terminal::draw()
                 ImGui::Text("%c", ch.c);  // TODO - color
 
                 // draw cursor
-                if (m.cursor() == std::make_pair(y, x)) {
+                if (m.cursor().x == x && m.cursor().y == y) {
                     auto br = ImGui::GetItemRectMax(); br.x += 2; br.y++;
                     ImGui::GetWindowDrawList()->AddRectFilled(ImGui::GetItemRectMin(), br, IM_COL32(0, 196, 0, 128));
                 }

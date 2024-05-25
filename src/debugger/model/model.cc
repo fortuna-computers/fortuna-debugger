@@ -246,5 +246,11 @@ void Model::set_debugging_level(DebuggingLevel level)
 
 void Model::do_event(fdbg::ComputerEvent const &event)
 {
-    // TODO
+    switch (event.type_case()) {
+        case fdbg::ComputerEvent::kTerminalRx:
+            terminal_model_.add_string(event.terminal_rx().text());
+            break;
+        case fdbg::ComputerEvent::TYPE_NOT_SET:
+            throw std::runtime_error("Missing event type");
+    }
 }

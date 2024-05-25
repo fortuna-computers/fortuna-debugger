@@ -1,4 +1,5 @@
 #include "terminalmodel.hh"
+#include "model.hh"
 
 #include <cstdio>
 
@@ -15,11 +16,40 @@ void TerminalModel::initialize(size_t columns, size_t lines)
     }
 }
 
-void TerminalModel::add_char(char c)
+void TerminalModel::add_string(std::string const& str)
 {
-    printf("Added char '%c'.\n", c);   // TODO
+    if (model.terminal_model().mode_ == M_RAW) {
+        for (char c : str) {
+            if (c >= 32 && c != 127) {
+                buffer_.at(cursor_.y).at(cursor_.x++) = Char { c };
+            } else if (c == '\b' && cursor_.x > 0) {
+                --cursor_.x;
+            } else if ((c == 13 && new_line_ == NewLine::NL_CR)
+                    || (c == 10 && new_line_ == NewLine::NL_LF)) {
+                ++cursor_.y;
+                cursor_.x = 0;
+            } else if (c == 13 && new_line_ == NewLine::NL_CRLF) {
+                cursor_.x = 0;
+            } else if (c == 10 && new_line_ == NewLine::NL_CRLF) {
+                ++cursor_.y;
+            }
+
+            if (cursor_.x >= columns_) {
+                ++cursor_.y;
+                cursor_.x = 0;
+            }
+            if (cursor_.y >= lines_)
+                scroll_up();
+        }
+    }
 }
 
 void TerminalModel::clear()
 {
+    initialize(columns_, lines_);
+}
+
+void TerminalModel::scroll_up()
+{
+    // TODO
 }

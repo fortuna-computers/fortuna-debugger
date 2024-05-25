@@ -146,9 +146,8 @@
     - [x] New line (CR, LF, CR+LF)
   - [x] Clear button
   - [ ] Write to the terminal
+    - [x] Raw
     - [ ] ANSI
-    - [ ] Raw
-  - [ ] ANSI terminal library
   - [ ] Save terminal config
 - [ ] Keyboard input
 

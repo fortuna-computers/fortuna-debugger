@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include "debuginfo.hh"
-#include "ievents.hh"
 
 class Machine {
 public:
