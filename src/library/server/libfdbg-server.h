@@ -43,7 +43,7 @@ typedef struct FdbgServer {
     ADDR_TYPE             next_bkp;
     uint32_t              run_steps;
     ADDR_TYPE             last_pc;
-    fdbg_Event            event_queue[MAX_EVENTS];
+    fdbg_ComputerEvent    event_queue[MAX_EVENTS];
     uint8_t               event_count;
     bool                  running;
 #ifndef MICROCONTROLLER
@@ -57,7 +57,7 @@ void fdbg_server_close(FdbgServer* server);
 
 void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
-bool fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data);
+bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event);
 
 #ifndef MICROCONTROLLER
 

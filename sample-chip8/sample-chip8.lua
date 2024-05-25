@@ -17,6 +17,7 @@ return {
             { name = "DATA", size = 8 },
         },
         cycle_bits = { "R", "XY" },
+        terminal = { lines = 25, columns = 60 },
     },
 
     microcontroller = {
@@ -24,10 +25,6 @@ return {
         vendor_id = "2e8a",
         product_id = "000a",
     },
-
-    do_event = function(computer, address, value)
-        computer.terminal:add_char('H')
-    end,
 
     compile = function(source_file)
         return {

@@ -27,11 +27,11 @@ message ReadMemoryResponse {
 };
 
 message ComputerStatus {
-  uint64          pc        = 1;   // program counter
-  repeated uint64 registers = 2;
-  repeated bool   flags     = 3;
-  bytes           stack     = 4;
-  repeated Event  events    = 5;
+  uint64                 pc        = 1;   // program counter
+  repeated uint64        registers = 2;
+  repeated bool          flags     = 3;
+  bytes                  stack     = 4;
+  repeated ComputerEvent events    = 5;
 };
 
 message OptionalUint {
@@ -49,15 +49,22 @@ message BreakpointList {
   repeated uint64 addr = 1;
 };
 
-message Event {
-  uint32 address = 1;
-  uint32 data = 2;
+message ComputerEvent {
+
+  message TerminalRX {
+    string text = 1;
+  }
+
+  oneof type {
+    TerminalRX terminal_rx = 1;
+  }
+
 };
 
 message RunStatus {
-  bool           running = 1;
-  uint64         pc = 2;
-  repeated Event events = 3;
+  bool                   running = 1;
+  uint64                 pc = 2;
+  repeated ComputerEvent events = 3;
 };
 
 message ToDebugger {

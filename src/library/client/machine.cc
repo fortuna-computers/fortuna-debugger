@@ -112,6 +112,8 @@ void Machine::load_user_definition(std::string const &filename)
 
     assert_stack(1);
 
+    // machine
+
     get_field("machine");
 
     id = field_int("id");
@@ -119,6 +121,8 @@ void Machine::load_user_definition(std::string const &filename)
     total_memory = field_int("total_memory");
 
     lua_pop(L, 1);
+
+    // debugger
 
     get_field("debugger", false);
 
@@ -156,7 +160,15 @@ void Machine::load_user_definition(std::string const &filename)
 
     cycle_bits = field_string_array("cycle_bits", false);
 
+    if (get_field("terminal", false)) {
+        terminal_columns = field_int("columns", true);
+        terminal_lines = field_int("lines", true);
+    }
     lua_pop(L, 1);
+
+    lua_pop(L, 1);
+
+    // microcontroller
 
     if (get_field("microcontroller", false)) {
         uc_baudrate = field_int("uart_baud_rate", false);
@@ -263,61 +275,4 @@ DebugInfo Machine::compile(std::string const& filename) const
     assert_stack(1);
 
     return di;
-}
-
-static ITerminal* to_terminal(lua_State* L) {
-    if (!lua_istable(L, 1))
-        goto not_iterminal;
-    lua_getfield(L, 1, "__ptr");
-    if (lua_isnil(L, -1))
-        goto not_iterminal;
-
-    {
-        auto terminal = (ITerminal *) lua_touserdata(L, -1);
-        lua_pop(L, 1);
-        return terminal;
-    }
-
-not_iterminal:
-    throw std::runtime_error("First parameter doesn't seem to be a Terminal. Are you sure you're using `computer.terminal:my_method()` ?");
-}
-
-void Machine::setup_model_callbacks(ITerminal* terminal) const
-{
-    int top = lua_gettop(L);
-
-    lua_newtable(L);
-
-    lua_newtable(L);
-    lua_pushlightuserdata(L, terminal); lua_setfield(L, -2, "__ptr");
-
-    lua_pushcfunction(L, [](lua_State* LL) { to_terminal(LL)->add_char(luaL_checkstring(LL, 2)[0]); return 0; });
-    lua_setfield(L, -2, "add_char");
-
-    lua_setfield(L, -2, "terminal");
-
-    lua_setglobal(L, "__computer");
-
-    assert_stack(top);
-}
-
-void Machine::do_event(uint32_t addr, uint32_t data) const
-{
-    assert_stack(1);
-
-    lua_getfield(L, -1, "do_event");
-    if (lua_isnil(L, -1)) {
-        lua_pop(L, 1);
-        return;
-    }
-
-    lua_getglobal(L, "__computer");
-    lua_pushinteger(L, addr);
-    lua_pushinteger(L, data);
-
-    int r = lua_pcall(L, 3, 0, 0);
-    if (r != LUA_OK)
-        throw std::runtime_error(lua_tostring(L, -1));
-
-    assert_stack(1);
 }

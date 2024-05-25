@@ -114,7 +114,7 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     msg->which_message = fdbg_ToDebugger_computer_status_tag;
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
     msg->message.computer_status.events_count = MIN(server->event_count, MAX_EVENTS_STEP);
-    memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STEP) * sizeof(fdbg_Event));
+    memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STEP) * sizeof(fdbg_ComputerEvent));
 }
 
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
@@ -202,7 +202,7 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
             rmsg.message.run_status.running = false;
             rmsg.message.run_status.pc = events->get_computer_status(server).pc;
             rmsg.message.run_status.events_count = MIN(server->event_count, MAX_EVENTS);
-            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS) * sizeof(fdbg_Event));
+            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS) * sizeof(fdbg_ComputerEvent));
             server->event_count = 0;
             break;
         }
@@ -347,10 +347,10 @@ void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     }
 }
 
-bool fdbg_server_push_event(FdbgServer* server, uint32_t address, uint32_t data)
+bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event)
 {
     if (server->event_count < MAX_EVENTS - 1) {
-        server->event_queue[server->event_count++] = (fdbg_Event) { address, data };
+        server->event_queue[server->event_count++] = *event;
         return true;
     } else {
         return false;

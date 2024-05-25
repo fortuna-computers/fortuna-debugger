@@ -12,7 +12,7 @@ void Model::load_machine(std::string const& file)
     client_.load_user_definition(file);
     client_.set_debugging_level((DebuggingLevel) config_.get_int("debugging_level"));
 
-    client_.machine().setup_model_callbacks(&terminal_model_);
+    terminal_model_.initialize(machine().terminal_columns, machine().terminal_lines);
 }
 
 void Model::connect_to_emulator(std::string const& path)
@@ -176,7 +176,7 @@ void Model::compile(std::string const& source_file)
 std::string Model::fmt_addr(uint64_t addr) const
 {
     char buf[9] = {0};
-    snprintf(buf, sizeof buf, "%0*lX", addr_sz_, addr);
+    snprintf(buf, sizeof buf, "%0*llX", addr_sz_, addr);
     return buf;
 }
 
@@ -244,7 +244,7 @@ void Model::set_debugging_level(DebuggingLevel level)
     client_.set_debugging_level(level);
 }
 
-void Model::do_event(fdbg::Event const &event)
+void Model::do_event(fdbg::ComputerEvent const &event)
 {
-    client_.machine().do_event(event.address(), event.data());
+    // TODO
 }

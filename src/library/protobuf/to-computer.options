@@ -1,1 +1,4 @@
-fdbg.WriteMemory.bytes max_size:64
+fdbg.WriteMemory.bytes            max_size:64
+fdbg.Step.output_event            max_count:4
+fdbg.GetRunStatus.output_event    max_count:4
+fdbg.UserEvent.TerminalTX.text    max_size:8

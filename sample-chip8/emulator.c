@@ -63,8 +63,11 @@ uint64_t step(FdbgServer* server, bool full)
 {
     (void) server; (void) full;
 
-    // if (pc == 1)
-        fdbg_server_push_event(server, 0x4812, 0xaf);
+    fdbg_ComputerEvent event = fdbg_ComputerEvent_init_zero;
+    event.which_type = fdbg_ComputerEvent_terminal_rx_tag;
+    event.type.terminal_rx.text[0] = 'A' + pc;
+    event.type.terminal_rx.text[1] = '\0';
+    fdbg_server_push_event(server, &event);
 
     ++pc;
     has_values = full;

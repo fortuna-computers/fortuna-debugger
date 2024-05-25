@@ -43,7 +43,7 @@ void Cycles::draw()
                     ImGui::TableSetColumnIndex(k++);
                     uint field_sz = model.machine().cycle_bytes.at(j).size;
                     if (cycle.bytes(j).has()) {
-                        ImGui::Text("%0*lX", field_sz / 4, cycle.bytes(j).value());
+                        ImGui::Text("%0*llX", field_sz / 4, cycle.bytes(j).value());
                     } else {
                         char unknown[] = "--------";
                         unknown[field_sz / 4] = '\0';

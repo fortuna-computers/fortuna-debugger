@@ -344,7 +344,7 @@ std::string FdbgClient::start_emulator(std::string const& path)
         throw std::runtime_error("Error executing emulator: "s + strerror(errno));
 
     } else {   // parent process (client)
-        std::this_thread::sleep_for(200ms);
+        std::this_thread::sleep_for(400ms);
 
         // read bytes from emulator
         std::ifstream f("/tmp/fdbg." + std::to_string(pid));

@@ -136,24 +136,24 @@
 
 # Terminal
 
-- [ ] Logic for send special commands
-  - [ ] Protobuf
-  - [ ] Server logic
-  - [ ] Client
-- [ ] Logic for managing special commands from Lua
+- [x] Terminal size from Lua
+- [x] Protobuf commands:
+  - [x] Terminal RX/TX proto
+  - [x] Client/server
 - [ ] Terminal UI
   - [x] Terminal
+    - [ ] Choose raw/ANSI
+    - [ ] New line (CR, LF, CR+LF)
   - [ ] ANSI terminal library
-- [ ] Rename events to Output events 
-- [ ] Reorganize events (actual events instead of IO codes)
-
-# Terminal input
-
-# Video
+  - [ ] Clear button
+  - [ ] Save terminal config
+- [ ] Keyboard input
 
 # Other devices
 
 - [ ] Multiple memories (for SDCard, etc...)
+
+# Video
 
 # Refactory 3
 

@@ -19,7 +19,8 @@ message ReadMemory {
 message Reset {}
 
 message Step {
-  bool full = 1;
+  bool               full = 1;
+  repeated UserEvent user_event = 2;
 }
 
 message Cycle {}
@@ -34,13 +35,27 @@ message Breakpoint {
   Action action  = 2;
 }
 
+message UserEvent {
+
+  message TerminalTX {
+    string text = 1;
+  }
+
+  oneof type {
+    TerminalTX terminal_tx = 1;
+  }
+
+};
+
 message Run {
   bool forever = 1;
 }
 
 message Next {}
 
-message GetRunStatus {}
+message GetRunStatus {
+  repeated UserEvent user_event = 1;
+}
 
 message Pause {}
 
