@@ -29,7 +29,7 @@ ${BASE}/src/library/libfdbg-server.a:
 
 CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
-			-I${CONTRIB}/imgui-filebrowser $(shell pkg-config --cflags glfw3 lua)
+			-I${CONTRIB}/imgui-filebrowser -I${CONTRIB}/libtmt $(shell pkg-config --cflags glfw3 lua)
 
 LDFLAGS += `pkg-config --libs glfw3 lua`
 
@@ -37,7 +37,7 @@ LDFLAGS += `pkg-config --libs glfw3 lua`
 # f-debugger
 #
 
-IMGUI_SRC = \
+CONTRIB_SRC = \
         ${CONTRIB}/imgui/imgui.o \
         ${CONTRIB}/imgui/imgui_demo.o \
         ${CONTRIB}/imgui/imgui_draw.o \
@@ -45,10 +45,10 @@ IMGUI_SRC = \
         ${CONTRIB}/imgui/imgui_widgets.o \
         ${CONTRIB}/imgui/backends/imgui_impl_glfw.o \
         ${CONTRIB}/imgui/backends/imgui_impl_opengl3.o \
-        ${CONTRIB}/glad/src/gl.o
+        ${CONTRIB}/glad/src/gl.o \
+        ${CONTRIB}/libtmt/tmt.o
 
 F_DEBUGGER_SRC = \
-		${CONTRIB}/libtmt/tmt.o \
         main.o \
         config/config.o \
         filewatcher/filewatcher.o \
@@ -68,7 +68,7 @@ F_DEBUGGER_SRC = \
         windows/startup.o \
         windows/terminal.o \
         windows/uploadrom.o \
-        ${IMGUI_SRC}
+        ${CONTRIB_SRC}
 
 f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
 	$(CXX) -rdynamic -o $@ $^ ${PROTOBUF_LDFLAGS} ${LDFLAGS}

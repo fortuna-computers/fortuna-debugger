@@ -2,6 +2,13 @@
 
 #include "model/model.hh"
 
+Terminal::Terminal(bool visible)
+    : Window(visible)
+{
+    mode_ = model.terminal_model().mode();
+    new_line_ = model.terminal_model().new_line();
+}
+
 void Terminal::draw()
 {
     auto const& m = model.terminal_model();
@@ -47,8 +54,13 @@ void Terminal::draw()
                 model.terminal_model().set_new_line(new_line_);
 
         // buttons
-        if (ImGui::Button("Clear screen"))
-            model.terminal_model().clear();
+        if (mode_ == TerminalModel::M_RAW) {
+            if (ImGui::Button("Clear screen"))
+                model.terminal_model().clear();
+        } else {
+            if (ImGui::Button("Reset terminal"))
+                model.terminal_model().reset();
+        }
 
         ImGui::End();
     }

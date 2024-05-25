@@ -140,15 +140,15 @@
 - [x] Protobuf commands:
   - [x] Terminal RX/TX proto
   - [x] Client/server
-- [ ] Terminal UI
+- [x] Terminal UI
   - [x] Terminal
     - [x] Choose raw/ANSI
     - [x] New line (CR, LF, CR+LF)
   - [x] Clear button
-  - [ ] Write to the terminal
+  - [x] Write to the terminal
     - [x] Raw
-    - [ ] ANSI
-  - [ ] Save terminal config
+    - [x] ANSI
+  - [x] Save terminal config
 - [ ] Keyboard input
 
 # Other devices
@@ -159,6 +159,7 @@
 
 # Refactory 3
 
+- [ ] Improve config class to manage variables as if they were C++ variables
 - [ ] Cycle in reverse order
 - [ ] Logging into a Window (see Demo -> Configuration -> Capture)
 - [ ] Improve theme management
