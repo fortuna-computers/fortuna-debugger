@@ -150,6 +150,8 @@
     - [x] ANSI
   - [x] Save terminal config
 - [ ] Keyboard input
+  - [ ] Mid-step
+  - [ ] While running
 
 # Other devices
 

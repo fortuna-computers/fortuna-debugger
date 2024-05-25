@@ -22,6 +22,7 @@
 #include "windows/registers.hh"
 #include "windows/cycles.hh"
 #include "windows/terminal.hh"
+#include "windows/keypress.hh"
 
 UI::UI()
 {
@@ -68,6 +69,7 @@ UI::UI()
     add_window<Startup>(true);
     add_window<Configuration>();
     add_window<Demo>();
+    add_window<KeyPress>();
     add_window<Memory>();
     add_window<Code>();
     add_window<Registers>();

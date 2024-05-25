@@ -46,6 +46,21 @@ void Terminal::draw()
         topleft.x -= 2; topleft.y -= 1; bottomright.x += 4; bottomright.y += 2;
         ImGui::GetWindowDrawList()->AddRect(topleft, bottomright, IM_COL32(128, 128, 128, 255));
 
+        // next char
+        if (!model.terminal_model().next_tx) {
+            if (ImGui::Button("Keypress..."))
+                ;
+            ImGui::SameLine();
+            ImGui::Text("Next TX: (none)");
+        } else {
+            if (ImGui::Button("Clear"))
+                model.terminal_model().next_tx = {};
+            ImGui::SameLine();
+            ImGui::Text("Next TX: %c (0x%02X)", *model.terminal_model().next_tx, *model.terminal_model().next_tx);
+        }
+
+        ImGui::SeparatorText("Configuration");
+
         // options
         if (ImGui::Combo("Mode", (int *) &mode_, "ANSI\0Raw\0\0", ImGuiComboFlags_WidthFitPreview))
             model.terminal_model().set_mode(mode_);

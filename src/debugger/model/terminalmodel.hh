@@ -1,6 +1,7 @@
 #ifndef TERMINALMODEL_HH_
 #define TERMINALMODEL_HH_
 
+#include <optional>
 #include <vector>
 #include <utility>
 #include <cstddef>
@@ -31,6 +32,8 @@ public:
 
     void set_mode(Mode mode);
     void set_new_line(NewLine new_line);
+
+    std::optional<uint8_t> next_tx {};
 
 private:
     size_t columns_ = 0, lines_ = 0;
