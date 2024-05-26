@@ -166,7 +166,7 @@
   - [x] Windows are keeping visible on restart, even after closed
 - [x] UI
   - [x] Cycle in reverse order
-- [ ] Lua library (client, server)
+- [x] Lua library (client, server)
 - [ ] Documentation (sample emulator)
 - [ ] Versioning, packaging
 

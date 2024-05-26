@@ -6,6 +6,8 @@ client:load_user_definition('../../sample-chip8/sample-chip8.lua')
 local port = client.start_emulator('../../sample-chip8/chip8-emulator')
 print(port)
 
+client:set_debugging_level('trace')
+
 client:connect(port)
 
 client:ack(0x38f7)

@@ -31,7 +31,7 @@ static void push_computer_status(lua_State* L, fdbg::ComputerStatus const& cs)
     lua_setfield(L, -2, "flags");
 
     lua_newtable(L);
-    for (int i = 0; i < cs.stack().size(); ++i) {
+    for (size_t i = 0; i < cs.stack().size(); ++i) {
         lua_pushlstring(L, &cs.stack().c_str()[i], 1);
         lua_rawseti(L, -2, i + 1);
     }
@@ -59,6 +59,21 @@ static const luaL_Reg client_methods[] = {
     }},
 
     // METHODS
+
+    { "set_debugging_level", [](lua_State* L) {
+        std::string level = luaL_checkstring(L, 2);
+        DebuggingLevel dl = DebuggingLevel::NORMAL;
+        if (level == "trace")
+            dl = DebuggingLevel::TRACE;
+        else if (level == "debug")
+            dl = DebuggingLevel::DEBUG_;
+        else if (level == "normal")
+            dl = DebuggingLevel::NORMAL;
+        else
+            luaL_error(L, "debugging level '%s' not supported", level.c_str());
+        CLIENT->set_debugging_level(dl);
+        return 0;
+    }},
 
     { "load_user_definition", [](lua_State* L) {
         CHECK(CLIENT->load_user_definition(luaL_checkstring(L, 2)))
@@ -98,7 +113,7 @@ static const luaL_Reg client_methods[] = {
             data.push_back(lua_tointeger(L, -1));
             lua_pop(L, 1);
         }
-        CHECK(CLIENT->write_memory(luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), data, lua_toboolean(L, 4)));
+        CHECK(CLIENT->write_memory_full(luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), data, lua_toboolean(L, 4)));
         return 0;
     }},
 
@@ -121,6 +136,74 @@ static const luaL_Reg client_methods[] = {
     { "step", [](lua_State *L) {
         // TODO - events
         CHECK(push_computer_status(L, CLIENT->step(lua_toboolean(L, 2))));
+        return 1;
+    }},
+
+    { "run", [](lua_State *L) {
+        CHECK(CLIENT->run(lua_toboolean(L, 2)));
+        return 0;
+    }},
+
+    { "next", [](lua_State *L) {
+        CHECK(CLIENT->next());
+        return 0;
+    }},
+
+    { "run_status", [](lua_State* L) {
+        CHECK(
+            auto rs = CLIENT->run_status();
+            lua_newtable(L);
+            lua_pushboolean(L, rs.running()); lua_setfield(L, -2, "running");
+            lua_pushinteger(L, rs.pc()); lua_setfield(L, -2, "pc");
+            // TODO - events
+        )
+        return 1;
+    }},
+
+    { "pause", [](lua_State *L) {
+        CHECK(push_computer_status(L, CLIENT->pause()));
+        return 0;
+    }},
+
+    { "add_breakpoint", [](lua_State *L) {
+        CHECK(
+            auto bkps = CLIENT->add_breakpoint(luaL_checkinteger(L, 2));
+            lua_newtable(L);
+            int i = 1;
+            for (auto const& bkp: bkps) {
+                lua_pushinteger(L, bkp);
+                lua_rawseti(L, -2, i++);
+            }
+        )
+        return 1;
+    }},
+
+    { "remove_breakpoint", [](lua_State *L) {
+        CHECK(
+            auto bkps = CLIENT->remove_breakpoint(luaL_checkinteger(L, 2));
+            lua_newtable(L);
+            int i = 1;
+            for (auto const& bkp: bkps) {
+                lua_pushinteger(L, bkp);
+                lua_rawseti(L, -2, i++);
+            }
+        )
+        return 1;
+    }},
+
+    { "compile_and_write_memory", [](lua_State* L) {
+        CHECK(
+            CLIENT->compile_and_write_memory(luaL_checkstring(L, 2), 0, lua_toboolean(L, 3));
+        )
+        return 0;
+    }},
+
+    { "autodetect_usb_serial_port", [](lua_State* L) {
+        auto client = CLIENT;
+        std::string port = FdbgClient::autodetect_usb_serial_port(
+                client->machine().vendor_id,
+                client->machine().product_id
+        );
         return 1;
     }},
 
