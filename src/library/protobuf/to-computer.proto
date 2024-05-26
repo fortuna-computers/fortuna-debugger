@@ -39,12 +39,12 @@ message Breakpoint {
 
 message UserEvent {
 
-  message TerminalTX {
+  message TerminalKeypress {
     string text = 1;
   }
 
   oneof type {
-    TerminalTX terminal_tx = 1;
+    TerminalKeypress terminal_keypress = 1;
   }
 
 };

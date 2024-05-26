@@ -153,6 +153,18 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
         rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
 }
 
+static void fdbg_execute_user_events(FdbgServer *server, FdbgServerEvents *events, size_t count, fdbg_UserEvent *user_events)
+{
+    for (size_t i = 0; i < count; ++i) {
+        switch (user_events[i].which_type) {
+            case fdbg_UserEvent_TerminalKeypress_text_tag:
+                if (events->on_keypress)
+                    events->on_keypress(server, user_events[i].type.terminal_keypress.text);
+                break;
+        }
+    }
+}
+
 static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
 {
     bool error = false;
@@ -178,7 +190,8 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         }
 
         case fdbg_ToComputer_step_tag: {
-            events->step(server, (*msg).message.step.full);
+            fdbg_execute_user_events(server, events, msg->message.step.user_events_count, msg->message.step.user_events);
+            events->step(server, msg->message.step.full);
             fdbg_add_computer_status(server, events, &rmsg);
             server->event_count = 0;
             break;
@@ -198,6 +211,7 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         }
 
         case fdbg_ToComputer_get_run_status_tag: {
+            fdbg_execute_user_events(server, events, msg->message.get_run_status.user_events_count, msg->message.get_run_status.user_events);
             rmsg.which_message = fdbg_ToDebugger_run_status_tag;
             rmsg.message.run_status.running = false;
             rmsg.message.run_status.pc = events->get_computer_status(server).pc;
@@ -357,6 +371,14 @@ bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event)
     } else {
         return false;
     }
+}
+
+bool fdbg_server_terminal_print(FdbgServer* server, const char* text)
+{
+    fdbg_ComputerEvent event = fdbg_ComputerEvent_init_zero;
+    event.which_type = fdbg_ComputerEvent_terminal_print_tag;
+    strncpy(event.type.terminal_print.text, text, fdbg_UserEvent_TerminalKeypress_size);
+    fdbg_server_push_event(server, &event);
 }
 
 #ifndef MICROCONTROLLER

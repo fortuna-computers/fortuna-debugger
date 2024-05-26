@@ -34,6 +34,7 @@ typedef struct FdbgServerEvents {
     void                (*read_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
     void                (*run_forever)(FdbgServer* server);
     ADDR_TYPE           (*next_instruction)(FdbgServer* server);
+    void                (*on_keypress)(FdbgServer* server, const char* key);
 } FdbgServerEvents;
 
 typedef struct FdbgServer {
@@ -57,6 +58,7 @@ void fdbg_server_close(FdbgServer* server);
 
 void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 
+bool fdbg_server_terminal_print(FdbgServer* server, const char* text);
 bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event);
 
 #ifndef MICROCONTROLLER

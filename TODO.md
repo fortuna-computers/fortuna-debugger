@@ -169,6 +169,8 @@
 - [x] Lua library (client, server)
 - [ ] Documentation (sample emulator)
 - [ ] Versioning, packaging
+- [ ] Report error on incorrect instruction (or other error)
+- [ ] Server function to push character
 
 # Video
 

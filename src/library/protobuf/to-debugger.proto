@@ -51,12 +51,12 @@ message BreakpointList {
 
 message ComputerEvent {
 
-  message TerminalRX {
+  message TerminalPrint {
     string text = 1;
   }
 
   oneof type {
-    TerminalRX terminal_rx = 1;
+    TerminalPrint terminal_print = 1;
   }
 
 };

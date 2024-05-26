@@ -11,11 +11,6 @@ return {
             { name = "A", size = 16 },
         },
         flags = { "EQ", "Z" },
-        cycle_bytes = {
-            { name = "ADDR", size = 16 },
-            { name = "DATA", size = 8 },
-        },
-        cycle_bits = { "R", "XY" },
         terminal = { lines = 25, columns = 60 },
         memories = {
             { name = "RAM", size = 4 * 1024 },

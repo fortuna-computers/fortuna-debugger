@@ -252,8 +252,8 @@ void Model::set_debugging_level(DebuggingLevel level)
 void Model::do_event(fdbg::ComputerEvent const &event)
 {
     switch (event.type_case()) {
-        case fdbg::ComputerEvent::kTerminalRx:
-            terminal_model_.add_string(event.terminal_rx().text());
+        case fdbg::ComputerEvent::kTerminalPrint:
+            terminal_model_.add_string(event.terminal_print().text());
             break;
         case fdbg::ComputerEvent::TYPE_NOT_SET:
             throw std::runtime_error("Missing event type");
@@ -266,9 +266,9 @@ std::vector<fdbg::UserEvent> Model::get_user_events()
 
     if (terminal_model_.next_tx) {
         fdbg::UserEvent event;
-        auto terminal_tx = new fdbg::UserEvent::TerminalTX();
+        auto terminal_tx = new fdbg::UserEvent::TerminalKeypress();
         terminal_tx->set_text(*terminal_model_.next_tx);
-        event.set_allocated_terminal_tx(terminal_tx);
+        event.set_allocated_terminal_keypress(terminal_tx);
         events.push_back(std::move(event));
 
         terminal_model_.next_tx = {};
