@@ -7,4 +7,4 @@ fdbg.BreakpointList.addr           max_count:16
 fdbg.CycleResponse.bytes           max_count:16
 fdbg.CycleResponse.bits            max_count:24
 fdbg.RunStatus.events              max_count:36
-fdbg.ComputerEvent.TerminalRX.text max_size:8
+fdbg.ComputerEvent.TerminalPrint.text max_size:8

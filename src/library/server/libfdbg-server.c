@@ -377,8 +377,8 @@ bool fdbg_server_terminal_print(FdbgServer* server, const char* text)
 {
     fdbg_ComputerEvent event = fdbg_ComputerEvent_init_zero;
     event.which_type = fdbg_ComputerEvent_terminal_print_tag;
-    strncpy(event.type.terminal_print.text, text, fdbg_UserEvent_TerminalKeypress_size);
-    fdbg_server_push_event(server, &event);
+    strncpy(event.type.terminal_print.text, text, 8);
+    return fdbg_server_push_event(server, &event);
 }
 
 #ifndef MICROCONTROLLER
