@@ -262,13 +262,14 @@ fdbg::ComputerStatus FdbgClient::pause()
     return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
 }
 
-void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
+void FdbgClient::write_memory(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, bool validate)
 {
     if (data.size() > MAX_MEMORY_TRANSFER)
         throw std::runtime_error("Cannot write more than " + std::to_string(MAX_MEMORY_TRANSFER) + " bytes at time.");
 
     // request
     auto write_memory = new fdbg::WriteMemory();
+    write_memory->set_memory_nr(nr);
     write_memory->set_initial_addr(pos);
     write_memory->set_bytes(data.data(), data.size());
     write_memory->set_validate(validate);
@@ -282,12 +283,13 @@ void FdbgClient::write_memory(uint64_t pos, std::span<const uint8_t> const& data
         throw std::runtime_error(std::format("Error writing memory: first byte failed is 0x{:x}", response.write_memory_response().first_failed_pos()));
 }
 
-std::vector<uint8_t> FdbgClient::read_memory(uint64_t pos, uint8_t sz, uint8_t sequences)
+std::vector<uint8_t> FdbgClient::read_memory(uint8_t nr, uint64_t pos, uint8_t sz, uint8_t sequences)
 {
     if (sz > MAX_MEMORY_TRANSFER)
         throw std::runtime_error("Cannot read more than " + std::to_string(MAX_MEMORY_TRANSFER) + " bytes at time.");
 
     auto read_memory = new fdbg::ReadMemory();
+    read_memory->set_memory_nr(nr);
     read_memory->set_initial_addr(pos);
     read_memory->set_sz(sz);
     read_memory->set_sequences(sequences);
@@ -300,35 +302,35 @@ std::vector<uint8_t> FdbgClient::read_memory(uint64_t pos, uint8_t sz, uint8_t s
     return { response.read_memory_response().bytes().begin(), response.read_memory_response().bytes().end() };
 }
 
-void FdbgClient::write_memory_full(uint64_t pos, std::span<const uint8_t> const& data, bool validate)
+void FdbgClient::write_memory_full(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, bool validate)
 {
     Upload upload;
-    while (write_memory_step(pos, data, upload, validate))
+    while (write_memory_step(nr, pos, data, upload, validate))
         ;
 }
 
-bool FdbgClient::write_memory_step(uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate)
+bool FdbgClient::write_memory_step(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate)
 {
     uint64_t initial_pos = pos + (upload.next * MAX_MEMORY_TRANSFER);
 
     if ((upload.next + 1) * MAX_MEMORY_TRANSFER > data.size()) {    // less than 64 bytes left
         std::span<const uint8_t> data_span(data.begin() + (upload.next * MAX_MEMORY_TRANSFER), data.end());
-        write_memory(initial_pos, data_span, validate);
+        write_memory(nr, initial_pos, data_span, validate);
         return false;
 
     } else {    // more than 64 bytes left
         std::span<const uint8_t> data_span(data.data() + initial_pos, MAX_MEMORY_TRANSFER);
-        write_memory(initial_pos, data_span, validate);
+        write_memory(nr, initial_pos, data_span, validate);
         ++upload.next;
         return true;
     }
 }
 
-void FdbgClient::compile_and_write_memory(std::string const& source_filename, bool validate)
+void FdbgClient::compile_and_write_memory(std::string const& source_filename, uint8_t nr, bool validate)
 {
     DebugInfo di = machine_.compile(source_filename);
     for (auto const& bin: di.binaries)
-        write_memory_full(bin.load_pos, bin.rom, validate);
+        write_memory_full(bin.load_pos, nr, bin.rom, validate);
 }
 
 std::string FdbgClient::start_emulator(std::string const& path)

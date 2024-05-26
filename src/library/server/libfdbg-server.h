@@ -30,8 +30,8 @@ typedef struct FdbgServerEvents {
     fdbg_CycleResponse  (*cycle)(FdbgServer* server);
     void                (*reset)(FdbgServer* server);
     ADDR_TYPE           (*step)(FdbgServer* server, bool full);
-    bool                (*write_memory)(FdbgServer* server, ADDR_TYPE pos, uint8_t* data, uint8_t sz, ADDR_TYPE* first_failed);
-    void                (*read_memory)(FdbgServer* server, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
+    bool                (*write_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t* data, uint8_t sz, ADDR_TYPE* first_failed);
+    void                (*read_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
     void                (*run_forever)(FdbgServer* server);
     ADDR_TYPE           (*next_instruction)(FdbgServer* server);
 } FdbgServerEvents;

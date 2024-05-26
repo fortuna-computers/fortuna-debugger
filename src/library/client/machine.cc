@@ -166,6 +166,10 @@ void Machine::load_user_definition(std::string const &filename)
     }
     lua_pop(L, 1);
 
+    memories = field_string_array("memories", false);
+    if (memories.empty())
+        memories.push_back("RAM");
+
     lua_pop(L, 1);
 
     // microcontroller

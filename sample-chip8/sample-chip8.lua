@@ -18,6 +18,7 @@ return {
         },
         cycle_bits = { "R", "XY" },
         terminal = { lines = 25, columns = 60 },
+        memories = { "RAM", "SDCard" },
     },
 
     microcontroller = {

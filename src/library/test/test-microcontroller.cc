@@ -27,9 +27,9 @@ int main()
     client.ack(MACHINE_ID);
 
     std::vector<uint8_t> data { 1, 2, 3, 4 };
-    client.write_memory(0x0, data, false);
+    client.write_memory(0, 0x0, data, false);
 
-    auto data2 = client.read_memory(0x0, data.size());
+    auto data2 = client.read_memory(0, 0x0, data.size());
     if (data != data2)
         throw std::runtime_error("Data does not match.");
 

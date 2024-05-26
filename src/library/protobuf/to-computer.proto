@@ -5,15 +5,17 @@ package fdbg;
 message Ack {}
 
 message WriteMemory {
-  uint64 initial_addr = 1;
-  bytes  bytes        = 2;
-  bool   validate     = 3;
+  uint32 memory_nr    = 1;
+  uint64 initial_addr = 2;
+  bytes  bytes        = 3;
+  bool   validate     = 4;
 }
 
 message ReadMemory {
-  uint64 initial_addr = 1;
-  uint32 sz           = 2;
-  uint32 sequences    = 3;
+  uint32 memory_nr    = 1;
+  uint64 initial_addr = 2;
+  uint32 sz           = 3;
+  uint32 sequences    = 4;
 }
 
 message Reset {}

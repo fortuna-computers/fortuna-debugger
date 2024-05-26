@@ -8,7 +8,7 @@ void Memory::draw()
 {
     float h = 370;
     ImGui::SetNextWindowSize(ImVec2(560, h));
-    if (ImGui::Begin("Memory", &visible_, ImGuiWindowFlags_NoResize)) {
+    if (ImGui::Begin(title_.c_str(), &visible_, ImGuiWindowFlags_NoResize)) {
 
         ImGui::AlignTextToFramePadding();
         ImGui::Text("Page: (PgUp)");

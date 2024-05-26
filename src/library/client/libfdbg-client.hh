@@ -28,8 +28,8 @@ public:
     // lower-level calls to server
     fdbg::AckResponse    ack(uint32_t id);
     fdbg::ComputerStatus reset();
-    void                 write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
-    std::vector<uint8_t> read_memory(uint64_t pos, uint8_t sz, uint8_t sequences=1);
+    void                 write_memory(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
+    std::vector<uint8_t> read_memory(uint8_t nr, uint64_t pos, uint8_t sz, uint8_t sequences=1);
     fdbg::ComputerStatus step(bool full, std::vector<fdbg::UserEvent> const& events={});
     fdbg::CycleResponse  cycle();
     void                 run(bool forever=false);
@@ -39,13 +39,13 @@ public:
 
     // higher-level calls to server
     struct Upload { size_t next = 0; };
-    bool write_memory_step(uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate=false);
+    bool write_memory_step(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, Upload& upload, bool validate=false);
     std::set<uint64_t> add_breakpoint(uint64_t addr);
     std::set<uint64_t> remove_breakpoint(uint64_t addr);
     void clear_breakpoints();
 
-    void write_memory_full(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
-    void compile_and_write_memory(std::string const& source_filename, bool validate=false);
+    void write_memory_full(uint8_t nr, uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
+    void compile_and_write_memory(std::string const& source_filename, uint8_t nr=0, bool validate=false);
 
     // properties
     void set_debugging_level(DebuggingLevel debugging_level) { debugging_level_ = debugging_level; }

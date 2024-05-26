@@ -27,6 +27,7 @@ public:
 
     std::vector<Register>    cycle_bytes;
     std::vector<std::string> cycle_bits;
+    std::vector<std::string> memories;
 
     int         uc_baudrate;
     std::string vendor_id;

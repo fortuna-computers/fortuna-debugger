@@ -16,7 +16,9 @@ void MainMenu::draw()
 
         button("Debugger (code)", "code");
         button("Registers", "registers");
-        button("Memory", "memory");
+        uint8_t i = 0;
+        for (auto const& memory_name : model.machine().memories)
+            button("Memory (" + memory_name + ")", "memory" + std::to_string(i++));
         button("Terminal", "terminal");
         button("Cycles", "cycles");
     }

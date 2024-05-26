@@ -33,10 +33,10 @@ int main()
                     return cs;
                 },
                 .reset = [](FdbgServer*) {},
-                .write_memory = [](FdbgServer*, uint64_t, uint8_t*, uint8_t, uint64_t*) {
+                .write_memory = [](FdbgServer*, uint8_t, uint64_t, uint8_t*, uint8_t, uint64_t*) {
                     return true;
                 },
-                .read_memory = [](FdbgServer*, uint64_t, uint8_t sz, uint8_t* out_data) {
+                .read_memory = [](FdbgServer*, uint8_t, uint64_t, uint8_t sz, uint8_t* out_data) {
                     for (size_t i = 0; i < sz; ++i)
                         out_data[i] = i + 1;
                 },
@@ -76,8 +76,8 @@ int main()
 
         {
             std::vector<uint8_t> data { 1, 2, 3, 4 };
-            client.write_memory(0x0, data, false);
-            auto data2 = client.read_memory(0x0, data.size());
+            client.write_memory(0, 0x0, data, false);
+            auto data2 = client.read_memory(0, 0x0, data.size());
             if (data != data2)
                 throw std::runtime_error("Data does not match.");
         }
@@ -87,7 +87,7 @@ int main()
         {
             std::vector<uint8_t> data(100);
             std::generate(data.begin(), data.end(), []() { return rand(); });
-            client.write_memory_full(0, data);
+            client.write_memory_full(0, 0, data);
         }
 
         printf("==============================================\n");

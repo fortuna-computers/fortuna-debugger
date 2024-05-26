@@ -62,7 +62,7 @@ void Model::update()
 {
     if (upload_) {
         auto const& binary = debug_.binaries[upload_->binary_idx];
-        bool in_progress = client_.write_memory_step(upload_->address, binary.rom, upload_->upload_context, upload_->verify);
+        bool in_progress = client_.write_memory_step(0, upload_->address, binary.rom, upload_->upload_context, upload_->verify);
         if (in_progress) {
             upload_->current += MAX_MEMORY_TRANSFER;
         } else {
@@ -114,7 +114,7 @@ void Model::change_memory_page(int64_t page)
     memory.current_page = page;
 
     for (size_t i = 0; i < (PAGE_SZ / 64); ++i) {
-        auto bytes = client_.read_memory((page + i) * 64, 64, 4);
+        auto bytes = client_.read_memory(0, (page + i) * 64, 64, 4);
         std::copy(std::begin(bytes), std::end(bytes), std::begin(memory.data) + (i * 64));
     }
 }

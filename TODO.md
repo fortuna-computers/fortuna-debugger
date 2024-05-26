@@ -149,13 +149,16 @@
     - [x] Raw
     - [x] ANSI
   - [x] Save terminal config
-- [ ] Keyboard input
-  - [ ] Mid-step
+- [x] Keyboard input
+  - [x] Mid-step
   - [ ] While running
 
 # Other devices
 
 - [ ] Multiple memories (for SDCard, etc...)
+  - [x] `memories` in Lua/machine
+  - [ ] Protobuf / library
+  - [ ] Multiple memories in debugger
 
 # Video
 

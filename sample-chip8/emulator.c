@@ -75,7 +75,7 @@ uint64_t step(FdbgServer* server, bool full)
     return pc;
 }
 
-bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
+bool write_memory(FdbgServer* server, uint8_t nr, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
 {
     (void) server;
     (void) first_failed;
@@ -86,7 +86,7 @@ bool write_memory(FdbgServer* server, uint64_t pos, uint8_t* data, uint8_t sz, u
     return true;
 }
 
-void read_memory(FdbgServer* server, uint64_t pos, uint8_t sz, uint8_t* out_data)
+void read_memory(FdbgServer* server, uint8_t nr, uint64_t pos, uint8_t sz, uint8_t* out_data)
 {
     (void) server;
 

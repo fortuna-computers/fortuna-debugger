@@ -23,8 +23,8 @@ public:
     void update_theme();
 
 private:
-    template <typename W> std::string add_window(bool visible=false) {
-        auto w = std::make_unique<W>(visible);
+    template <typename W, typename... U> std::string add_window(bool visible=false, U... u) {
+        auto w = std::make_unique<W>(visible, u...);
         std::string key = w->name();
         windows_[key] = std::move(w);
         return key;
