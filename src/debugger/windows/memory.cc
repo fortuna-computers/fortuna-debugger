@@ -6,6 +6,8 @@
 
 void Memory::draw()
 {
+    auto const& memory = model.memories.at(nr_);
+
     float h = 370;
     ImGui::SetNextWindowSize(ImVec2(560, h));
     if (ImGui::Begin(title_.c_str(), &visible_, ImGuiWindowFlags_NoResize)) {
@@ -16,12 +18,12 @@ void Memory::draw()
 
         disable_on_run([&]() {
             if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
-                go_to_page_number(((int64_t) model.memory.current_page) - 1);
+                go_to_page_number(((int64_t) memory.current_page) - 1);
             ImGui::SameLine();
 
-            char buf[3];
-            snprintf(buf, 3, "%02zX", model.memory.current_page);
-            ImGui::PushItemWidth(24.0);
+            char buf[10];
+            snprintf(buf, 10, "%02zX", memory.current_page);
+            ImGui::PushItemWidth(48.0f);
             ImGui::InputText("##page", buf, sizeof buf, ImGuiInputTextFlags_CallbackEdit,
                              [](ImGuiInputTextCallbackData* data) {
                                  auto* m = reinterpret_cast<Memory*>(data->UserData);
@@ -33,19 +35,22 @@ void Memory::draw()
             ImGui::PopItemWidth();
             ImGui::SameLine();
             if (ImGui::Button(">") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageDown)))
-                go_to_page_number(model.memory.current_page + 1);
+                go_to_page_number(memory.current_page + 1);
             ImGui::SameLine();
             ImGui::Text("(PgDown)");
         });
 
         draw_memory_table();
-        draw_stack();
+        if (nr_ == 0)
+            draw_stack();
     }
     ImGui::End();
 }
 
 void Memory::draw_memory_table() const
 {
+    auto const& memory = model.memories.at(nr_);
+
     static int tbl_flags = ImGuiTableFlags_BordersOuter
                            | ImGuiTableFlags_NoBordersInBody
                            | ImGuiTableFlags_RowBg
@@ -71,7 +76,7 @@ void Memory::draw_memory_table() const
             ImGui::TableNextRow();
 
             // address
-            uint16_t addr = (model.memory.current_page << 8) + (line * 0x10);
+            uint16_t addr = (memory.current_page << 8) + (line * 0x10);
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%04X : ", addr);
 
@@ -79,7 +84,7 @@ void Memory::draw_memory_table() const
             std::string ascii;
             for (uint8_t i = 0; i < 0x10; ++i) {
                 ImGui::TableSetColumnIndex(i + 1);
-                std::optional<uint8_t> byte = model.memory.data[line * 16 + i];
+                std::optional<uint8_t> byte = memory.data[line * 16 + i];
                 if (byte.has_value()) {
                     bool needs_pop = false;
                     if (addr + i == model.computer_status().pc())
@@ -120,5 +125,5 @@ void Memory::draw_stack() const
 
 void Memory::go_to_page_number(int64_t page)
 {
-    model.change_memory_page(page);
+    model.change_memory_page(nr_, page);
 }

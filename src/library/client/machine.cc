@@ -118,7 +118,6 @@ void Machine::load_user_definition(std::string const &filename)
 
     id = field_int("id");
     name = field_str("name");
-    total_memory = field_int("total_memory");
 
     lua_pop(L, 1);
 
@@ -166,9 +165,19 @@ void Machine::load_user_definition(std::string const &filename)
     }
     lua_pop(L, 1);
 
-    memories = field_string_array("memories", false);
-    if (memories.empty())
-        memories.push_back("RAM");
+    if (get_field("memories", false)) {
+        size_t memories_n = luaL_len(L, -1);
+        memories.reserve(memories_n);
+        for (size_t i = 0; i < memories_n; ++i) {
+            lua_rawgeti(L, -1, (lua_Integer) i + 1);
+            memories.push_back({
+                    .name = field_str("name"),
+                    .size = (uint64_t) field_int("size")
+            });
+            lua_pop(L, 1);
+        }
+    }
+    lua_pop(L, 1);
 
     lua_pop(L, 1);
 

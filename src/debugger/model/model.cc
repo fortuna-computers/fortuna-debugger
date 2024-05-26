@@ -51,8 +51,11 @@ void Model::init_debugging_session()
 {
     set_computer_status(client_.reset());
 
-    memory.pages = machine().total_memory / PAGE_SZ;
-    change_memory_page(0);
+    size_t i = 0;
+    for (auto const& memory: machine().memories) {
+        memories.push_back({ .pages = memory.size / PAGE_SZ, .current_page = 0, .data = {{}} });
+        change_memory_page(i++, 0);
+    }
 
     debugging_session_started_ = true;
     ui.start_debugging_session();
@@ -101,8 +104,10 @@ void Model::update()
     ++update_count_;
 }
 
-void Model::change_memory_page(int64_t page)
+void Model::change_memory_page(uint8_t nr, int64_t page)
 {
+    auto& memory = memories.at(nr);
+
     if (page >= (int64_t) memory.pages)
         page = 0;
     if (page < 0)
@@ -114,7 +119,7 @@ void Model::change_memory_page(int64_t page)
     memory.current_page = page;
 
     for (size_t i = 0; i < (PAGE_SZ / 64); ++i) {
-        auto bytes = client_.read_memory(0, (page + i) * 64, 64, 4);
+        auto bytes = client_.read_memory(nr, (page + i) * 64, 64, 4);
         std::copy(std::begin(bytes), std::end(bytes), std::begin(memory.data) + (i * 64));
     }
 }
@@ -161,9 +166,9 @@ void Model::compile(std::string const& source_file)
     std::sort(symbols_cstr_.begin(), symbols_cstr_.end(), [](const char* a, const char* b) { return std::string(a) < std::string(b); });
     symbols_cstr_.insert(symbols_cstr_.begin(), "");
 
-    if (machine().total_memory <= 0xffff)
+    if (machine().memories.at(0).size <= 0xffff)
         addr_sz_ = 4;
-    else if (machine().total_memory <= 0xffffff)
+    else if (machine().memories.at(0).size <= 0xffffff)
         addr_sz_ = 6;
     else
         addr_sz_ = 8;

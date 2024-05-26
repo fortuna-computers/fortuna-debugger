@@ -71,8 +71,8 @@ UI::UI()
     add_window<Demo>();
     add_window<KeyPress>();
     uint8_t i = 0;
-    for (auto const& memory_name : model.machine().memories)
-        add_window<Memory>(false, i++, memory_name);
+    for (auto const& memory : model.machine().memories)
+        add_window<Memory>(false, i++, memory.name);
     add_window<Code>();
     add_window<Registers>();
     add_window<Cycles>();

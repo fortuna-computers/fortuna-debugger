@@ -26,6 +26,7 @@ public:
         size_t                 current_page;
         std::optional<uint8_t> data[PAGE_SZ];
     };
+    std::vector<Memory> memories;
 
     struct Upload {
         size_t             binary_idx;
@@ -36,8 +37,6 @@ public:
         bool               verify;
         FdbgClient::Upload upload_context;
     };
-
-    Memory memory { .pages = 1, .current_page = 0, .data = {{}} };
 
     // initialization
 
@@ -56,7 +55,7 @@ public:
 
     // user events
 
-    void change_memory_page(int64_t page);
+    void change_memory_page(uint8_t nr, int64_t page);
     void reset();
     void step(bool full);
     void add_breakpoint(uint64_t addr);

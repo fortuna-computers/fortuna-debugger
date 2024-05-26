@@ -3,7 +3,6 @@ return {
     machine = {
         id = 0x38f7,
         name = "CHIP-8",
-        total_memory = 4 * 1024,
     },
 
     debugger = {
@@ -18,7 +17,10 @@ return {
         },
         cycle_bits = { "R", "XY" },
         terminal = { lines = 25, columns = 60 },
-        memories = { "RAM", "SDCard" },
+        memories = {
+            { name = "RAM", size = 4 * 1024 },
+            { name = "SDCard", size = 1024 * 1024 },
+        }
     },
 
     microcontroller = {

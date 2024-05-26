@@ -4,6 +4,8 @@
 
 #include "ui/ui.hh"
 
+using namespace std::string_literals;
+
 static ImVec2 sz = ImVec2(-FLT_MIN, 0.0f);
 
 void MainMenu::draw()
@@ -17,8 +19,8 @@ void MainMenu::draw()
         button("Debugger (code)", "code");
         button("Registers", "registers");
         uint8_t i = 0;
-        for (auto const& memory_name : model.machine().memories)
-            button("Memory (" + memory_name + ")", "memory" + std::to_string(i++));
+        for (auto const& memory: model.machine().memories)
+            button("Memory ("s + memory.name + ")", "memory" + std::to_string(i++));
         button("Terminal", "terminal");
         button("Cycles", "cycles");
     }

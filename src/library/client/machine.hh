@@ -16,7 +16,6 @@ public:
 
     uint16_t    id;
     std::string name;
-    uint64_t    total_memory;
     std::string comment_separators;
     uint16_t    terminal_lines = 25;
     uint16_t    terminal_columns = 80;
@@ -27,7 +26,9 @@ public:
 
     std::vector<Register>    cycle_bytes;
     std::vector<std::string> cycle_bits;
-    std::vector<std::string> memories;
+
+    struct Memory { std::string name; uint64_t size; };
+    std::vector<Memory> memories;
 
     int         uc_baudrate;
     std::string vendor_id;

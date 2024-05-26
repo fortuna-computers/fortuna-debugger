@@ -8,7 +8,8 @@ using namespace std::string_literals;
 class Memory : public Window {
 public:
     Memory(bool visible, uint8_t nr, std::string const& title)
-    : Window(visible), window_name_("memory"s + std::to_string(nr)), title_("Memory (" + title + ")") {}
+    : Window(visible), nr_(nr), window_name_("memory"s + std::to_string(nr)), title_("Memory (" + title + ")")
+    {}
 
     void draw() override;
 
@@ -18,6 +19,7 @@ public:
     void go_to_page_number(int64_t page);
 
 private:
+    uint8_t nr_;
     std::string window_name_;
     std::string title_;
 
