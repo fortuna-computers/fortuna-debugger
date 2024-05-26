@@ -16,9 +16,9 @@
 #include "terminalmodel.hh"
 
 class Model {
+public:
     static constexpr size_t PAGE_SZ = 256;
 
-public:
     Model();
 
     struct Memory {

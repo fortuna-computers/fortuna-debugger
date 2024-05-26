@@ -72,7 +72,7 @@ void Memory::draw_memory_table() const
         ImGui::TableSetupColumn("ASCII", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableHeadersRow();
 
-        for (int line = 0; line < 0x10; ++line) {
+        for (int line = 0; line < Model::PAGE_SZ / 0x10; ++line) {
             ImGui::TableNextRow();
 
             // address

@@ -155,10 +155,10 @@
 
 # Other devices
 
-- [ ] Multiple memories (for SDCard, etc...)
+- [x] Multiple memories (for SDCard, etc...)
   - [x] `memories` in Lua/machine
-  - [ ] Protobuf / library
-  - [ ] Multiple memories in debugger
+  - [x] Protobuf / library
+  - [x] Multiple memories in debugger
 
 # Video
 
