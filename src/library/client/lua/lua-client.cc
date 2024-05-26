@@ -10,6 +10,36 @@
                     return 0; \
                  }
 
+static void push_computer_status(lua_State* L, fdbg::ComputerStatus const& cs)
+{
+    lua_newtable(L);
+
+    lua_pushinteger(L, cs.pc()); lua_setfield(L, -2, "pc");
+
+    lua_newtable(L);
+    for (int i = 0; i < cs.registers_size(); ++i) {
+        lua_pushinteger(L, cs.registers(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_setfield(L, -2, "registers");
+
+    lua_newtable(L);
+    for (int i = 0; i < cs.flags_size(); ++i) {
+        lua_pushboolean(L, cs.flags(i));
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_setfield(L, -2, "flags");
+
+    lua_newtable(L);
+    for (int i = 0; i < cs.stack().size(); ++i) {
+        lua_pushlstring(L, &cs.stack().c_str()[i], 1);
+        lua_rawseti(L, -2, i + 1);
+    }
+    lua_setfield(L, -2, "stack");
+
+    // TODO - add events
+}
+
 static const luaL_Reg client_methods[] = {
 
     // METAMETHODS
@@ -36,8 +66,69 @@ static const luaL_Reg client_methods[] = {
     }},
 
     { "connect", [](lua_State* L) {
-        CHECK(CLIENT->connect(luaL_checkstring(L, 2), luaL_checkinteger(L, 3)));
+        uint32_t baudrate = EMULATOR_BAUD_RATE;
+        if (lua_gettop(L) > 2 && !lua_isnil(L, 3))
+            baudrate = luaL_checkinteger(L, 3);
+        CHECK(CLIENT->connect(luaL_checkstring(L, 2), baudrate));
         return 0;
+    }},
+
+    { "ack", [](lua_State* L) {
+        CHECK({
+            auto r = CLIENT->ack(luaL_checkinteger(L, 2));
+            lua_newtable(L);
+            lua_pushinteger(L, r.id()); lua_setfield(L, -2, "id");
+            lua_pushinteger(L, r.server_sz()); lua_setfield(L, -2, "server_sz");
+            lua_pushinteger(L, r.to_computer_sz()); lua_setfield(L, -2, "to_computer_sz");
+            lua_pushinteger(L, r.to_debugger_sz()); lua_setfield(L, -2, "to_debugger_sz");
+        });
+        return 1;
+    }},
+
+    { "reset", [](lua_State* L) {
+        CHECK(push_computer_status(L, CLIENT->reset()));
+        return 1;
+    }},
+
+    { "write_memory", [](lua_State* L) {
+        luaL_checktype(L, 4, LUA_TTABLE);
+        std::vector<uint8_t> data;
+        for (int i = 0; i < luaL_len(L, 4); ++i) {
+            lua_rawgeti(L, 4, i + 1);
+            data.push_back(lua_tointeger(L, -1));
+            lua_pop(L, 1);
+        }
+        CHECK(CLIENT->write_memory(luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), data, lua_toboolean(L, 4)));
+        return 0;
+    }},
+
+    { "read_memory", [](lua_State* L) {
+        CHECK({
+            uint8_t seq = 1;
+            if (lua_gettop(L) > 4)
+                seq = luaL_checkinteger(L, 5);
+            auto data = CLIENT->read_memory(luaL_checkinteger(L, 2), luaL_checkinteger(L, 3), luaL_checkinteger(L, 4), seq);
+            lua_newtable(L);
+            int i = 1;
+            for (uint8_t byte: data) {
+                lua_pushinteger(L, byte);
+                lua_rawseti(L, -2, i++);
+            }
+        });
+        return 1;
+    }},
+
+    { "step", [](lua_State *L) {
+        // TODO - events
+        CHECK(push_computer_status(L, CLIENT->step(lua_toboolean(L, 2))));
+        return 1;
+    }},
+
+    // STATIC METHODS
+
+    { "start_emulator", [](lua_State* L) {
+        CHECK(lua_pushstring(L, FdbgClient::start_emulator(luaL_checkstring(L, 1)).c_str()))
+        return 1;
     }},
 
     {nullptr, nullptr}
@@ -58,11 +149,6 @@ static const luaL_Reg client_lib[] = {
 
             lua_setmetatable(L, -2);
 
-            return 1;
-        }},
-
-        { "start_emulator", [](lua_State* L) {
-            CHECK(lua_pushstring(L, CLIENT->start_emulator(luaL_checkstring(L, 2)).c_str()))
             return 1;
         }},
 
