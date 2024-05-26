@@ -32,6 +32,8 @@ protected:
         if (model.running()) ImGui::EndDisabled();
     }
 
+    void save_window_closed(bool visible);
+
     bool visible_;
 };
 

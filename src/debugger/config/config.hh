@@ -14,6 +14,8 @@ struct Config {
     void        set(std::string const& key, int value);
     void        set(std::string const& key, bool value);
 
+    void        remove(std::string const& key);
+
     void load();
     void save();
 

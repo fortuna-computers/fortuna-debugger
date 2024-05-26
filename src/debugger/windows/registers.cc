@@ -48,6 +48,8 @@ void Registers::draw()
                 ImGui::SameLine();
             }
         }
+
+        save_window_closed(visible_);
     }
 
     ImGui::End();

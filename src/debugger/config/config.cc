@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <vector>
 
 using namespace std::string_literals;
 
@@ -21,9 +22,14 @@ void Config::load()
 void Config::save()
 {
     std::ofstream f(filename);
-    if (f.good())
+    if (f.good()) {
+        std::vector<std::string> keys;
         for (auto const& pair: config_)
-            f << std::left << std::setw(30) << pair.first << " " << pair.second << "\n";
+            keys.push_back(pair.first);
+        std::sort(keys.begin(), keys.end());
+        for (auto const& key: keys)
+            f << std::left << std::setw(30) << key << " " << config_[key] << "\n";
+    }
 }
 
 std::string Config::get_str(std::string const &key) const
@@ -63,4 +69,10 @@ void Config::set(std::string const &key, int value)
 void Config::set(std::string const &key, bool value)
 {
     set(key, value ? "true"s : "false"s);
+}
+
+void Config::remove(std::string const& key)
+{
+    config_.erase(key);
+    save();
 }

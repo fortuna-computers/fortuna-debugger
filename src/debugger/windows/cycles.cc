@@ -1,5 +1,7 @@
 #include "cycles.hh"
 
+#include <ranges>
+
 #include "imgui.h"
 
 #include "model/model.hh"
@@ -29,14 +31,14 @@ void Cycles::draw()
 
             // data
 
-            size_t counter = 0;
-            for (auto const& cycle: model.cycles()) {
+            size_t counter = model.cycles().size() - 1;
+            for (auto const& cycle: model.cycles() | std::ranges::views::reverse) {
 
                 int k = 0;
 
                 // counter
                 ImGui::TableSetColumnIndex(k++);
-                ImGui::Text("%zu", counter++);
+                ImGui::Text("%zu", counter--);
 
                 // bytes
                 for (int j = 0; j < cycle.bytes_size(); ++j) {
@@ -67,6 +69,8 @@ void Cycles::draw()
 
         }
         ImGui::EndTable();
+
+        save_window_closed(visible_);
     }
 
     ImGui::End();

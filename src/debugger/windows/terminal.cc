@@ -89,5 +89,7 @@ void Terminal::draw()
         }
 
         ImGui::End();
+
+        save_window_closed(visible_);
     }
 }

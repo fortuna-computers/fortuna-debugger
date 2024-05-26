@@ -11,6 +11,7 @@ void Code::draw()
         draw_buttons();
         draw_code();
         draw_footer();
+        save_window_closed(visible_);
     }
     ImGui::End();
 }

@@ -43,6 +43,8 @@ void Memory::draw()
         draw_memory_table();
         if (nr_ == 0)
             draw_stack();
+
+        save_window_closed(visible_);
     }
     ImGui::End();
 }

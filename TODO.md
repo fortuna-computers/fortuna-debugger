@@ -160,18 +160,23 @@
   - [x] Protobuf / library
   - [x] Multiple memories in debugger
 
-# Video
-
 # Refactory 3
 
-- [ ] Improve config class to manage variables as if they were C++ variables
-- [ ] Cycle in reverse order
-- [ ] Logging into a Window (see Demo -> Configuration -> Capture)
-- [ ] Improve theme management
+- [x] Config
+  - [x] Windows are keeping visible on restart, even after closed
+- [x] UI
+  - [x] Cycle in reverse order
 - [ ] Lua library (client, server)
-- [ ] Increase message size (2 bytes for message size, stream some messages ToDebugger)
-- [ ] LuaJIT and emulator in Lua (FFI support?)
-- [ ] Unix socket support (for emulator faster speed), TCP socket (for microcontroller wifi support)
-- [ ] Windows are keeping visible on restart, even after closed
+- [ ] Documentation (sample emulator)
+- [ ] Versioning, packaging
+
+# Video
 
 # CHIP-8 emulator
+
+# Someday, likely never
+
+- [ ] LuaJIT and emulator in Lua (FFI support?)
+- [ ] Unix socket support (for emulator faster speed), TCP socket (for microcontroller wifi support)
+- [ ] Improve config class to manage variables as if they were C++ variables
+- [ ] Logging into a Window (see Demo -> Configuration -> Capture)
