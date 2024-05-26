@@ -9,8 +9,8 @@ endif
 
 all: chip8-emulator
 
-chip8-emulator: emulator.o ../src/library/libfdbg-server.a
-	$(CC) -o $@ $^ ${LDFLAGS}
+chip8-emulator: emulator.o
+	$(CC) -o $@ ../src/library/libfdbg-server.a $^ ${LDFLAGS}
 
 clean:
 	rm -f emulator.o chip8-emulator

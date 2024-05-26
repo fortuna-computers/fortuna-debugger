@@ -22,7 +22,7 @@ LUA_LIBS = $(shell pkg-config --libs lua)
 # targets
 #
 
-TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so test-library test-microcontroller
+TARGET = libfdbg-server.a libfdbg-client.a libfdbg-client.so fdbg_client.so test-library test-microcontroller
 
 .PHONY: all
 all: $(TARGET)
@@ -75,6 +75,9 @@ libfdbg-client.a: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 libfdbg-client.so: $(GENERATED_PROTO_FILES:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 	$(CXX) $^ -shared -o $@ $(PROTOBUF_LDFLAGS) ${LUA_LIBS}
 
+fdbg_client.so: client/lua/lua-client.o libfdbg-client.a
+	$(CXX) $^ -shared -o $@ $(PROTOBUF_LDFLAGS) ${LUA_LIBS}
+
 -include $(LIBFDBG_CLIENT_SRC:.o=.d)
 
 #
@@ -97,4 +100,5 @@ test-microcontroller: test/test-microcontroller.o libfdbg-client.a
 
 .PHONY: clean
 clean:
-	rm -f ${TARGET} *.o *.d **/*.o **/*.d ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} ${NANOPB}/*.d $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h)
+	find . -type f -name '*.[od]' -delete
+	rm -f ${TARGET} ${NANOPB_SRC} ${GENERATED_NANOPB_FILES} ${NANOPB}/*.d $(GENERATED_NANOPB_FILES:.c=.h) ${GENERATED_PROTO_FILES} $(GENERATED_PROTO_FILES:.cc=.h)

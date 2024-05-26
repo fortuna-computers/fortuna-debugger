@@ -2,8 +2,8 @@ ifeq ($(OS),Windows_NT)
 	$(warning Windows not supported - use it at your own risk)
 endif
 
-LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so
-TARGETS = f-debugger chip8-emulator findserial.py
+LIBRARY = libfdbg-server.a libfdbg-client.a libfdbg-client.so fdbg_client.so
+TARGETS = f-debugger chip8-emulator findserial.py fdbg_client.so
 
 all: ${TARGETS}
 
@@ -12,6 +12,8 @@ ${LIBRARY}: library-compile
 f-debugger: ${LIBRARY} f-debugger-compile findserial.py
 
 chip8-emulator: chip8-emulator-compile
+
+libfdbg-server.a: library-compile
 
 library-compile:
 	$(MAKE) -C src/library
@@ -38,6 +40,6 @@ clean:
 	$(MAKE) -C src/library clean
 	$(MAKE) -C src/debugger clean
 	$(MAKE) -C sample-chip8 clean
-	rm -f ${TARGETS}
+	rm -f ${TARGETS} ${LIBRARY}
 
 .PHONY = f-debugger-compile library-compile
