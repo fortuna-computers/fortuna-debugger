@@ -20,7 +20,7 @@ message Reset {}
 
 message Step {
   bool               full = 1;
-  repeated UserEvent user_event = 2;
+  repeated UserEvent user_events = 2;
 }
 
 message Cycle {}
@@ -54,7 +54,7 @@ message Run {
 message Next {}
 
 message GetRunStatus {
-  repeated UserEvent user_event = 1;
+  repeated UserEvent user_events = 1;
 }
 
 message Pause {}

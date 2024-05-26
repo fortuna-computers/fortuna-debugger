@@ -33,7 +33,7 @@ public:
     void set_mode(Mode mode);
     void set_new_line(NewLine new_line);
 
-    std::optional<uint8_t> next_tx {};
+    std::optional<std::string> next_tx {};
 
 private:
     size_t columns_ = 0, lines_ = 0;

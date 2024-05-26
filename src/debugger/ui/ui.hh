@@ -18,7 +18,7 @@ public:
 
     void run();
 
-    void set_window_visible(std::string const& name, bool visible);
+    void set_window_visible(std::string const& name, bool visible=true);
     void start_debugging_session();
     void update_theme();
 

@@ -210,11 +210,13 @@ fdbg::ComputerStatus FdbgClient::reset()
     return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
 }
 
-fdbg::ComputerStatus FdbgClient::step(bool full)
+fdbg::ComputerStatus FdbgClient::step(bool full, std::vector<fdbg::UserEvent> const& events)
 {
     fdbg::ToComputer msg;
     auto step = new fdbg::Step();
     step->set_full(full);
+    for (auto const& event: events)
+        step->add_user_events()->CopyFrom(event);
     msg.set_allocated_step(step);
 
     return send_message(msg, fdbg::ToDebugger::kComputerStatus).computer_status();
@@ -243,10 +245,13 @@ void FdbgClient::next()
     send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
 }
 
-fdbg::RunStatus FdbgClient::run_status()
+fdbg::RunStatus FdbgClient::run_status(std::vector<fdbg::UserEvent> const& events)
 {
     fdbg::ToComputer msg;
-    msg.set_allocated_get_run_status(new fdbg::GetRunStatus());
+    auto get_run_status = new fdbg::GetRunStatus();
+    for (auto const& event: events)
+        get_run_status->add_user_events()->CopyFrom(event);
+    msg.set_allocated_get_run_status(get_run_status);
     return send_message(msg, fdbg::ToDebugger::kRunStatus).run_status();
 }
 

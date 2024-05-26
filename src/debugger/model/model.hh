@@ -116,6 +116,7 @@ private:
     void set_computer_status(fdbg::ComputerStatus const& computer_status);
 
     void do_event(fdbg::ComputerEvent const &event);
+    std::vector<fdbg::UserEvent> get_user_events();
 };
 
 extern Model model;

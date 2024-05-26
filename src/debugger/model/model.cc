@@ -80,7 +80,7 @@ void Model::update()
     }
 
     if (running_) {
-        auto cr = client_.run_status();
+        auto cr = client_.run_status(get_user_events());
         running_ = cr.running();
         for (int i = 0; i < cr.events_size(); ++i)
             do_event(cr.events(i));
@@ -127,7 +127,7 @@ void Model::reset()
 
 void Model::step(bool full)
 {
-    fdbg::ComputerStatus computer_status = client_.step(full);
+    fdbg::ComputerStatus computer_status = client_.step(full, get_user_events());
     for (int i = 0; i < computer_status.events_size(); ++i)
         do_event(computer_status.events(i));
     set_computer_status(computer_status);
@@ -253,4 +253,21 @@ void Model::do_event(fdbg::ComputerEvent const &event)
         case fdbg::ComputerEvent::TYPE_NOT_SET:
             throw std::runtime_error("Missing event type");
     }
+}
+
+std::vector<fdbg::UserEvent> Model::get_user_events()
+{
+    std::vector<fdbg::UserEvent> events;
+
+    if (terminal_model_.next_tx) {
+        fdbg::UserEvent event;
+        auto terminal_tx = new fdbg::UserEvent::TerminalTX();
+        terminal_tx->set_text(*terminal_model_.next_tx);
+        event.set_allocated_terminal_tx(terminal_tx);
+        events.push_back(std::move(event));
+
+        terminal_model_.next_tx = {};
+    }
+
+    return events;
 }

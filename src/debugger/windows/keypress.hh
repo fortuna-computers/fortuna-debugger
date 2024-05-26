@@ -11,12 +11,9 @@ public:
 
     std::string name() const override { return "keypress"; }
 
-    std::optional<std::string> key() const { return key_; }
-
 private:
-    std::optional<std::string> key_ {};
-
     bool do_keypress();
+    std::vector<uint8_t> translate_keypress(int key, bool ctrl, bool shift, bool alt, bool super);
 };
 
 #endif

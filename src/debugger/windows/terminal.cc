@@ -1,6 +1,7 @@
 #include "terminal.hh"
 
 #include "model/model.hh"
+#include "ui/ui.hh"
 
 Terminal::Terminal(bool visible)
     : Window(visible)
@@ -47,16 +48,26 @@ void Terminal::draw()
         ImGui::GetWindowDrawList()->AddRect(topleft, bottomright, IM_COL32(128, 128, 128, 255));
 
         // next char
-        if (!model.terminal_model().next_tx) {
-            if (ImGui::Button("Keypress..."))
-                ;
-            ImGui::SameLine();
-            ImGui::Text("Next TX: (none)");
-        } else {
-            if (ImGui::Button("Clear"))
-                model.terminal_model().next_tx = {};
-            ImGui::SameLine();
-            ImGui::Text("Next TX: %c (0x%02X)", *model.terminal_model().next_tx, *model.terminal_model().next_tx);
+        {
+            char buf[100];
+            int n = snprintf(buf, sizeof buf, "Next TX: ");
+            if (!model.terminal_model().next_tx) {
+                if (ImGui::Button("Keypress..."))
+                    ui.set_window_visible("keypress");
+                ImGui::SameLine();
+                snprintf(&buf[n], sizeof buf - n, "(none)");
+            } else {
+                if (ImGui::Button("Clear"))
+                    model.terminal_model().next_tx = {};
+                ImGui::SameLine();
+                for (char c: *model.terminal_model().next_tx)
+                    n += snprintf(&buf[n], sizeof buf - n, "%c", (c >= 32 && c < 127) ? c : '?');
+                n += snprintf(&buf[n], sizeof buf - n, " (");
+                for (char c: *model.terminal_model().next_tx)
+                    n += snprintf(&buf[n], sizeof buf - n, "0x%02X ", c);
+                snprintf(&buf[n-1], sizeof buf - n, ")");
+            }
+            ImGui::Text("%s", buf);
         }
 
         ImGui::SeparatorText("Configuration");

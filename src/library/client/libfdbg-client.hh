@@ -30,11 +30,11 @@ public:
     fdbg::ComputerStatus reset();
     void                 write_memory(uint64_t pos, std::span<const uint8_t> const& data, bool validate=false);
     std::vector<uint8_t> read_memory(uint64_t pos, uint8_t sz, uint8_t sequences=1);
-    fdbg::ComputerStatus step(bool full);
+    fdbg::ComputerStatus step(bool full, std::vector<fdbg::UserEvent> const& events={});
     fdbg::CycleResponse  cycle();
     void                 run(bool forever=false);
     void                 next();
-    fdbg::RunStatus      run_status();
+    fdbg::RunStatus      run_status(std::vector<fdbg::UserEvent> const& events={});
     fdbg::ComputerStatus pause();
 
     // higher-level calls to server
