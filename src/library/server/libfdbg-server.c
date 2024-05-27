@@ -117,13 +117,25 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
     memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STEP) * sizeof(fdbg_ComputerEvent));
 }
 
+static void fdbg_execute_user_events(FdbgServer *server, FdbgServerEvents *events, size_t count, fdbg_UserEvent *user_events)
+{
+    for (size_t i = 0; i < count; ++i) {
+        switch (user_events[i].which_type) {
+            case fdbg_UserEvent_TerminalKeypress_text_tag:
+                if (events->on_keypress)
+                    events->on_keypress(server, user_events[i].type.terminal_keypress.text);
+                break;
+        }
+    }
+}
+
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
 {
     bool error = false;
     fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
     rmsg.status = fdbg_Status_OK;
 
-    switch ((*msg).which_message) {
+    switch (msg->which_message) {
 
         case fdbg_ToComputer_pause_tag: {
             server->running = false;
@@ -133,10 +145,15 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
         }
 
         case fdbg_ToComputer_get_run_status_tag: {
+            fdbg_execute_user_events(server, events, msg->message.get_run_status.user_events_count, msg->message.get_run_status.user_events);
+
             rmsg.which_message = fdbg_ToDebugger_run_status_tag;
             rmsg.message.run_status.running = true;
             rmsg.message.run_status.pc = server->last_pc;
-            // TODO - add IO events
+
+            rmsg.message.run_status.events_count = MIN(server->event_count, MAX_EVENTS_STATUS);
+            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STATUS) * sizeof(fdbg_ComputerEvent));
+            server->event_count = 0;
             break;
         }
 
@@ -153,25 +170,13 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
         rmsg.status = fdbg_Status_IO_SERIAL_ERROR;
 }
 
-static void fdbg_execute_user_events(FdbgServer *server, FdbgServerEvents *events, size_t count, fdbg_UserEvent *user_events)
-{
-    for (size_t i = 0; i < count; ++i) {
-        switch (user_events[i].which_type) {
-            case fdbg_UserEvent_TerminalKeypress_text_tag:
-                if (events->on_keypress)
-                    events->on_keypress(server, user_events[i].type.terminal_keypress.text);
-                break;
-        }
-    }
-}
-
 static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
 {
     bool error = false;
     fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
     rmsg.status = fdbg_Status_OK;
 
-    switch ((*msg).which_message) {
+    switch (msg->which_message) {
 
         case fdbg_ToComputer_ack_tag: {
             rmsg.which_message = fdbg_ToDebugger_ack_response_tag;

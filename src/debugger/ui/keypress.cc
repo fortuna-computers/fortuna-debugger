@@ -3,40 +3,33 @@
 #include "imgui.h"
 #include <GLFW/glfw3.h>
 
+#include <unordered_map>
 #include <vector>
 
-static std::vector<uint8_t> translate_keypress(int key, bool ctrl, bool shift, bool alt, bool super)
-{
-    if (ctrl || alt || super)   // not supported yet
-        return {};
-    if (key >= 'A' && key <= 'Z') {
-        return { shift ? (uint8_t) key : (uint8_t) (key + 32) };
-    } else if (key < 127) {
-        return { (uint8_t) key };
-    } else switch(key) {
-        case GLFW_KEY_ENTER: return { '\r', '\n' };
-        case GLFW_KEY_BACKSPACE: return { '\b' };
-        default: return {};
-    }
-}
+static std::unordered_map<ImGuiKey, std::string> key_translation = {
+        { ImGuiKey_Escape, "\e" },
+        { ImGuiKey_Enter, "\r\n" },
+        { ImGuiKey_Backspace, "\b" },
+};
 
 std::optional<std::string> check_for_keypress()
 {
     ImGuiIO const& io = ImGui::GetIO();
 
-    bool press = false;
-    std::string key;
+    std::string ret;
 
-    for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) {
-        if (ImGui::IsKeyPressed((ImGuiKey) i)) {
-            for (char k: translate_keypress(i, io.KeyCtrl, io.KeyShift, io.KeyAlt, io.KeySuper))
-                key += k;
-            press = true;
-        }
+    // TODO - modifiers
+
+    for (auto const& [key, str]: key_translation)
+        if (ImGui::IsKeyPressed(key))
+            ret += str;
+
+    for (int i = 0; i < io.InputQueueCharacters.Size; ++i) {
+        ImWchar c = io.InputQueueCharacters[i];
+        char buf[8] = {0};
+        wctomb(buf, c);
+        ret += buf;
     }
 
-    if (!press || key.empty())
-        return {};
-    else
-        return key;
+    return ret.empty() ? std::optional<std::string>{} : ret;
 }

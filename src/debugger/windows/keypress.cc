@@ -1,8 +1,5 @@
 #include "keypress.hh"
 
-#include <GLFW/glfw3.h>
-
-#include "keypress.hh"
 #include "ui/keypress.hh"
 
 void KeyPress::draw()

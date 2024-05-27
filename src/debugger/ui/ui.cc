@@ -23,6 +23,7 @@
 #include "windows/cycles.hh"
 #include "windows/terminal.hh"
 #include "windows/keypress.hh"
+#include "ui/keypress.hh"
 
 UI::UI()
 {
@@ -102,8 +103,6 @@ void UI::run()
         if (blink_count_ % 50 == 0)
             Window::blink = !Window::blink;
 
-        model.update();
-
         if (theme_ == 0)
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         else if (theme_ == 1)
@@ -113,6 +112,8 @@ void UI::run()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+        model.update();
 
         for (auto const& [_, w]: windows_) {
             if (w->visible()) {

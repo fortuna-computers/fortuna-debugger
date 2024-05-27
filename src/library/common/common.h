@@ -14,6 +14,7 @@ static fdbg_RunStatus rs;
 #define MAX_BREAKPOINTS     (sizeof(bkp.addr) / sizeof(bkp.addr[0]))
 #define MAX_EVENTS          (sizeof(rs.events) / sizeof(rs.events[0]))
 #define MAX_EVENTS_STEP     (sizeof(cs.events) / sizeof(cs.events[0]))
+#define MAX_EVENTS_STATUS   (sizeof(rs.events) / sizeof(rs.events[0]))
 #define STACK_SZ            (sizeof(cs.stack.bytes) / sizeof(cs.stack.bytes[0]))
 
 #endif //COMMON_H_
