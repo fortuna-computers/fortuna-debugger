@@ -54,14 +54,13 @@ uint64_t step(FdbgServer* server, bool full)
             else
                 pc += 2;
             break;
-        case 0x3: {  // OUT
-                if (a != 0) {
-                    char text[] = { a, '\0' };
-                    fdbg_server_terminal_print(server, text);
-                    a = 0;
-                }
-                ++pc;
+        case 0x3:  // OUT
+            if (a != 0) {
+                char text[] = { a, '\0' };
+                fdbg_server_terminal_print(server, text);
+                a = 0;
             }
+            ++pc;
             break;
         case 0x4:  // JP
             pc = ram[pc+1];
