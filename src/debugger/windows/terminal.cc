@@ -47,6 +47,9 @@ void Terminal::draw()
         topleft.x -= 2; topleft.y -= 1; bottomright.x += 4; bottomright.y += 2;
         ImGui::GetWindowDrawList()->AddRect(topleft, bottomright, IM_COL32(128, 128, 128, 255));
 
+        if (model.running())
+            ImGui::BeginDisabled(true);
+
         // next char
         {
             char buf[100];
@@ -69,6 +72,9 @@ void Terminal::draw()
             }
             ImGui::Text("%s", buf);
         }
+
+        if (model.running())
+            ImGui::EndDisabled();
 
         ImGui::SeparatorText("Configuration");
 

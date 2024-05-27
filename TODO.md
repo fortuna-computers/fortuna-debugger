@@ -167,10 +167,11 @@
 - [x] UI
   - [x] Cycle in reverse order
 - [x] Lua library (client, server)
-- [ ] Documentation (sample emulator)
-- [ ] Versioning, packaging
+- [x] Documentation (sample emulator)
+- [x] Server function to push character
 - [ ] Report error on incorrect instruction (or other error)
-- [ ] Server function to push character
+- [ ] Push character when running
+- [ ] Versioning, packaging
 
 # Video
 
