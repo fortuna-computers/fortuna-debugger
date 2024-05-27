@@ -29,7 +29,7 @@ typedef struct FdbgServerEvents {
     fdbg_ComputerStatus (*get_computer_status)(FdbgServer* server);
     fdbg_CycleResponse  (*cycle)(FdbgServer* server);
     void                (*reset)(FdbgServer* server);
-    ADDR_TYPE           (*step)(FdbgServer* server, bool full);
+    ADDR_TYPE           (*step)(FdbgServer* server, bool full, fdbg_Status* status);
     bool                (*write_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t* data, uint8_t sz, ADDR_TYPE* first_failed);
     void                (*read_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
     void                (*run_forever)(FdbgServer* server);
@@ -47,6 +47,7 @@ typedef struct FdbgServer {
     fdbg_ComputerEvent    event_queue[MAX_EVENTS];
     uint8_t               event_count;
     bool                  running;
+    fdbg_Status           run_status;
 #ifndef MICROCONTROLLER
     int                   fd;
     char                  port[256];

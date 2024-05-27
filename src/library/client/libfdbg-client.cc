@@ -175,12 +175,13 @@ start:
         printf("<- %s", msg.DebugString().c_str());
 
     switch (msg.status()) {
-        case fdbg::ERR_WRITING_MEMORY:   throw std::runtime_error("Error writing to memory");
-        case fdbg::TOO_MANY_BREAKPOINTS: throw std::runtime_error("Too many breakpoints");
-        case fdbg::INVALID_MESSAGE:      throw std::runtime_error("Invalid message (message type does not exist or was sent at the wrong time)");
-        case fdbg::IO_SERIAL_ERROR:      throw std::runtime_error("I/O serial error reported by the computer");
-        default:
-            break;
+        case fdbg::OK:                      break;
+        case fdbg::ERR_WRITING_MEMORY:      throw std::runtime_error("Error writing to memory");
+        case fdbg::TOO_MANY_BREAKPOINTS:    throw std::runtime_error("Too many breakpoints");
+        case fdbg::INVALID_MESSAGE:         throw std::runtime_error("Invalid message (message type does not exist or was sent at the wrong time)");
+        case fdbg::IO_SERIAL_ERROR:         throw std::runtime_error("I/O serial error reported by the computer");
+        case fdbg::CPU_INVALID_INSTRUCTION: throw std::runtime_error("Invalid CPU instruction.");
+        default:                            throw std::runtime_error("Message with error code " + std::to_string(msg.status()) + " received from computer.");
     }
 
     if (message_type != fdbg::ToDebugger::MESSAGE_NOT_SET && msg.message_case() != message_type)

@@ -35,6 +35,7 @@ void fdbg_server_init(FdbgServer* server, uint16_t machine_id, FdbgServerIOCallb
     server->running = false;
     server->next_bkp = NO_BREAKPOINT;
     server->run_steps = 512;
+    server->run_status = fdbg_Status_OK;
     for (size_t i = 0; i < MAX_BREAKPOINTS; ++i)
         server->breakpoints[i] = NO_BREAKPOINT;
 }
@@ -110,11 +111,11 @@ static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* event
 {
     fdbg_ComputerStatus cstatus = events->get_computer_status(server);
 
-    msg->status = fdbg_Status_OK;
     msg->which_message = fdbg_ToDebugger_computer_status_tag;
     memcpy(&msg->message.computer_status, &cstatus, sizeof(fdbg_ComputerStatus));
     msg->message.computer_status.events_count = MIN(server->event_count, MAX_EVENTS_STEP);
     memcpy(msg->message.computer_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STEP) * sizeof(fdbg_ComputerEvent));
+    server->event_count = 0;
 }
 
 static void fdbg_execute_user_events(FdbgServer *server, FdbgServerEvents *events, size_t count, fdbg_UserEvent *user_events)
@@ -127,6 +128,20 @@ static void fdbg_execute_user_events(FdbgServer *server, FdbgServerEvents *event
                 break;
         }
     }
+}
+
+static void fdbg_build_run_status_message(FdbgServer* server, fdbg_ToDebugger* rmsg)
+{
+    rmsg->status = server->run_status;
+    rmsg->which_message = fdbg_ToDebugger_run_status_tag;
+    rmsg->message.run_status.running = server->running;
+    rmsg->message.run_status.pc = server->last_pc;
+
+    rmsg->message.run_status.events_count = MIN(server->event_count, MAX_EVENTS_STATUS);
+    memcpy(rmsg->message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STATUS) * sizeof(fdbg_ComputerEvent));
+    server->event_count = 0;
+
+    server->run_status = fdbg_Status_OK;
 }
 
 static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events, fdbg_ToComputer *msg)
@@ -146,14 +161,7 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
 
         case fdbg_ToComputer_get_run_status_tag: {
             fdbg_execute_user_events(server, events, msg->message.get_run_status.user_events_count, msg->message.get_run_status.user_events);
-
-            rmsg.which_message = fdbg_ToDebugger_run_status_tag;
-            rmsg.message.run_status.running = true;
-            rmsg.message.run_status.pc = server->last_pc;
-
-            rmsg.message.run_status.events_count = MIN(server->event_count, MAX_EVENTS_STATUS);
-            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS_STATUS) * sizeof(fdbg_ComputerEvent));
-            server->event_count = 0;
+            fdbg_build_run_status_message(server, &rmsg);
             break;
         }
 
@@ -196,9 +204,8 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
 
         case fdbg_ToComputer_step_tag: {
             fdbg_execute_user_events(server, events, msg->message.step.user_events_count, msg->message.step.user_events);
-            events->step(server, msg->message.step.full);
+            events->step(server, msg->message.step.full, &rmsg.status);
             fdbg_add_computer_status(server, events, &rmsg);
-            server->event_count = 0;
             break;
         }
 
@@ -217,12 +224,7 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
 
         case fdbg_ToComputer_get_run_status_tag: {
             fdbg_execute_user_events(server, events, msg->message.get_run_status.user_events_count, msg->message.get_run_status.user_events);
-            rmsg.which_message = fdbg_ToDebugger_run_status_tag;
-            rmsg.message.run_status.running = false;
-            rmsg.message.run_status.pc = events->get_computer_status(server).pc;
-            rmsg.message.run_status.events_count = MIN(server->event_count, MAX_EVENTS);
-            memcpy(rmsg.message.run_status.events, server->event_queue, MIN(server->event_count, MAX_EVENTS) * sizeof(fdbg_ComputerEvent));
-            server->event_count = 0;
+            fdbg_build_run_status_message(server, &rmsg);
             break;
         }
 
@@ -329,12 +331,20 @@ bkp_done:
 
 static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
 {
+    fdbg_Status status = fdbg_Status_OK;
+
     for (size_t i = 0; i < server->run_steps; ++i) {
 
         if (server->event_count == (MAX_EVENTS - 1))
             return;  // we're not running any steps while there are pending events
 
-        server->last_pc = events->step(server, false);
+        server->last_pc = events->step(server, false, &status);
+
+        if (status != fdbg_Status_OK) {
+            server->running = false;
+            server->run_status = status;
+            return;
+        }
 
         if (server->last_pc == server->next_bkp) {
             server->next_bkp = NO_BREAKPOINT;

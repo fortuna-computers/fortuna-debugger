@@ -38,7 +38,7 @@ void on_keypress(FdbgServer* server, const char* key)
     next_char = key[0];
 }
 
-uint64_t step(FdbgServer* server, bool full)
+uint64_t step(FdbgServer* server, bool full, fdbg_Status* status)
 {
     (void) server; (void) full;
 
@@ -53,6 +53,8 @@ uint64_t step(FdbgServer* server, bool full)
                 pc = ram[pc+1];
             else
                 pc += 2;
+            if (status)                                             // TODO - remove
+                *status = fdbg_Status_CPU_INVALID_INSTRUCTION;
             break;
         case 0x3:  // OUT
             if (a != 0) {
@@ -65,6 +67,9 @@ uint64_t step(FdbgServer* server, bool full)
         case 0x4:  // JP
             pc = ram[pc+1];
             break;
+        default:
+            if (status)
+                *status = fdbg_Status_CPU_INVALID_INSTRUCTION;
     }
 
     return pc;
@@ -73,7 +78,7 @@ uint64_t step(FdbgServer* server, bool full)
 uint64_t next_instruction(FdbgServer* server)
 {
     (void) server;
-    return step(server, true);
+    return step(server, true, NULL);
 }
 
 bool write_memory(FdbgServer* server, uint8_t nr, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)
