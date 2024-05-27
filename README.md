@@ -1,7 +1,5 @@
 # fortuna-debugger
 
-***Project in progress! Not ready for use.***
-
 Fortuna Debugger is a set of tools for computer designers that, together, provide debugging capability to any custom computer.
 
 The user needs to provide custom code that will:
@@ -32,9 +30,9 @@ Once the above is provided by the user, the following tools are made available t
 
 ## Building your own computer
 
-To build an emulator, copy the directory `sample-emulator/` and use it as a base.
+To build an **emulator**, copy the directory `sample-emulator/` and start from there.
 
-To build a computer, the code will be similar to the emulator. The following files need to be part of the build:
+To build a **computer**, the code will be similar to the emulator. The difference is that the code is going to run in a microcontroller, which will actually manipulate the CPU and memory instead of emulating them. The following files need to be part of the build:
 - `src/library/server/libfdbg-server.*`
 - `src/library/common/common.h`
 - `src/library/protobuf/*.nanopb.*`
