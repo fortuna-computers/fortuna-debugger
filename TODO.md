@@ -172,13 +172,13 @@
 - [x] Push character when running
 - [x] Key capture: fix issue with SHIFT
 - [x] Report error on incorrect instruction (or other error)
-- [ ] Versioning, packaging
+- [x] Versioning, packaging
   - [x] Build release by default
   - [x] Fix tests
   - [x] make install
-  - [ ] check for dependencies
-  - [ ] compile on Linux
-- [ ] Documentation
+  - [x] check for dependencies
+  - [x] compile on Linux
+- [x] Documentation
 
 # Video
 
