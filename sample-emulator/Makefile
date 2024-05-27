@@ -10,7 +10,7 @@ endif
 all: s-emulator
 
 s-emulator: emulator.o
-	$(CC) -o $@ ../src/library/libfdbg-server.a $^ ${LDFLAGS}
+	$(CC) -o $@ $^ ../src/library/libfdbg-server.a ${LDFLAGS}
 
 clean:
 	rm -f emulator.o s-emulator

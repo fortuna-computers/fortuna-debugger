@@ -1,10 +1,12 @@
 #ifndef TERMINALMODEL_HH_
 #define TERMINALMODEL_HH_
 
+#include <cstddef>
+
 #include <optional>
+#include <string>
 #include <vector>
 #include <utility>
-#include <cstddef>
 
 class TerminalModel {
 public:
