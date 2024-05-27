@@ -1,6 +1,7 @@
 #include "model.hh"
 
 #include "ui/ui.hh"
+#include "ui/keypress.hh"
 
 Model::Model()
 {
@@ -266,12 +267,23 @@ std::vector<fdbg::UserEvent> Model::get_user_events()
 
     if (terminal_model_.next_tx) {
         fdbg::UserEvent event;
-        auto terminal_tx = new fdbg::UserEvent::TerminalKeypress();
-        terminal_tx->set_text(*terminal_model_.next_tx);
-        event.set_allocated_terminal_keypress(terminal_tx);
+        auto terminal_keypress = new fdbg::UserEvent::TerminalKeypress();
+        terminal_keypress->set_text(*terminal_model_.next_tx);
+        event.set_allocated_terminal_keypress(terminal_keypress);
         events.push_back(std::move(event));
 
         terminal_model_.next_tx = {};
+    }
+
+    if (running_) {
+        auto key = check_for_keypress();
+        if (key) {
+            fdbg::UserEvent event;
+            auto terminal_keypress = new fdbg::UserEvent::TerminalKeypress();
+            terminal_keypress->set_text(*key);
+            event.set_allocated_terminal_keypress(terminal_keypress);
+            events.push_back(std::move(event));
+        }
     }
 
     return events;

@@ -59,10 +59,9 @@ UI::UI()
     // configure ImGui
     IMGUI_CHECKVERSION();
     context_ = ImGui::CreateContext();
-    ImGuiIO* io_ = &ImGui::GetIO();
     ImGui_ImplGlfw_InitForOpenGL(glfw_window_, true);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
-    io_->KeyRepeatRate = 0.1f;
+    ImGui::GetIO().KeyRepeatRate = 0.1f;
 
     // add windows
     add_window<MainMenu>(true);
@@ -138,6 +137,9 @@ void UI::run()
         glfwSwapBuffers(glfw_window_);
 
         glfwPollEvents();
+
+        if (!model.running())
+            std::this_thread::sleep_for(std::chrono::milliseconds(32));
     }
 }
 

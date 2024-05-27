@@ -170,6 +170,7 @@
 - [x] Documentation (sample emulator)
 - [x] Server function to push character
 - [ ] Push character when running
+- [ ] Key capture: fix issue with SHIFT
 - [ ] Report error on incorrect instruction (or other error)
 - [ ] Versioning, packaging
 
