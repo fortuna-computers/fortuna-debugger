@@ -29,3 +29,12 @@ Once the above is provided by the user, the following tools are made available t
 7. Load the sample emulator and play with it:
    ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/e9f5a49b-612b-4ad5-9047-ba9ae941dba8)
    ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/8b5baea0-77e5-412a-b2c2-aed93c552aec)
+
+## Building your own computer
+
+To build an emulator, copy the directory `sample-emulator/` and use it as a base.
+
+To build a computer, the code will be similar to the emulator. The following files need to be part of the build:
+- `src/library/server/libfdbg-server.*`
+- `src/library/common/common.h`
+- `src/library/protobuf/*.nanopb.*`
