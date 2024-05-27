@@ -42,4 +42,21 @@ clean:
 	$(MAKE) -C sample-emulator clean
 	rm -f ${TARGETS} ${LIBRARY}
 
+install: all
+	install -d /usr/local/bin
+	install -d /usr/local/lib
+	install -d /usr/local/lib/lua5.4
+	install -s f-debugger /usr/local/bin/
+	install findserial.py /usr/local/bin/
+	install libfdbg-client.so libfdbg-client.a libfdbg-server.a /usr/local/lib/
+	install fdbg_client.so /usr/local/lib/lua5.4/
+
+uninstall:
+	rm -f /usr/local/bin/f-debugger
+	rm -f /usr/local/bin/findserial.py
+	rm -f /usr/local/lib/libfdbg-client.so
+	rm -f /usr/local/lib/libfdbg-client.a
+	rm -f /usr/local/lib/libfdbg-server.a
+	rm -f /usr/local/lib/lua5.4/fdbg_client.so
+
 .PHONY = f-debugger-compile library-compile

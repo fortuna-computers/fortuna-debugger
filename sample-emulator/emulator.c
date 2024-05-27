@@ -53,8 +53,6 @@ uint64_t step(FdbgServer* server, bool full, fdbg_Status* status)
                 pc = ram[pc+1];
             else
                 pc += 2;
-            if (status)                                             // TODO - remove
-                *status = fdbg_Status_CPU_INVALID_INSTRUCTION;
             break;
         case 0x3:  // OUT
             if (a != 0) {

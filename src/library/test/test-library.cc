@@ -61,7 +61,7 @@ int main()
         FdbgClient client;
         client.set_debugging_level(DebuggingLevel::TRACE);
 
-        client.load_user_definition("../../sample-chip8/sample-chip8.lua");
+        client.load_user_definition("../../sample-emulator/sample-emulator.lua");
 
         printf("Machine id: 0x%04X\n", client.machine().id);
         printf("Machine name: %s\n", client.machine().name.c_str());

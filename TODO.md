@@ -171,9 +171,11 @@
 - [x] Server function to push character
 - [x] Push character when running
 - [x] Key capture: fix issue with SHIFT
-- [ ] Report error on incorrect instruction (or other error)
+- [x] Report error on incorrect instruction (or other error)
 - [ ] Versioning, packaging
-  - [ ] make install
+  - [x] Build release by default
+  - [x] Fix tests
+  - [x] make install
   - [ ] check for dependencies
   - [ ] compile on Linux
 - [ ] Documentation
