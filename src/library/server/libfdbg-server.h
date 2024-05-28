@@ -4,10 +4,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "../common/common.h"
+#include "common.h"
 
-#include "protobuf/to-debugger.nanopb.h"
-#include "protobuf/to-computer.nanopb.h"
+#include "to-debugger.nanopb.h"
+#include "to-computer.nanopb.h"
 
 // runs either in the emulator or the computer
 

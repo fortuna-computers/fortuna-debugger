@@ -1,7 +1,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include "protobuf/to-debugger.nanopb.h"
+#include "to-debugger.nanopb.h"
 
 static fdbg_ReadMemoryResponse rm;
 static fdbg_ComputerStatus cs;

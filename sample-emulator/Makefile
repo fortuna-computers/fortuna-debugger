@@ -1,5 +1,5 @@
 CFLAGS = --std=gnu17
-CPPFLAGS = -Wall -Wextra -I. -I../src/library/server -I../src/library -I../src/contrib/nanopb
+CPPFLAGS = -Wall -Wextra -I. -I../src/library/server -I../src/library -I../src/contrib/nanopb -I../src/library/common -I../src/library/protobuf
 
 ifdef RELEASE
 	CPPFLAGS += -O3

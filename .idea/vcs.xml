@@ -64,6 +64,7 @@
     <mapping directory="$USER_HOME$/pico/pico-sdk/lib/tinyusb/tools/uf2/hidapi" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/imgui" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/imgui-filebrowser" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/contrib/libtmt" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/src/contrib/nanopb" vcs="Git" />
   </component>
 </project>

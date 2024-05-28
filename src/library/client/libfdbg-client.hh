@@ -1,11 +1,11 @@
 #ifndef LIBFDBG_CLIENT_HH_
 #define LIBFDBG_CLIENT_HH_
 
-#include "common/common.h"
+#include "common.h"
 #include "machine.hh"
 #include "debuginfo.hh"
-#include "protobuf/to-debugger.pb.h"
-#include "protobuf/to-computer.pb.h"
+#include "to-debugger.pb.h"
+#include "to-computer.pb.h"
 
 #include <optional>
 #include <set>
