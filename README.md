@@ -1,7 +1,5 @@
 # fortuna-debugger
 
-***Project in progress! Not ready for use.***
-
 Fortuna Debugger is a set of tools for computer designers that, together, provide debugging capability to any custom computer.
 
 The user needs to provide custom code that will:
@@ -16,26 +14,25 @@ Once the above is provided by the user, the following tools are made available t
 * A **debugger** that:
   * Connects to the computer firmware (via serial) and provide **onboard real-time debugging ability**
   * Connects to an **emulator** to facilitate software development
-* A **library** (`libfdbg.so`) that allows the user to write its own programs to run onboard (like test suites, for example).
+* A **library** (`libfdbg-client.so` for C and `fdbg_client.so` for Lua) that allows the user to write its own programs to run onboard (like test suites, for example).
 
-A sample implementation is provided for running an emulator version of the [CHIP-8](https://chip-8.github.io/) on a Raspberry Pi Pico.
+## Building and running
 
-## Implementing a new architecture
+1. Install the dependencies ([Lua 5.4](https://www.lua.org/), [GLFW 3](https://www.glfw.org/) and [Protobuf](https://protobuf.dev/)).
+2. Clone the repository
+3. Download the repository submodules (`git submodule update --init --recursive`)
+4. Build the project (`make`) - Linux and MacOS are supported
+5. Install (`sudo make install`)
+6. Run the debugger (`f-debugger`)
+7. Load the sample emulator and play with it:
+   ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/e9f5a49b-612b-4ad5-9047-ba9ae941dba8)
+   ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/8b5baea0-77e5-412a-b2c2-aed93c552aec)
 
-1. Fork the repository, or add as a submodule in another project.
-2. Update the following files:
-     - [user/machine.h](user/machine.h): machine characteristics
-     - [user/emulator.c](user/emulator.c): emulator code
-     - [user/compiler.lua](user/compiler.lua): compilation code (call the compiler and interpret its results)
-     - Avoid changing the contents of other directories, as it contains the main emulator/debugger/firmware code provided by the project.
-3. Run the CMake build in the top directory. This will generate the debugger, emulator and library.
-      ```sh
-      mkdir build
-      cd build
-      cmake ..
-      make
-      ```
-4. Provide a source file that implements [user/microcontroller.h] for that particular microcontroller (initialization, UART, etc), as well as
-  any additional files required to implement the firmware side of the debugger.
-     - The firmware build (such as a Makefile) needs to be provided by the user. This build will need to compile the files contained in 
-       [microcontroller/FILELIST](microcontroller/FILELIST).
+## Building your own computer
+
+To build an **emulator**, copy the directory `sample-emulator/` and start from there.
+
+To build a **computer**, the code will be similar to the emulator. The difference is that the code is going to run in a microcontroller, which will actually manipulate the CPU and memory instead of emulating them. The following files need to be part of the build:
+- `src/library/server/libfdbg-server.*`
+- `src/library/common/common.h`
+- `src/library/protobuf/*.nanopb.*`
