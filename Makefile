@@ -55,6 +55,9 @@ install: all
 	cp src/library/common/common.h src/library/protobuf/*.h /usr/local/include/fdbg
 	cp src/contrib/nanopb/*.h /usr/local/include/fdbg
 	install src/scripts/libfdbg-server.pc /usr/local/lib/pkgconfig
+	install -d /usr/local/src/fdbg/microcontroller/protobuf
+	cp src/library/server/*.[ch] src/library/common/common.h src/contrib/nanopb/*.[ch] /usr/local/src/fdbg/microcontroller
+	cp src/library/protobuf/*.nanopb.[ch] /usr/local/src/fdbg/microcontroller/protobuf
 
 uninstall:
 	rm -f /usr/local/bin/f-debugger
@@ -65,5 +68,6 @@ uninstall:
 	rm -f /usr/local/lib/lua5.4/fdbg_client.so
 	rm -rf /usr/local/include/libfdbg*.h /usr/local/include/fdbg
 	rm -f /usr/local/lib/pkgconfig/libfdbg-server.pc
+	rm -rf /usr/local/src/fdbg/microcontroller
 
 .PHONY = f-debugger-compile library-compile
