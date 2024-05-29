@@ -167,6 +167,8 @@ void Model::compile(std::string const& source_file)
     std::sort(symbols_cstr_.begin(), symbols_cstr_.end(), [](const char* a, const char* b) { return std::string(a) < std::string(b); });
     symbols_cstr_.insert(symbols_cstr_.begin(), "");
 
+    scroll_to_pc();
+
     if (machine().memories.at(0).size <= 0xffff)
         addr_sz_ = 4;
     else if (machine().memories.at(0).size <= 0xffffff)

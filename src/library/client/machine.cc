@@ -2,6 +2,7 @@
 
 #include <lua.hpp>
 
+#include <filesystem>
 #include <string>
 #include <stdexcept>
 
@@ -100,6 +101,8 @@ std::vector<std::string> Machine::field_string_array(const char* field_name, boo
 
 void Machine::load_user_definition(std::string const &filename)
 {
+    lua_src_path = std::filesystem::path(filename).parent_path();
+
     lua_settop(L, 0);  // clear the stack
 
     int r = luaL_loadfile(L, filename.c_str());
@@ -200,6 +203,9 @@ DebugInfo Machine::compile(std::string const& filename) const
     if (!user_definition_loaded_)
         throw std::runtime_error("User definition not loaded yet");
 
+    auto path = std::filesystem::current_path();
+    std::filesystem::current_path(lua_src_path);
+
     // execute compilation function
 
     get_field("compile", true);
@@ -286,6 +292,8 @@ DebugInfo Machine::compile(std::string const& filename) const
     }
     lua_pop(L, 2);   // also remove debugging info object
     assert_stack(1);
+
+    std::filesystem::current_path(path);
 
     return di;
 }

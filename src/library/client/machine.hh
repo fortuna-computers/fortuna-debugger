@@ -36,7 +36,8 @@ public:
 
 private:
     struct lua_State* L;
-    bool   user_definition_loaded_ = false;
+    bool              user_definition_loaded_ = false;
+    std::string       lua_src_path;
 
     bool                     get_field(const char* field, bool mandatory=true) const;
     bool                     field_bool(const char* field, bool mandatory=true) const;
