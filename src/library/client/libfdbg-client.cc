@@ -38,6 +38,8 @@ void FdbgClient::connect(std::string const& port, uint32_t baudrate)
     if (fd_ < 0)
         throw std::runtime_error("Could not open serial port "s + port + ": " + strerror(errno));
 
+    std::this_thread::sleep_for(1s);
+
     configure_terminal_settings(fd_, baudrate);
 }
 
@@ -116,9 +118,12 @@ fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)
 start:
     // read size
     uint8_t sz1;
+    auto now = hrc::now();
     ssize_t r = read(fd_, &sz1, 1);
     if (r == 0) {
         std::this_thread::sleep_for(10us);
+        if (hrc::now() > (now + 2s))
+            throw std::runtime_error("Response not received in 2 seconds");
         goto start;
     } else if (r == -1 && errno != EAGAIN) {
         throw std::runtime_error("Error reading message size from serial: "s + strerror(errno));
