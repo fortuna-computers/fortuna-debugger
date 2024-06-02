@@ -33,6 +33,7 @@ public:
     int         uc_baudrate;
     std::string vendor_id;
     std::string product_id;
+    size_t      uc_wait;
 
 private:
     struct lua_State* L;

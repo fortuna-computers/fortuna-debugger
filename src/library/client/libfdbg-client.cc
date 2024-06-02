@@ -38,9 +38,9 @@ void FdbgClient::connect(std::string const& port, uint32_t baudrate)
     if (fd_ < 0)
         throw std::runtime_error("Could not open serial port "s + port + ": " + strerror(errno));
 
-    std::this_thread::sleep_for(1s);
-
     configure_terminal_settings(fd_, baudrate);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(machine_.uc_wait));
 }
 
 FdbgClient::~FdbgClient()

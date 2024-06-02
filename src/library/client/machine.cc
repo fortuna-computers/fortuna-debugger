@@ -190,6 +190,7 @@ void Machine::load_user_definition(std::string const &filename)
         uc_baudrate = field_int("uart_baud_rate", false);
         vendor_id = field_str("vendor_id", false);
         product_id = field_str("product_id", false);
+        uc_wait = field_int("wait", false);
     }
     lua_pop(L, 1);
 

@@ -62,6 +62,7 @@ return {
         uart_baud_rate = 115200,   -- default UART baud rate
         vendor_id = "2e8a",        -- used to autodetect the USB serial port
         product_id = "000a",
+        wait = 1000,               -- how many milliseconds to wait after connecting to serial
     },
     ]]
 
