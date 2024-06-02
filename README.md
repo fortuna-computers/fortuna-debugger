@@ -36,3 +36,38 @@ To build a **computer**, the code will be similar to the emulator. The differenc
 - `src/library/server/libfdbg-server.*`
 - `src/library/common/common.h`
 - `src/library/protobuf/*.nanopb.*`
+
+## Lua client
+
+A client can be written in Lua to connect to the computer and automate some tasks, like unit testing the computer. This is the lua interface:
+
+```lua
+package.cpath = package.cpath .. ";/usr/local/lib/lua5.4/?.so"
+
+local fdbg = require 'fdbg_client'
+local client = fdbg.new()
+
+-- static methods
+client.start_emulator("./emulator-executable")    -- returns emulator serial port
+
+-- setup/connection
+client:load_user_definition("../my-computer.lua")
+client:set_debugging_level("trace")
+client:autodetect_usb_serial_port()              -- return auto-detected serial port
+client:connect("/dev/serial-port", BAUD_RATE)    -- connect to computer
+
+-- commands
+client:ack(id)    -- return AckResponse { id, server_sz, to_computer_sz, to_debugger_sz }
+client:reset()
+client:write_memory(nr, pos, data_tbl, verify=false)
+client:read_memory(nr, pos, sz, sequences=1)    -- return byte array
+client:step(full=false)  -- return ComputerStatus { pc, registers={}, flags={}, stack={} }
+client:run(forever=false)
+client:run_status()  -- return RunStatus { running, pc }
+client:pause()       -- return RunStatus
+client:add_breakpoint(bkp)      -- return breakpoint list
+client:remove_breakpoint(bkp)   -- return breakpoint list
+
+-- high level calls
+client:compile_and_write_memory(source_filenamne, nr=0, validate=false)
+```
