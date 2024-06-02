@@ -36,3 +36,24 @@ To build a **computer**, the code will be similar to the emulator. The differenc
 - `src/library/server/libfdbg-server.*`
 - `src/library/common/common.h`
 - `src/library/protobuf/*.nanopb.*`
+
+## Lua client
+
+A client can be written in Lua to connect to the computer and automate some tasks, like unit testing the computer. This is the lua interface:
+
+```lua
+package.cpath = package.cpath .. ";/usr/local/lib/lua5.4/?.so"
+
+local fdbg = require 'fdbg_client'
+local client = fdbg.new()
+
+-- client static methods
+client.start_emulator("./emulator-executable")    -- returns emulator serial port
+
+-- client object methods
+client:load_user_definition("../my-computer.lua")
+client:set_debugging_level("trace")
+client:connect("/dev/serial-port", BAUD_RATE)    -- connect to computer
+
+
+```
