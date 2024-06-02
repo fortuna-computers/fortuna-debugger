@@ -47,10 +47,10 @@ package.cpath = package.cpath .. ";/usr/local/lib/lua5.4/?.so"
 local fdbg = require 'fdbg_client'
 local client = fdbg.new()
 
--- client static methods
+-- static methods
 client.start_emulator("./emulator-executable")    -- returns emulator serial port
 
--- client object methods
+-- setup/connection
 client:load_user_definition("../my-computer.lua")
 client:set_debugging_level("trace")
 client:autodetect_usb_serial_port()              -- return auto-detected serial port
