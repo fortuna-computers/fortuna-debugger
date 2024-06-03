@@ -224,7 +224,7 @@ static const luaL_Reg client_lib[] = {
         { "new", [](lua_State* L) {
             // create object
             auto client = (FdbgClient *) lua_newuserdata(L, sizeof(FdbgClient));
-            client = new (client) FdbgClient();
+            new(client) FdbgClient();
 
             // add destructor
             luaL_newmetatable(L, "FdbgClient");
