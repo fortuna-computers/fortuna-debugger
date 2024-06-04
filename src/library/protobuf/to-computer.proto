@@ -71,7 +71,7 @@ message ToComputer {
     Step         step           = 6;   // response: ComputerStatus
     Breakpoint   breakpoint     = 7;   // response: breakpoint list
     Run          run            = 8;   // response: status ok
-    Next         next           = 9;   // response: status ok
+    Next         next           = 9;   // response: RunStatus
     GetRunStatus get_run_status = 10;  // response: RunStatus
     Pause        pause          = 11;  // response: ComputerStatus
   }

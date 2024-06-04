@@ -73,10 +73,10 @@ uint64_t step(FdbgServer* server, bool full, fdbg_Status* status)
     return pc;
 }
 
-uint64_t next_instruction(FdbgServer* server)
+bool next_instruction(FdbgServer* server, ADDR_TYPE* addr)
 {
     (void) server;
-    return step(server, true, NULL);
+    return false;
 }
 
 bool write_memory(FdbgServer* server, uint8_t nr, uint64_t pos, uint8_t* data, uint8_t sz, uint64_t* first_failed)

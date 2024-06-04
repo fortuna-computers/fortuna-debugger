@@ -244,11 +244,11 @@ void FdbgClient::run(bool forever)
     send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
 }
 
-void FdbgClient::next()
+fdbg::RunStatus FdbgClient::next()
 {
     fdbg::ToComputer msg;
     msg.set_allocated_next(new fdbg::Next());
-    send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
+    return send_message(msg, fdbg::ToDebugger::kRunStatus).run_status();
 }
 
 fdbg::RunStatus FdbgClient::run_status(std::vector<fdbg::UserEvent> const& events)

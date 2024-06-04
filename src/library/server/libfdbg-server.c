@@ -217,8 +217,15 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         }
 
         case fdbg_ToComputer_next_tag: {
-            server->next_bkp = events->next_instruction(server);
-            server->running = true;
+            ADDR_TYPE addr;
+            bool is_subroutine = events->next_instruction(server, &addr);
+            if (is_subroutine) {
+                server->next_bkp = addr;
+                server->running = true;
+            } else {
+                events->step(server, false, &rmsg.status);
+                fdbg_build_run_status_message(server, &rmsg);
+            }
             break;
         }
 

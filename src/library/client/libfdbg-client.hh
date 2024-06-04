@@ -33,7 +33,7 @@ public:
     fdbg::ComputerStatus step(bool full, std::vector<fdbg::UserEvent> const& events={});
     fdbg::CycleResponse  cycle();
     void                 run(bool forever=false);
-    void                 next();
+    fdbg::RunStatus      next();
     fdbg::RunStatus      run_status(std::vector<fdbg::UserEvent> const& events={});
     fdbg::ComputerStatus pause();
 

@@ -33,7 +33,7 @@ typedef struct FdbgServerEvents {
     bool                (*write_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t* data, uint8_t sz, ADDR_TYPE* first_failed);
     void                (*read_memory)(FdbgServer* server, uint8_t nr, ADDR_TYPE pos, uint8_t sz, uint8_t* out_data);
     void                (*run_forever)(FdbgServer* server);
-    ADDR_TYPE           (*next_instruction)(FdbgServer* server);
+    bool                (*next_instruction)(FdbgServer* server, ADDR_TYPE* addr);  // return true if next instruction is a subroutine
     void                (*on_keypress)(FdbgServer* server, const char* key);
 } FdbgServerEvents;
 

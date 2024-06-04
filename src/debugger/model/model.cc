@@ -220,8 +220,9 @@ void Model::set_running_state()
 
 void Model::next()
 {
-    client_.next();
-    set_running_state();
+    auto nx = client_.next();
+    if (nx.running())
+        set_running_state();
 }
 
 void Model::pause()
