@@ -32,7 +32,9 @@ void Cycles::draw()
             // data
 
             size_t counter = model.cycles().size() - 1;
-            for (auto const& cycle: model.cycles() | std::ranges::views::reverse) {
+            for (auto it = model.cycles().begin(); it != model.cycles().end(); ++it) {
+
+                auto const& cycle = *it;
 
                 int k = 0;
 
