@@ -159,6 +159,8 @@ void Model::cycle()
 void Model::compile(std::string const& source_file)
 {
     debug_ = client_.machine().compile(source_file);
+    if (!debug_.success)
+        throw std::runtime_error(debug_.error_info);
 
     for (auto const& file: debug_.files)
         files_cstr_.push_back(file.c_str());

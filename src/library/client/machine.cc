@@ -223,75 +223,80 @@ DebugInfo Machine::compile(std::string const& filename) const
     di.success = field_bool("success");
     di.result_info = field_str("result_info", false);
     di.error_info = field_str("error_info", !di.success);
-    di.files = field_string_array("files", true);
-    di.files_to_watch = field_string_array("files_to_watch", false);
 
-    // binaries
+    if (di.success) {
+        di.files = field_string_array("files", true);
+        di.files_to_watch = field_string_array("files_to_watch", false);
 
-    get_field("binaries", true);
+        // binaries
 
-    size_t binaries_n = luaL_len(L, -1);
-    di.binaries.resize(binaries_n);
-    for (size_t i = 0; i < binaries_n; ++i) {
-        lua_rawgeti(L, -1, (lua_Integer) i + 1);
+        get_field("binaries", true);
 
-        // rom
-        di.binaries.at(i).rom = field_byte_array("rom", true);
-        di.binaries.at(i).load_pos = field_int("load_pos", true);
-
-        lua_pop(L, 1);
-    }
-    lua_pop(L, 1);
-    assert_stack(2);
-
-    // source lines
-
-    get_field("source_lines", false);
-
-    if (!lua_isnil(L, -1)) {
-        size_t source_lines_n = luaL_len(L, -1);
-        for (size_t i = 0; i < source_lines_n; ++i) {
+        size_t binaries_n = luaL_len(L, -1);
+        di.binaries.resize(binaries_n);
+        for (size_t i = 0; i < binaries_n; ++i) {
             lua_rawgeti(L, -1, (lua_Integer) i + 1);
 
-            std::string line = field_str("line");
-            std::string comment;
-            if (!comment_separators.empty()) {
-                size_t p = line.find_first_of(comment_separators);
-                if (p != std::string::npos) {
-                    comment = line.substr(p);
-                    line = line.substr(0, p);
-                }
-            }
-
-            size_t file_idx = field_int("file_idx");
-            size_t line_nr = field_int("line_number");
-
-            get_field("address", false);
-            uint64_t address = lua_isnil(L, -1) ? DebugInfo::NO_ADDRESS : luaL_checkinteger(L, -1);
-            lua_pop(L, 2);  // clear address + current iteration
-
-            di.source_lines[std::pair(file_idx - 1, line_nr)] = { address, line, comment };
-            di.addresses[address] = std::pair(file_idx - 1, line_nr);
-        }
-    }
-    lua_pop(L, 1);
-    assert_stack(2);
-
-    // symbols
-
-    get_field("symbols", false);
-
-    if (!lua_isnil(L, -1)) {
-        size_t symbols_n = luaL_len(L, -1);
-        for (size_t i = 0; i < symbols_n; ++i) {
-            lua_rawgeti(L, -1, (lua_Integer) i + 1);
-
-            di.symbols[field_str("name")] = field_int("address");
+            // rom
+            di.binaries.at(i).rom = field_byte_array("rom", true);
+            di.binaries.at(i).load_pos = field_int("load_pos", true);
 
             lua_pop(L, 1);
         }
+        lua_pop(L, 1);
+        assert_stack(2);
+
+        // source lines
+
+        get_field("source_lines", false);
+
+        if (!lua_isnil(L, -1)) {
+            size_t source_lines_n = luaL_len(L, -1);
+            for (size_t i = 0; i < source_lines_n; ++i) {
+                lua_rawgeti(L, -1, (lua_Integer) i + 1);
+
+                std::string line = field_str("line");
+                std::string comment;
+                if (!comment_separators.empty()) {
+                    size_t p = line.find_first_of(comment_separators);
+                    if (p != std::string::npos) {
+                        comment = line.substr(p);
+                        line = line.substr(0, p);
+                    }
+                }
+
+                size_t file_idx = field_int("file_idx");
+                size_t line_nr = field_int("line_number");
+
+                get_field("address", false);
+                uint64_t address = lua_isnil(L, -1) ? DebugInfo::NO_ADDRESS : luaL_checkinteger(L, -1);
+                lua_pop(L, 2);  // clear address + current iteration
+
+                di.source_lines[std::pair(file_idx - 1, line_nr)] = { address, line, comment };
+                di.addresses[address] = std::pair(file_idx - 1, line_nr);
+            }
+        }
+        lua_pop(L, 1);
+        assert_stack(2);
+
+        // symbols
+
+        get_field("symbols", false);
+
+        if (!lua_isnil(L, -1)) {
+            size_t symbols_n = luaL_len(L, -1);
+            for (size_t i = 0; i < symbols_n; ++i) {
+                lua_rawgeti(L, -1, (lua_Integer) i + 1);
+
+                di.symbols[field_str("name")] = field_int("address");
+
+                lua_pop(L, 1);
+            }
+        }
+        lua_pop(L, 1);   // also remove debugging info object
     }
-    lua_pop(L, 2);   // also remove debugging info object
+
+    lua_pop(L, 1);
     assert_stack(1);
 
     std::filesystem::current_path(path);

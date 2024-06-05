@@ -335,6 +335,8 @@ bool FdbgClient::write_memory_step(uint8_t nr, uint64_t pos, std::span<const uin
 void FdbgClient::compile_and_write_memory(std::string const& source_filename, uint8_t nr, bool validate)
 {
     DebugInfo di = machine_.compile(source_filename);
+    if (!di.success)
+        throw std::runtime_error(di.error_info);
     for (auto const& bin: di.binaries)
         write_memory_full(bin.load_pos, nr, bin.rom, validate);
 }
