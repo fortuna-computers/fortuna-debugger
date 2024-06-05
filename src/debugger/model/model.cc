@@ -221,8 +221,12 @@ void Model::set_running_state()
 void Model::next()
 {
     auto nx = client_.next();
-    if (nx.running())
+    if (nx.running()) {
         set_running_state();
+    } else {
+        computer_status_.set_pc(nx.pc());
+        scroll_to_pc();
+    }
 }
 
 void Model::pause()

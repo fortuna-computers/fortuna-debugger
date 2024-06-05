@@ -223,9 +223,9 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
                 server->next_bkp = addr;
                 server->running = true;
             } else {
-                events->step(server, false, &rmsg.status);
-                fdbg_build_run_status_message(server, &rmsg);
+                server->last_pc = events->step(server, false, &rmsg.status);
             }
+            fdbg_build_run_status_message(server, &rmsg);
             break;
         }
 
