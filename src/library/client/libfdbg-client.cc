@@ -189,7 +189,13 @@ start:
         default:                            throw std::runtime_error("Message with error code " + std::to_string(msg.status()) + " received from computer.");
     }
 
-    if (message_type != fdbg::ToDebugger::MESSAGE_NOT_SET && msg.message_case() != message_type)
+    if (msg.message_case() == fdbg::ToDebugger::kDebug) {
+        if (on_debug_)
+            on_debug_(msg.debug().text());
+        return receive(message_type);
+    }
+
+    if (msg.message_case() != fdbg::ToDebugger::MESSAGE_NOT_SET && msg.message_case() != message_type)
         throw std::runtime_error("Invalid message received from computer (unexpected response type)");
 
     return msg;

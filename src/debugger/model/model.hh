@@ -66,6 +66,7 @@ public:
     void run(bool forever=false);
     void pause();
     void next();
+    void clear_debug_text() { debug_text_.clear(); }
 
     // getters
 
@@ -82,6 +83,7 @@ public:
     std::deque<fdbg::CycleResponse> const& cycles() const { return cycles_; }
     bool                                   running() const { return running_; }
     TerminalModel&                         terminal_model() { return terminal_model_; }
+    std::string const&                     debug_text() const { return debug_text_; }
 
     std::optional<std::pair<size_t, size_t>> scroll_to_line_ {};
 
@@ -107,6 +109,7 @@ private:
     size_t                           update_count_ = 0;
     std::string                      source_file_;
     TerminalModel                    terminal_model_;
+    std::string                      debug_text_;
 
     void init_debugging_session();
     void scroll_to_pc();

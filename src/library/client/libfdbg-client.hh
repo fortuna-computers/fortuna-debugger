@@ -7,6 +7,7 @@
 #include "to-debugger.pb.h"
 #include "to-computer.pb.h"
 
+#include <functional>
 #include <optional>
 #include <set>
 #include <span>
@@ -49,6 +50,7 @@ public:
 
     // properties
     void set_debugging_level(DebuggingLevel debugging_level) { debugging_level_ = debugging_level; }
+    void set_on_debug(std::function<void(std::string const&)> on_debug) { on_debug_ = on_debug; }
     Machine const& machine() const { return machine_; }
 
     // static methods
@@ -66,6 +68,8 @@ private:
     fdbg::ToDebugger receive(fdbg::ToDebugger::MessageCase message_type);
 
     std::set<uint64_t> breakpoint(fdbg::Breakpoint::Action action, uint64_t addr);
+
+    std::function<void(std::string const&)> on_debug_;
 };
 
 #endif //LIBFDBG_CLIENT_HH_

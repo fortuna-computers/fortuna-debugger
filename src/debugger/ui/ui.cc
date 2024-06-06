@@ -23,6 +23,7 @@
 #include "windows/cycles.hh"
 #include "windows/terminal.hh"
 #include "windows/keypress.hh"
+#include "windows/debugtext.hh"
 #include "ui/keypress.hh"
 
 UI::UI()
@@ -78,6 +79,7 @@ UI::UI()
     add_window<Cycles>();
     add_window<UploadROM>(true);
     add_window<Terminal>();
+    add_window<DebugText>();
     msg_box_key_ = add_window<MessageBox>();
 
     update_theme();

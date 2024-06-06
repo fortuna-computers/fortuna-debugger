@@ -23,6 +23,7 @@ void MainMenu::draw()
             button("Memory ("s + memory.name + ")", "memory" + std::to_string(i++));
         button("Terminal", "terminal");
         button("Cycles", "cycles");
+        button("Debug Text", "debugtext");
     }
 
     ImGui::SeparatorText("Config");

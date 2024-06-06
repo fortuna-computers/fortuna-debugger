@@ -6,6 +6,7 @@
 Model::Model()
 {
     config_.load();
+    client_.set_on_debug([this](std::string const& text) { debug_text_ = text + "\n" + debug_text_; });
 }
 
 void Model::load_machine(std::string const& file)

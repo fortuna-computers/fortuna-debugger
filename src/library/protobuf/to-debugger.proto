@@ -82,6 +82,6 @@ message ToDebugger {
     BreakpointList      breakpoint_list       = 6;
     CycleResponse       cycle_response        = 7;
     RunStatus           run_status            = 8;
-    Debug               debug                 = 9;
+    Debug               debug                 = 9;  // this can be sent at any time
   }
 }
