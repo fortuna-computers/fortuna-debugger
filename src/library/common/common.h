@@ -7,6 +7,7 @@ static fdbg_ReadMemoryResponse rm;
 static fdbg_ComputerStatus cs;
 static fdbg_BreakpointList bkp;
 static fdbg_RunStatus rs;
+static fdbg_Debug debug;
 
 #define EMULATOR_BAUD_RATE  921600
 #define MAX_MESSAGE_SZ      2048
@@ -16,5 +17,6 @@ static fdbg_RunStatus rs;
 #define MAX_EVENTS_STEP     (sizeof(cs.events) / sizeof(cs.events[0]))
 #define MAX_EVENTS_STATUS   (sizeof(rs.events) / sizeof(rs.events[0]))
 #define STACK_SZ            (sizeof(cs.stack.bytes) / sizeof(cs.stack.bytes[0]))
+#define DEBUG_SZ            (sizeof(debug.text))
 
 #endif //COMMON_H_

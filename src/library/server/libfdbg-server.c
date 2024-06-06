@@ -1,5 +1,7 @@
 #include "libfdbg-server.h"
 
+#include <stdarg.h>
+
 #define MIN(a,b) \
    ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
@@ -401,6 +403,20 @@ bool fdbg_server_terminal_print(FdbgServer* server, const char* text)
     event.which_type = fdbg_ComputerEvent_terminal_print_tag;
     strncpy(event.type.terminal_print.text, text, 8);
     return fdbg_server_push_event(server, &event);
+}
+
+void fdbg_debug(FdbgServer* server, const char* fmt, ...)
+{
+    fdbg_ToDebugger rmsg = fdbg_ToDebugger_init_default;
+    rmsg.status = fdbg_Status_OK;
+    rmsg.which_message = fdbg_ToDebugger_debug_tag;
+
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(rmsg.message.debug.text, DEBUG_SZ, fmt, args);
+    va_end(args);
+
+    fdbg_send_message(server, &rmsg);
 }
 
 #ifndef MICROCONTROLLER

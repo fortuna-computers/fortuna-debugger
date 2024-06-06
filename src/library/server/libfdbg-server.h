@@ -62,6 +62,8 @@ void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events);
 bool fdbg_server_terminal_print(FdbgServer* server, const char* text);
 bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event);
 
+void fdbg_debug(FdbgServer* server, const char* fmt, ...);
+
 #ifndef MICROCONTROLLER
 
 bool        fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud);

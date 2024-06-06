@@ -68,6 +68,10 @@ message RunStatus {
   repeated ComputerEvent events = 3;
 };
 
+message Debug {
+  string text = 1;
+}
+
 message ToDebugger {
   Status status = 1;
   oneof message {
@@ -78,5 +82,6 @@ message ToDebugger {
     BreakpointList      breakpoint_list       = 6;
     CycleResponse       cycle_response        = 7;
     RunStatus           run_status            = 8;
+    Debug               debug                 = 9;
   }
 }
