@@ -1,10 +1,10 @@
 #include <cstdio>
 
 extern "C" {
-#include "server/libfdbg-server.h"
+#include "libfdbg-server.h"
 }
 
-#include "client/libfdbg-client.hh"
+#include "libfdbg-client.hh"
 
 #include <cstdlib>
 #include <thread>

@@ -180,9 +180,14 @@
   - [x] compile on Linux
 - [x] Documentation
 
-# Video
+# Refactory 4
 
-# CHIP-8 emulator
+- [ ] Redo build system
+  - [ ] Fix warnings
+  - [ ] Debugging build?
+- [ ] Fix tests
+
+# Video
 
 # Someday, likely never
 

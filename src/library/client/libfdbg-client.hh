@@ -1,7 +1,10 @@
 #ifndef LIBFDBG_CLIENT_HH_
 #define LIBFDBG_CLIENT_HH_
 
+extern "C" {
 #include "common.h"
+}
+
 #include "machine.hh"
 #include "debuginfo.hh"
 #include "to-debugger.pb.h"

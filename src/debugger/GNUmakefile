@@ -1,40 +1,32 @@
-BASE=../..
-
-include ${BASE}/defs.mk
-
-
 #
-# targets
-#
-
-TARGET = f-debugger
-all: ${TARGET}
-
-#
-# check dependencies
+# dependencies
 #
 
 K := $(if $(shell pkg-config --modversion glfw3),,$(error "glfw3 pkg-config file not found - please install GLFW"))
 K := $(if $(shell pkg-config --modversion lua),,$(error "lua pkg-config file not found - please install Lua 5.4"))
 
-${BASE}/src/library/libfdbg-client.a:
-	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1
+#
+# directories
+#
 
-${BASE}/src/library/libfdbg-server.a:
-	[ ! -f $@ ] && echo "The library needs to be built first." && exit 1
+LIBRARY  := ../library
+PROTOBUF := ${LIBRARY}/protobuf
+CONTRIB  := ../contrib
+NANOPB   := ${CONTRIB}/nanopb
 
 #
 # flags
 #
 
-CPPFLAGS += -I${BASE} -I${BASE}/src/library -I${BASE}/src/library/server -I${BASE}/src/library/client \
+CPPFLAGS += -MMD -Wall -Wextra $(shell pkg-config --cflags glfw3 lua protobuf) \
+			-I. -I${LIBRARY}/server -I${LIBRARY}/client -I${LIBRARY}/common -I${NANOPB} \
 			-I${CONTRIB}/imgui -I${CONTRIB}/imgui/backends -I${CONTRIB}/glfw/include -I${CONTRIB}/glad/include \
-			-I${CONTRIB}/imgui-filebrowser -I${CONTRIB}/libtmt $(shell pkg-config --cflags glfw3 lua)
-
-LDFLAGS += `pkg-config --libs glfw3 lua`
+			-I${CONTRIB}/imgui-filebrowser -I${CONTRIB}/libtmt
+CXXFLAGS += -std=c++20
+LDFLAGS += $(shell pkg-config --libs glfw3 lua protobuf)
 
 #
-# f-debugger
+# sources
 #
 
 CONTRIB_SRC = \
@@ -70,17 +62,33 @@ F_DEBUGGER_SRC = \
         windows/registers.o \
         windows/startup.o \
         windows/terminal.o \
-        windows/uploadrom.o \
-        ${CONTRIB_SRC}
+        windows/uploadrom.o
 
-f-debugger: ${F_DEBUGGER_SRC} ${BASE}/src/library/libfdbg-client.a ${BASE}/src/library/libfdbg-server.a
-	$(CXX) -rdynamic -o $@ $^ ${PROTOBUF_LDFLAGS} ${LDFLAGS}
+#
+# rules
+#
+
+all: f-debugger
+
+${LIBRARY}/client/libfdbg-client.a: FORCE
+	$(MAKE) -C ${LIBRARY}/client libfdbg-client.a
+
+${LIBRARY}/server/libfdbg-server.a: FORCE
+	$(MAKE) -C ${LIBRARY}/server libfdbg-server.a
+
+${F_DEBUGGER_SRC}: ${LIBRARY}/client/libfdbg-client.a ${LIBRARY}/server/libfdbg-server.a
+
+f-debugger: ${F_DEBUGGER_SRC} ${CONTRIB_SRC} ${LIBRARY}/client/libfdbg-client.a ${LIBRARY}/server/libfdbg-server.a
+	$(CXX) -rdynamic -o $@ $^ ${LDFLAGS}
+
+#
+# special rules
+#
 
 -include $(F_DEBUGGER_SRC:.o=.d)
 
-#
-# clean
-#
-
 clean:
-	rm -rf ${TARGET} ${F_DEBUGGER_SRC} $(F_DEBUGGER_SRC:.o=.d)
+	rm -f ${CONTRIB_SRC} *.o *.d **/*.o **/*.d f-debugger
+.PHONY: clean
+
+FORCE:
