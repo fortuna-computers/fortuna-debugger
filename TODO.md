@@ -183,6 +183,8 @@
 # Refactory 4
 
 - [ ] Redo build system
+  - [ ] Reorganize dependencies
+  - [ ] Test on linux
   - [ ] Fix warnings
   - [ ] Debugging build?
 - [ ] Fix tests
