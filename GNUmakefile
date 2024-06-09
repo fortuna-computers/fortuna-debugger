@@ -33,7 +33,10 @@ ${LIBRARY}/client/libfdbg-client.so: FORCE
 ${LIBRARY}/client/lua/fdbg_client.so: FORCE
 	$(MAKE) -C ${LIBRARY}/client/lua
 
-${EXE}: FORCE
+src/contrib/libtmt/libtmt.c:  # git submodules
+	git submodule update --init --recursive
+
+${EXE}: src/contrib/libtmt/libtmt.c FORCE
 	$(MAKE) -C ${DEBUGGER}
 
 build: ${EXE} ${LIBRARY}/client/libfdbg-client.so ${LIBRARY}/client/lua/fdbg_client.so

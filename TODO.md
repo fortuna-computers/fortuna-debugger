@@ -185,7 +185,8 @@
 - [ ] Redo build system
   - [x] Reorganize dependencies
   - [ ] Fetch git submodules
-  - [ ] Test on linux
+  - [x] Test on linux
+  - [ ] Sample emulator?
   - [ ] Fix warnings
   - [ ] Debugging build?
 - [ ] Fix tests
