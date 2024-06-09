@@ -6,7 +6,7 @@ NANOPB := ${CONTRIB}/nanopb
 
 # flags
 
-CPPFLAGS += -Wall -Wextra $(shell pkg-config --cflags lua protobuf) -I../../common -I${NANOPB}
+CPPFLAGS += -Wall -Wextra -fPIC $(shell pkg-config --cflags lua protobuf) -I../../common -I${NANOPB}
 CXXFLAGS += --std=c++20
 LDFLAGS += $(shell pkg-config --libs protobuf lua)
 
