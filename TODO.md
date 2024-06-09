@@ -183,7 +183,8 @@
 # Refactory 4
 
 - [ ] Redo build system
-  - [ ] Reorganize dependencies
+  - [x] Reorganize dependencies
+  - [ ] Fetch git submodules
   - [ ] Test on linux
   - [ ] Fix warnings
   - [ ] Debugging build?
