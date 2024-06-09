@@ -14,6 +14,12 @@ LIBRARY := src/library
 DEBUGGER := src/debugger
 
 #
+# flags
+#
+
+export CPPFLAGS=-O0 -ggdb
+
+#
 # sources
 #
 
@@ -27,7 +33,13 @@ BIN = ${LIBRARY}/server/libfdbg-server.a \
 # rules
 #
 
-all:
+all: CPPFLAGS=-Og -ggdb
+all: build
+
+release: CPPFLAGS=-Ofast
+release: build
+
+build:
 	$(MAKE) -C ${LIBRARY}/client libfdbg-client.so
 	$(MAKE) -C ${LIBRARY}/client/lua
 	$(MAKE) -C ${DEBUGGER}
@@ -35,12 +47,6 @@ all:
 
 src/contrib/libtmt/tmt.c:  # git submodules
 	git submodule update --init --recursive
-
-build: ${EXE} ${LIBRARY}/client/libfdbg-client.so ${LIBRARY}/client/lua/fdbg_client.so
-	echo "==> BUILD"
-	mkdir -p build
-	cp $^ build/
-.PHONY: build
 
 #
 # special rules
