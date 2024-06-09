@@ -36,7 +36,7 @@ ${LIBRARY}/client/lua/fdbg_client.so: FORCE
 src/contrib/libtmt/libtmt.c:  # git submodules
 	git submodule update --init --recursive
 
-${EXE}: src/contrib/libtmt/libtmt.c FORCE
+${EXE}: FORCE
 	$(MAKE) -C ${DEBUGGER}
 
 build: ${EXE} ${LIBRARY}/client/libfdbg-client.so ${LIBRARY}/client/lua/fdbg_client.so
@@ -55,4 +55,4 @@ clean:
 	rm -rf build
 .PHONY: clean
 
-FORCE:
+FORCE: src/contrib/libtmt/libtmt.c
