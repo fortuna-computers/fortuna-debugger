@@ -1,7 +1,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include "to-debugger.nanopb.h"
+#include "../server/to-debugger.pb.h"
 
 static fdbg_ReadMemoryResponse rm;
 static fdbg_ComputerStatus cs;

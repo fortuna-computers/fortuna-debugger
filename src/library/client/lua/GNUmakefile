@@ -1,0 +1,22 @@
+# directories
+
+CONTRIB := ../../../contrib
+PROTOBUF := ../protobuf
+NANOPB := ${CONTRIB}/nanopb
+
+# flags
+
+CPPFLAGS += -Wall -Wextra $(shell pkg-config --cflags lua protobuf) -I../../common -I${NANOPB}
+CXXFLAGS += --std=c++20
+LDFLAGS += $(shell pkg-config --libs protobuf lua)
+
+# rules
+
+fdbg_client.so: lua-client.o ../libfdbg-client.a
+	$(CXX) $^ -shared -o $@ ${LDFLAGS}
+
+# special rules
+
+clean:
+	rm -f *.o *.so
+.PHONY: clean

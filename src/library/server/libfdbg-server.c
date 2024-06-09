@@ -1,12 +1,13 @@
 #include "libfdbg-server.h"
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define MIN(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-       __typeof__ (b) _b = (b); \
-     _a < _b ? _a : _b; })
+#include <fcntl.h>
+#include <unistd.h>
 
 #ifndef MICROCONTROLLER
 #  if __APPLE__
@@ -15,18 +16,15 @@
 #    include <pty.h>
 #  endif
 
-#  include <errno.h>
-#  include <stdio.h>
-#  include <unistd.h>
-
-#  include "../common/terminal.h"
 #endif
-
-#include <stdlib.h>
-#include <string.h>
 
 #include "pb_decode.h"
 #include "pb_encode.h"
+
+#define MIN(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
 
 #define NO_BREAKPOINT ((ADDR_TYPE) -1)
 
@@ -437,6 +435,23 @@ static uint16_t read_byte_async_pc(FdbgServer* server)
 static void write_byte_pc(FdbgServer* server, uint8_t data)
 {
     write(server->fd, &data, 1);
+}
+
+static int configure_terminal_settings(int fd, uint32_t baud)
+{
+    struct termios tio;
+    tcgetattr(fd, &tio);
+    cfmakeraw(&tio);
+    cfsetspeed(&tio, baud);
+    tio.c_cc[VMIN] = 0;
+    tio.c_cc[VTIME] = 0;
+    if (tcsetattr(fd, TCSANOW, &tio) != 0)
+        return -1;
+
+    if (fcntl(fd, F_SETFL, FNDELAY) != 0)
+        return -1;
+
+    return 0;
 }
 
 bool fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud)

@@ -19,10 +19,6 @@
 #include <string>
 #include <thread>
 
-extern "C" {
-#include "../common/terminal.h"
-}
-
 using namespace std::chrono_literals;
 using namespace std::string_literals;
 using hrc = std::chrono::high_resolution_clock;
@@ -30,6 +26,23 @@ using hrc = std::chrono::high_resolution_clock;
 void FdbgClient::load_user_definition(std::string const& filename)
 {
     machine_.load_user_definition(filename);
+}
+
+static int configure_terminal_settings(int fd, uint32_t baud)
+{
+    struct termios tio;
+    tcgetattr(fd, &tio);
+    cfmakeraw(&tio);
+    cfsetspeed(&tio, baud);
+    tio.c_cc[VMIN] = 0;
+    tio.c_cc[VTIME] = 0;
+    if (tcsetattr(fd, TCSANOW, &tio) != 0)
+        return -1;
+
+    if (fcntl(fd, F_SETFL, FNDELAY) != 0)
+        return -1;
+
+    return 0;
 }
 
 void FdbgClient::connect(std::string const& port, uint32_t baudrate)
