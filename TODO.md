@@ -187,9 +187,10 @@
   - [x] Fetch git submodules
   - [x] Test on linux
   - [x] Fix warnings
-  - [ ] Debugging build?
-  - [ ] Sample emulator?
-  - [ ] Adjust README
+  - [x] Debugging build?
+  - [x] Autodetect
+  - [x] Sample emulator?
+  - [x] Adjust README
 - [ ] Fix tests
 
 # Video

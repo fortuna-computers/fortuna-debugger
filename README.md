@@ -20,22 +20,12 @@ Once the above is provided by the user, the following tools are made available t
 
 1. Install the dependencies ([Lua 5.4](https://www.lua.org/), [GLFW 3](https://www.glfw.org/) and [Protobuf](https://protobuf.dev/)).
 2. Clone the repository
-3. Download the repository submodules (`git submodule update --init --recursive`)
-4. Build the project (`make`) - Linux and MacOS are supported
-5. Install (`sudo make install`)
-6. Run the debugger (`f-debugger`)
-7. Load the sample emulator and play with it:
-   ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/e9f5a49b-612b-4ad5-9047-ba9ae941dba8)
-   ![image](https://github.com/fortuna-computers/fortuna-debugger/assets/84652/8b5baea0-77e5-412a-b2c2-aed93c552aec)
+3. Build the project (`make`) - only Linux and MacOS are supported
+4. Run the debugger (`f-debugger`)
 
 ## Building your own computer
 
-To build an **emulator**, copy the directory `sample-emulator/` and start from there.
-
-To build a **computer**, the code will be similar to the emulator. The difference is that the code is going to run in a microcontroller, which will actually manipulate the CPU and memory instead of emulating them. The following files need to be part of the build:
-- `src/library/server/libfdbg-server.*`
-- `src/library/common/common.h`
-- `src/library/protobuf/*.nanopb.*`
+Look at https://github.com/fortuna-computers/fortuna-5 for a sample emulator and computer.
 
 ## Lua client
 

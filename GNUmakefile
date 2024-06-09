@@ -12,12 +12,7 @@ endif
 
 LIBRARY := src/library
 DEBUGGER := src/debugger
-
-#
-# flags
-#
-
-export CPPFLAGS=-O0 -ggdb
+SCRIPTS := src/scripts
 
 #
 # sources
@@ -27,13 +22,16 @@ BIN = ${LIBRARY}/server/libfdbg-server.a \
       ${LIBRARY}/client/libfdbg-client.a \
       ${LIBRARY}/client/libfdbg-client.so \
       ${LIBRARY}/client/lua/fdbg_client.so \
- 	  ${DEBUGGER}/f-debugger
+ 	  ${DEBUGGER}/f-debugger \
+ 	  ${SCRIPTS}/findserial.py
 
 #
 # rules
 #
 
-all: CPPFLAGS=-Og -ggdb
+export CPPFLAGS
+
+all: CPPFLAGS=-O0 -ggdb
 all: build
 
 release: CPPFLAGS=-Ofast
