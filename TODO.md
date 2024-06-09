@@ -184,9 +184,10 @@
 
 - [ ] Redo build system
   - [x] Reorganize dependencies
-  - [ ] Fetch git submodules
+  - [x] Fetch git submodules
   - [x] Test on linux
   - [ ] Sample emulator?
+  - [ ] Adjust README
   - [ ] Fix warnings
   - [ ] Debugging build?
 - [ ] Fix tests
