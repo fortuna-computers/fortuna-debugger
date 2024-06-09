@@ -36,8 +36,6 @@ GENERATED_PROTO_FILES_SRC := $(filter %.cc,${GENERATED_PROTO_FILES})
 
 LIBFDBG_CLIENT_SRC = libfdbg-client.o machine.o
 
-COMMON_REQS = ../server/to-debugger.nanopb.h ../server/to-computer.nanopb.h
-
 #
 # rules
 #
@@ -47,10 +45,7 @@ all: libfdbg-client.a libfdbg-client.so lua/fdbg_client.so
 ${GENERATED_PROTO_FILES}: ${PROTOBUF}/to-computer.proto ${PROTOBUF}/to-debugger.proto
 	protoc --cpp_out=. --proto_path=${PROTOBUF} $^
 
-${COMMON_REQS}:
-	$(MAKE) -C ../server to-computer.nanopb.h to-debugger.nanopb.h
-
-libfdbg-client.o: ${GENERATED_PROTO_FILES} ${COMMON_REQS}
+libfdbg-client.o: ${GENERATED_PROTO_FILES}
 
 libfdbg-client.a: $(GENERATED_PROTO_FILES_SRC:.cc=.o) ${LIBFDBG_CLIENT_SRC}
 	ar -rc $@ $^

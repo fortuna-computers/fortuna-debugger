@@ -9,6 +9,8 @@
 #include "to-debugger.nanopb.h"
 #include "to-computer.nanopb.h"
 
+#include "sizes.h"
+
 // runs either in the emulator or the computer
 
 #define SERIAL_ERROR   0xfffe
@@ -44,7 +46,7 @@ typedef struct FdbgServer {
     ADDR_TYPE             next_bkp;
     uint32_t              run_steps;
     ADDR_TYPE             last_pc;
-    fdbg_ComputerEvent    event_queue[MAX_EVENTS];
+    fdbg_ComputerEvent    event_queue[MAX_EVENTS_STATUS];
     uint8_t               event_count;
     bool                  running;
     fdbg_Status           run_status;

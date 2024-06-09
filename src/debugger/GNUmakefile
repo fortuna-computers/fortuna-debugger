@@ -70,6 +70,9 @@ F_DEBUGGER_SRC = \
 
 all: f-debugger
 
+${CONTRIB}/libtmt/tmt.o: ${CONTRIB}/libtmt/tmt.c   # just for ignoring warnigs
+	gcc -c $^ ${CFLAGS} ${CPPFLAGS} -w -o $@
+
 ${LIBRARY}/client/libfdbg-client.a: FORCE
 	$(MAKE) -C ${LIBRARY}/client libfdbg-client.a
 

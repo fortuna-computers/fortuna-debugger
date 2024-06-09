@@ -186,9 +186,9 @@
   - [x] Reorganize dependencies
   - [x] Fetch git submodules
   - [x] Test on linux
+  - [x] Fix warnings
   - [ ] Sample emulator?
   - [ ] Adjust README
-  - [ ] Fix warnings
   - [ ] Debugging build?
 - [ ] Fix tests
 

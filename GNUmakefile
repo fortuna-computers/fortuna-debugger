@@ -17,29 +17,27 @@ DEBUGGER := src/debugger
 # sources
 #
 
-EXE = ${LIBRARY}/server/libfdbg-server.a \
+BIN = ${LIBRARY}/server/libfdbg-server.a \
       ${LIBRARY}/client/libfdbg-client.a \
+      ${LIBRARY}/client/libfdbg-client.so \
+      ${LIBRARY}/client/lua/fdbg_client.so \
  	  ${DEBUGGER}/f-debugger
 
 #
 # rules
 #
 
-all: build
-
-${LIBRARY}/client/libfdbg-client.so: FORCE
+all:
 	$(MAKE) -C ${LIBRARY}/client libfdbg-client.so
-
-${LIBRARY}/client/lua/fdbg_client.so: FORCE
 	$(MAKE) -C ${LIBRARY}/client/lua
+	$(MAKE) -C ${DEBUGGER}
+	cp ${BIN} .
 
-src/contrib/libtmt/libtmt.c:  # git submodules
+src/contrib/libtmt/tmt.c:  # git submodules
 	git submodule update --init --recursive
 
-${EXE}: FORCE
-	$(MAKE) -C ${DEBUGGER}
-
 build: ${EXE} ${LIBRARY}/client/libfdbg-client.so ${LIBRARY}/client/lua/fdbg_client.so
+	echo "==> BUILD"
 	mkdir -p build
 	cp $^ build/
 .PHONY: build
@@ -52,7 +50,7 @@ clean:
 	$(MAKE) -C ${LIBRARY}/server clean
 	$(MAKE) -C ${LIBRARY}/client clean
 	$(MAKE) -C ${DEBUGGER} clean
-	rm -rf build
+	rm -f *.a *.so f-debugger
 .PHONY: clean
 
-FORCE: src/contrib/libtmt/libtmt.c
+FORCE: src/contrib/libtmt/tmt.c

@@ -343,7 +343,7 @@ static void fdbg_run_steps(FdbgServer* server, FdbgServerEvents* events)
 
     for (size_t i = 0; i < server->run_steps; ++i) {
 
-        if (server->event_count == (MAX_EVENTS - 1))
+        if (server->event_count == (MAX_EVENTS_STATUS - 1))
             return;  // we're not running any steps while there are pending events
 
         server->last_pc = events->step(server, false, &status);
@@ -388,7 +388,7 @@ void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
 
 bool fdbg_server_push_event(FdbgServer* server, fdbg_ComputerEvent* event)
 {
-    if (server->event_count < MAX_EVENTS - 1) {
+    if (server->event_count < MAX_EVENTS_STATUS - 1) {
         server->event_queue[server->event_count++] = *event;
         return true;
     } else {
