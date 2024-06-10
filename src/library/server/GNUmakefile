@@ -49,6 +49,9 @@ ${GENERATED_NANOPB_FILES}: ${PROTOBUF}/to-computer.proto ${PROTOBUF}/to-debugger
 
 libfdbg-server.o: ${GENERATED_NANOPB_FILES}
 
+nanopb: ${GENERATED_NANOPB_FILES}
+.PHONY: nanopb
+
 libfdbg-server.a: libfdbg-server.o ${NANOPB_SRC}  $(GENERATED_NANOPB_FILES_SRC:.c=.o)
 	ar -rc $@ $^
 
