@@ -61,6 +61,10 @@ message GetRunStatus {
 
 message Pause {}
 
+message Interrupt {
+  uint64 number = 1;
+}
+
 message ToComputer {
   oneof message {
     Ack          ack            = 1;   // response: AckResponse
@@ -74,5 +78,6 @@ message ToComputer {
     Next         next           = 9;   // response: RunStatus
     GetRunStatus get_run_status = 10;  // response: RunStatus
     Pause        pause          = 11;  // response: ComputerStatus
+    Interrupt    interrupt      = 12;  // response: status ok
   }
 }

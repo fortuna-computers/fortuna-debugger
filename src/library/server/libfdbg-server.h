@@ -37,6 +37,7 @@ typedef struct FdbgServerEvents {
     void                (*run_forever)(FdbgServer* server);
     bool                (*next_instruction)(FdbgServer* server, ADDR_TYPE* addr);  // return true if next instruction is a subroutine
     void                (*on_keypress)(FdbgServer* server, const char* key);
+    void                (*interrupt)(FdbgServer* server, uint64_t number);
 } FdbgServerEvents;
 
 typedef struct FdbgServer {

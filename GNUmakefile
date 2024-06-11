@@ -31,7 +31,7 @@ BIN = ${LIBRARY}/server/libfdbg-server.a \
 
 export CPPFLAGS
 
-all: CPPFLAGS=-O0 -ggdb
+all: CPPFLAGS=-O0 -ggdb -DDEBUG=1
 all: build
 
 release: CPPFLAGS=-Ofast

@@ -40,6 +40,7 @@ public:
     fdbg::RunStatus      next();
     fdbg::RunStatus      run_status(std::vector<fdbg::UserEvent> const& events={});
     fdbg::ComputerStatus pause();
+    void                 interrupt(uint64_t number);
 
     // higher-level calls to server
     struct Upload { size_t next = 0; };

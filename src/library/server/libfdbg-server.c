@@ -237,10 +237,14 @@ static void fdbg_handle_msg_paused(FdbgServer *server, FdbgServerEvents *events,
         }
 
         case fdbg_ToComputer_cycle_tag: {
-            fdbg_CycleResponse response = events->cycle(server);
-            rmsg.status = fdbg_Status_OK;
+            if (events->cycle) {
+                fdbg_CycleResponse response = events->cycle(server);
+                rmsg.status = fdbg_Status_OK;
+                memcpy(&rmsg.message.cycle_response, &response, sizeof(fdbg_CycleResponse));
+            } else {
+                rmsg.status = fdbg_Status_METHOD_NOT_IMPLEMENTED;
+            }
             rmsg.which_message = fdbg_ToDebugger_cycle_response_tag;
-            memcpy(&rmsg.message.cycle_response, &response, sizeof(fdbg_CycleResponse));
             break;
         }
 
@@ -322,6 +326,13 @@ bkp_done:
 
             break;
         }
+
+        case fdbg_ToComputer_interrupt_tag:
+            if (events->interrupt)
+                events->interrupt(server, msg->message.interrupt.number);
+            else
+                rmsg.status = fdbg_Status_METHOD_NOT_IMPLEMENTED;
+            break;
 
         default: {
             rmsg.status = fdbg_Status_INVALID_MESSAGE;

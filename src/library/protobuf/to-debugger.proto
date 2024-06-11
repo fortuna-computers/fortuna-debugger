@@ -9,6 +9,7 @@ enum Status {
   INVALID_MESSAGE         = 3;
   IO_SERIAL_ERROR         = 4;
   CPU_INVALID_INSTRUCTION = 5;
+  METHOD_NOT_IMPLEMENTED  = 6;
 }
 
 message AckResponse {

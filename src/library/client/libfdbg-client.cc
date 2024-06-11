@@ -199,6 +199,7 @@ start:
         case fdbg::INVALID_MESSAGE:         throw std::runtime_error("Invalid message (message type does not exist or was sent at the wrong time)");
         case fdbg::IO_SERIAL_ERROR:         throw std::runtime_error("I/O serial error reported by the computer");
         case fdbg::CPU_INVALID_INSTRUCTION: throw std::runtime_error("Invalid CPU instruction.");
+        case fdbg::METHOD_NOT_IMPLEMENTED:  throw std::runtime_error("Method not implemented.");
         default:                            throw std::runtime_error("Message with error code " + std::to_string(msg.status()) + " received from computer.");
     }
 
@@ -419,4 +420,14 @@ std::set<uint64_t> FdbgClient::breakpoint(fdbg::Breakpoint::Action action, uint6
     for (size_t i = 0; i < (size_t) rmsg.breakpoint_list().addr_size(); ++i)
         ret.insert(rmsg.breakpoint_list().addr(i));
     return ret;
+}
+
+void FdbgClient::interrupt(uint64_t number)
+{
+    fdbg::ToComputer msg;
+    auto interrupt = new fdbg::Interrupt();
+    interrupt->set_number(number);
+    msg.set_allocated_interrupt(interrupt);
+
+    send_message(msg, fdbg::ToDebugger::MESSAGE_NOT_SET);
 }

@@ -10,7 +10,6 @@
 #include "imgui_impl_glfw.h"
 
 #include "exceptions/exceptions.hh"
-#include "windows/window.hh"
 #include "windows/demo.hh"
 #include "windows/mainmenu.hh"
 #include "windows/messagebox.hh"
@@ -24,6 +23,7 @@
 #include "windows/terminal.hh"
 #include "windows/keypress.hh"
 #include "windows/debugtext.hh"
+#include "windows/interrupt.hh"
 #include "ui/keypress.hh"
 
 UI::UI()
@@ -80,6 +80,7 @@ UI::UI()
     add_window<UploadROM>(true);
     add_window<Terminal>();
     add_window<DebugText>();
+    add_window<Interrupt>();
     msg_box_key_ = add_window<MessageBox>();
 
     update_theme();

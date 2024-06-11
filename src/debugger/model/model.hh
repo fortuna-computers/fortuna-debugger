@@ -67,6 +67,7 @@ public:
     void pause();
     void next();
     void clear_debug_text() { debug_text_.clear(); }
+    void interrupt(uint64_t number);
 
     // getters
 

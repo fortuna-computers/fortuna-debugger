@@ -298,3 +298,8 @@ std::vector<fdbg::UserEvent> Model::get_user_events()
 
     return events;
 }
+
+void Model::interrupt(uint64_t number)
+{
+    client_.interrupt(number);
+}

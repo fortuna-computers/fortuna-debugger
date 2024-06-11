@@ -56,6 +56,7 @@ F_DEBUGGER_SRC = \
         windows/demo.o \
         windows/debugtext.o \
         windows/keypress.o \
+        windows/interrupt.o \
         windows/mainmenu.o \
         windows/memory.o \
         windows/messagebox.o \

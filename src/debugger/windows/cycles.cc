@@ -2,10 +2,6 @@
 
 #include <ranges>
 
-#include "imgui.h"
-
-#include "model/model.hh"
-
 void Cycles::draw()
 {
     if (ImGui::Begin("Cycles", &visible_)) {

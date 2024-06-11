@@ -22,6 +22,7 @@ void MainMenu::draw()
         for (auto const& memory: model.machine().memories)
             button("Memory ("s + memory.name + ")", "memory" + std::to_string(i++));
         button("Terminal", "terminal");
+        button("Interrupt", "interrupt");
         button("Cycles", "cycles");
         button("Debug Text", "debugtext");
     }
