@@ -10,6 +10,7 @@ enum Status {
   IO_SERIAL_ERROR         = 4;
   CPU_INVALID_INSTRUCTION = 5;
   METHOD_NOT_IMPLEMENTED  = 6;
+  INFINITE_LOOP           = 7;
 }
 
 message AckResponse {
