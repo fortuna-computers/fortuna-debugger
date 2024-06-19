@@ -17,9 +17,15 @@ void Model::load_machine(std::string const& file)
     terminal_model_.initialize(machine().terminal_columns, machine().terminal_lines);
 }
 
-void Model::connect_to_emulator(std::string const& path)
+void Model::start_emulator(std::string const& path)
 {
     std::string port = FdbgClient::start_emulator(path);
+    connect_to_serial_port(port, EMULATOR_BAUD_RATE);
+}
+
+void Model::connect_to_running_emulator(int pid)
+{
+    std::string port = FdbgClient::get_emulator_port((pid_t) pid);
     connect_to_serial_port(port, EMULATOR_BAUD_RATE);
 }
 

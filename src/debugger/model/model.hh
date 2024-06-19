@@ -42,7 +42,7 @@ public:
 
     void load_machine(std::string const& file);
 
-    void connect_to_emulator(std::string const& path);
+    void start_emulator(std::string const& path);
     void connect_to_serial_port(std::string const& serial_port, uint32_t baud_rate);
 
     void compile(std::string const& source_file);
@@ -91,6 +91,8 @@ public:
     std::string fmt_addr(uint64_t addr) const;
 
     void set_debugging_level(DebuggingLevel level);
+
+    void connect_to_running_emulator(int pid);
 
 private:
     FdbgClient                       client_;

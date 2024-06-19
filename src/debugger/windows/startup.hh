@@ -19,12 +19,14 @@ public:
 private:
     void save_config();
 
-    enum ConnectionType { CT_EMULATOR, CT_SERIAL } connection_type = CT_EMULATOR;
+    enum ConnectionType { CT_EMULATOR, CT_SERIAL, CT_RUNNING_EMULATOR } connection_type = CT_SERIAL;
+
     char serial_port_[128] { 0 };
     int  baud_rate_ = 115200;
     char machine_path_[1024] { 0 };
     char emulator_path_[1024] { 0 };
     char source_file_[1024] { 0 };
+    int  emulator_pid_ = 0;
     ImGui::FileBrowser file_browser_, source_browser_, emulator_browser_;
 };
 

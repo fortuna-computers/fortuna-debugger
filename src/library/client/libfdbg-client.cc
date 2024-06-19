@@ -380,13 +380,19 @@ std::string FdbgClient::start_emulator(std::string const& path)
 
     } else {   // parent process (client)
         std::this_thread::sleep_for(400ms);
-
-        // read bytes from emulator
-        std::ifstream f("/tmp/fdbg." + std::to_string(pid));
-        std::stringstream buffer;
-        buffer << f.rdbuf();
-        return buffer.str();
+        return get_emulator_port(pid);
     }
+}
+
+std::string FdbgClient::get_emulator_port(pid_t pid)
+{
+    std::string filename = "/tmp/fdbg." + std::to_string(pid);
+    std::ifstream f(filename);
+    if (!f.good())
+        throw std::runtime_error("Could not open file " + filename);
+    std::stringstream buffer;
+    buffer << f.rdbuf();
+    return buffer.str();
 }
 
 std::set<uint64_t> FdbgClient::add_breakpoint(uint64_t addr)

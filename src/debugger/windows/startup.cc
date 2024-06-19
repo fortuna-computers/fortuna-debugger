@@ -58,21 +58,26 @@ void Startup::draw()
         ImGui::SeparatorText("Connection");
 
         ImGui::Text("Select connection type");
-        ImGui::RadioButton("Emulator", (int*) &connection_type, CT_EMULATOR); ImGui::SameLine();
-        ImGui::RadioButton("Real hardware (serial)", (int*) &connection_type, CT_SERIAL);
+        ImGui::RadioButton("Real hardware (serial)", (int*) &connection_type, CT_SERIAL); ImGui::SameLine();
+        ImGui::RadioButton("Start emulator", (int*) &connection_type, CT_EMULATOR); ImGui::SameLine();
+        ImGui::RadioButton("Connect to running emulator", (int*) &connection_type, CT_RUNNING_EMULATOR);
 
-        if (connection_type == CT_EMULATOR) {
-            if (ImGui::Button("Emulator path"))
-                emulator_browser_.Open();
-            ImGui::SameLine();
-            ImGui::Text("%s", emulator_path_);
-        } else if (connection_type == CT_SERIAL) {
+        if (connection_type == CT_SERIAL) {
             ImGui::InputTextWithHint("Serial port", "/dev/ttyS0", serial_port_, IM_ARRAYSIZE(serial_port_)); ImGui::SameLine();
             if (ImGui::Button("Autodetect")) {
                 std::string port =  FdbgClient::autodetect_usb_serial_port(model.machine().vendor_id, model.machine().product_id);
                 strncpy(serial_port_, port.c_str(), sizeof(serial_port_));
             }
             ImGui::InputInt("Baud rate", &baud_rate_, 0);
+
+        } else if (connection_type == CT_RUNNING_EMULATOR) {
+            ImGui::InputInt("PID", &emulator_pid_, 0);
+
+        } else if (connection_type == CT_EMULATOR) {
+            if (ImGui::Button("Emulator path"))
+                emulator_browser_.Open();
+            ImGui::SameLine();
+            ImGui::Text("%s", emulator_path_);
         }
 
         ImGui::SeparatorText("Source");
@@ -89,8 +94,10 @@ void Startup::draw()
             save_config();
             model.compile(source_file_);
             if (connection_type == CT_EMULATOR)
-                model.connect_to_emulator(emulator_path_);
-            else
+                model.start_emulator(emulator_path_);
+            else if (connection_type == CT_RUNNING_EMULATOR)
+                model.connect_to_running_emulator(emulator_pid_);
+            else if (connection_type == CT_SERIAL)
                 model.connect_to_serial_port(serial_port_, baud_rate_);
 
             visible_ = false;
