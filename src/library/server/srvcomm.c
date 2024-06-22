@@ -2,6 +2,29 @@
 #include "pb_decode.h"
 #include "pb_encode.h"
 
+int comm_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
+{
+    uint8_t buf[MAX_MESSAGE_SZ];
+
+    pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof buf);
+    bool status = pb_encode(&stream, fdbg_ToDebugger_fields, msg);
+    if (status) {
+        if (stream.bytes_written <= 0x7f) {
+            server->io_callbacks.write_byte(server, stream.bytes_written);
+        } else {
+            server->io_callbacks.write_byte(server, (stream.bytes_written & 0x7f) | 0x80);
+            server->io_callbacks.write_byte(server, stream.bytes_written >> 7);
+        }
+
+        for (size_t i = 0; i < stream.bytes_written; ++i)
+            server->io_callbacks.write_byte(server, buf[i]);
+
+        return 0;
+    } else {
+        return -1;
+    }
+}
+
 static uint8_t comm_read_byte_sync(FdbgServer* server)
 {
     for (;;) {
@@ -35,28 +58,5 @@ bool comm_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, bool* e
     // parse message
     pb_istream_t stream = pb_istream_from_buffer(buf, sz);
     return pb_decode(&stream, fdbg_ToComputer_fields, msg);
-}
-
-int comm_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
-{
-    uint8_t buf[MAX_MESSAGE_SZ];
-
-    pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof buf);
-    bool status = pb_encode(&stream, fdbg_ToDebugger_fields, msg);
-    if (status) {
-        if (stream.bytes_written <= 0x7f) {
-            server->io_callbacks.write_byte(server, stream.bytes_written);
-        } else {
-            server->io_callbacks.write_byte(server, (stream.bytes_written & 0x7f) | 0x80);
-            server->io_callbacks.write_byte(server, stream.bytes_written >> 7);
-        }
-
-        for (size_t i = 0; i < stream.bytes_written; ++i)
-            server->io_callbacks.write_byte(server, buf[i]);
-
-        return 0;
-    } else {
-        return -1;
-    }
 }
 
