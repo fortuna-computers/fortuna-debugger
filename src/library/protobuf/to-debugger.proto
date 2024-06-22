@@ -11,6 +11,7 @@ enum Status {
   CPU_INVALID_INSTRUCTION = 5;
   METHOD_NOT_IMPLEMENTED  = 6;
   INFINITE_LOOP           = 7;
+  MESSAGE_TOO_SHORT       = 8;
 }
 
 message AckResponse {
@@ -85,5 +86,7 @@ message ToDebugger {
     CycleResponse       cycle_response        = 7;
     RunStatus           run_status            = 8;
     Debug               debug                 = 9;  // this can be sent at any time
+
+    string              error_details         = 100;
   }
 }

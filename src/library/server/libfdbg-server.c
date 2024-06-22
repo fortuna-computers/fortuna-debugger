@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "srvcomm.h"
+
 #ifndef MICROCONTROLLER
 #  if __APPLE__
 #    include <util.h>
@@ -28,6 +30,8 @@
 
 #define NO_BREAKPOINT ((ADDR_TYPE) -1)
 
+#define TIME_TO_RECEIVE_MESSAGE 2000  // ms
+
 void fdbg_server_init(FdbgServer* server, uint16_t machine_id, FdbgServerIOCallbacks cb)
 {
     memset(server, 0, sizeof(FdbgServer));
@@ -46,54 +50,6 @@ void fdbg_server_close(FdbgServer* server)
 #ifndef MICROCONTROLLER
     close(server->fd);
 #endif
-}
-
-static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, bool* error)
-{
-    *error = false;
-
-    // get size
-    uint16_t sz = server->io_callbacks.read_byte_async(server);
-    if (sz == SERIAL_ERROR) {
-        *error = true;
-        return false;
-    } else if (sz == SERIAL_NO_DATA) {
-        return false;
-    }
-    if (sz & (1 << 7))
-        sz = (server->io_callbacks.read_byte_sync(server) << 7) | (sz & 0x7f);
-
-    // read message
-    uint8_t buf[sz];
-    for (size_t i = 0; i < sz; ++i)
-        buf[i] = server->io_callbacks.read_byte_sync(server);
-
-    // parse message
-    pb_istream_t stream = pb_istream_from_buffer(buf, sz);
-    return pb_decode(&stream, fdbg_ToComputer_fields, msg);
-}
-
-static int fdbg_send_message(FdbgServer* server, fdbg_ToDebugger* msg)
-{
-    uint8_t buf[MAX_MESSAGE_SZ];
-
-    pb_ostream_t stream = pb_ostream_from_buffer(buf, sizeof buf);
-    bool status = pb_encode(&stream, fdbg_ToDebugger_fields, msg);
-    if (status) {
-        if (stream.bytes_written <= 0x7f) {
-            server->io_callbacks.write_byte(server, stream.bytes_written);
-        } else {
-            server->io_callbacks.write_byte(server, (stream.bytes_written & 0x7f) | 0x80);
-            server->io_callbacks.write_byte(server, stream.bytes_written >> 7);
-        }
-
-        for (size_t i = 0; i < stream.bytes_written; ++i)
-            server->io_callbacks.write_byte(server, buf[i]);
-
-        return 0;
-    } else {
-        return -1;
-    }
 }
 
 static void fdbg_add_computer_status(FdbgServer* server, FdbgServerEvents* events, fdbg_ToDebugger* msg)
@@ -160,7 +116,7 @@ static void fdbg_handle_msg_running(FdbgServer *server, FdbgServerEvents *events
         }
     }
 
-    if (fdbg_send_message(server, &rmsg) != 0)
+    if (comm_send_message(server, &rmsg) != 0)
         error = true;
 
     if (error)
@@ -329,7 +285,7 @@ bkp_done:
 
     }
 
-    if (fdbg_send_message(server, &rmsg) != 0)
+    if (comm_send_message(server, &rmsg) != 0)
         error = true;
 
     if (error)
@@ -376,7 +332,7 @@ void fdbg_server_next(FdbgServer* server, FdbgServerEvents* events)
     bool error = false;
 
     fdbg_ToComputer msg;
-    if (fdbg_receive_next_message(server, &msg, &error)) {
+    if (comm_receive_next_message(server, &msg, &error)) {
 
         if (server->running)
             fdbg_handle_msg_running(server, events, &msg);
@@ -414,7 +370,7 @@ void fdbg_debug(FdbgServer* server, const char* fmt, ...)
     vsnprintf(rmsg.message.debug.text, DEBUG_SZ, fmt, args);
     va_end(args);
 
-    fdbg_send_message(server, &rmsg);
+    comm_send_message(server, &rmsg);
 }
 
 #ifndef MICROCONTROLLER
@@ -427,18 +383,6 @@ static uint16_t read_byte_async_pc(FdbgServer* server)
         return SERIAL_NO_DATA;
     else if (r < 0)
         return SERIAL_ERROR;
-    else
-        return byte;
-}
-
-static uint8_t read_byte_sync_pc(FdbgServer* server)
-{
-    uint8_t byte;
-    ssize_t r;
-again:
-    r = read(server->fd, &byte, 1);
-    if (r == 0 || (r == -1 && errno == EAGAIN))
-        goto again;
     else
         return byte;
 }
@@ -477,7 +421,7 @@ bool fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud)
     if (configure_terminal_settings(fd, baud) < 0)
         return false;
 
-    fdbg_server_init(server, machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, read_byte_sync_pc, write_byte_pc });
+    fdbg_server_init(server, machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
     server->fd = fd;
     snprintf(server->port, sizeof server->port, "%s", serial_port);
 

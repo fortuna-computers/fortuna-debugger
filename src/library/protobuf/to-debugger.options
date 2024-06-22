@@ -9,3 +9,4 @@ fdbg.CycleResponse.bits               max_count:24
 fdbg.RunStatus.events                 max_count:36
 fdbg.ComputerEvent.TerminalPrint.text max_size:8
 fdbg.Debug.text                       max_size:255
+fdbg.ToDebugger.message.error_details max_size:255

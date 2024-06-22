@@ -13,6 +13,7 @@
 
 // runs either in the emulator or the computer
 
+#define SERIAL_TIMEOUT 0xfffd
 #define SERIAL_ERROR   0xfffe
 #define SERIAL_NO_DATA 0xffff
 
@@ -24,7 +25,6 @@ typedef struct FdbgServer FdbgServer;
 
 typedef struct FdbgServerIOCallbacks {
     uint16_t (*read_byte_async)(FdbgServer* server);
-    uint8_t  (*read_byte_sync)(FdbgServer* server);
     void     (*write_byte)(FdbgServer* server, uint8_t byte);
 } FdbgServerIOCallbacks;
 

@@ -14,6 +14,7 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <format>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -121,15 +122,9 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
     if (sz > 0x7f)
         write(fd_, &sz2, 1);
 
-    /*
     r = write(fd_, message.data(), message.length());
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
-        */
-    for (size_t i = 0; i < message.length(); ++i) {
-        write(fd_, &message.data()[i], 1);
-        std::this_thread::sleep_for(5ms);
-    }
 }
 
 fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)
@@ -139,7 +134,7 @@ start:
     uint8_t sz1;
     auto now = hrc::now();
     ssize_t r = read(fd_, &sz1, 1);
-    if (r == 0) {
+    if (r == 0 || errno == EAGAIN) {
         std::this_thread::sleep_for(10us);
         if (hrc::now() > (now + 2s))
             throw std::runtime_error("Response not received in 2 seconds");
@@ -207,6 +202,12 @@ start:
         case fdbg::CPU_INVALID_INSTRUCTION: throw std::runtime_error("Invalid CPU instruction.");
         case fdbg::METHOD_NOT_IMPLEMENTED:  throw std::runtime_error("Method not implemented.");
         case fdbg::INFINITE_LOOP:           throw std::runtime_error("Infinite loop in the machine.");
+        case fdbg::MESSAGE_TOO_SHORT: {
+            std::string err = "Message too short: received";
+            for (uint8_t c: msg.error_details())
+                err += std::format(" {:02X}", c);
+            throw std::runtime_error(err);
+        }
         default:                            throw std::runtime_error("Message with error code " + std::to_string(msg.status()) + " received from computer.");
     }
 

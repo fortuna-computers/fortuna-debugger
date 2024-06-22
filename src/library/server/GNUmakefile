@@ -47,12 +47,12 @@ all: libfdbg-server.a
 ${GENERATED_NANOPB_FILES}: ${PROTOBUF}/to-computer.proto ${PROTOBUF}/to-debugger.proto
 	${NANOPB_GEN} -e .nanopb -D . --proto-path=${PROTOBUF} $^
 
-libfdbg-server.o: ${GENERATED_NANOPB_FILES}
+srvcomm.o libfdbg-server.o: ${GENERATED_NANOPB_FILES}
 
 nanopb: ${GENERATED_NANOPB_FILES}
 .PHONY: nanopb
 
-libfdbg-server.a: libfdbg-server.o ${NANOPB_SRC}  $(GENERATED_NANOPB_FILES_SRC:.c=.o)
+libfdbg-server.a: libfdbg-server.o srvcomm.o ${NANOPB_SRC}  $(GENERATED_NANOPB_FILES_SRC:.c=.o)
 	ar -rc $@ $^
 
 #
