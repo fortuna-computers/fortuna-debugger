@@ -73,12 +73,12 @@ static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, 
         return false;
     }
     if (sz & (1 << 7))
-        sz = (server->io_callbacks.read_byte_async(server) << 7) | (sz & 0x7f);
+        sz = (server->io_callbacks.read_byte_sync(server) << 7) | (sz & 0x7f);
 
     // read message
     uint8_t buf[sz];
     for (size_t i = 0; i < sz; ++i)
-        buf[i] = fdbg_read_sync(server);
+        buf[i] = server->io_callbacks.read_byte_sync(server);
 
     // parse message
     pb_istream_t stream = pb_istream_from_buffer(buf, sz);

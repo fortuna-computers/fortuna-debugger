@@ -121,9 +121,15 @@ void FdbgClient::send(fdbg::ToComputer const& msg)
     if (sz > 0x7f)
         write(fd_, &sz2, 1);
 
+    /*
     r = write(fd_, message.data(), message.length());
     if (r < 0)
         throw std::runtime_error("Error writing to serial.");
+        */
+    for (size_t i = 0; i < message.length(); ++i) {
+        write(fd_, &message.data()[i], 1);
+        std::this_thread::sleep_for(5ms);
+    }
 }
 
 fdbg::ToDebugger FdbgClient::receive(fdbg::ToDebugger::MessageCase message_type)

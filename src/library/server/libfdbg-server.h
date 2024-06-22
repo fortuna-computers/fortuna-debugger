@@ -24,6 +24,7 @@ typedef struct FdbgServer FdbgServer;
 
 typedef struct FdbgServerIOCallbacks {
     uint16_t (*read_byte_async)(FdbgServer* server);
+    uint8_t  (*read_byte_sync)(FdbgServer* server);
     void     (*write_byte)(FdbgServer* server, uint8_t byte);
 } FdbgServerIOCallbacks;
 
