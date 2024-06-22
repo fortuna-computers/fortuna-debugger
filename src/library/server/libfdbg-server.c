@@ -48,18 +48,6 @@ void fdbg_server_close(FdbgServer* server)
 #endif
 }
 
-static uint8_t fdbg_read_sync(FdbgServer* server)
-{
-    // TODO - timeout
-    // TODO - sleep for a bit
-
-    for (;;) {
-        uint16_t c = server->io_callbacks.read_byte_async(server);
-        if (c != SERIAL_NO_DATA)
-            return c;
-    }
-}
-
 static bool fdbg_receive_next_message(FdbgServer* server, fdbg_ToComputer* msg, bool* error)
 {
     *error = false;
@@ -443,6 +431,18 @@ static uint16_t read_byte_async_pc(FdbgServer* server)
         return byte;
 }
 
+static uint8_t read_byte_sync_pc(FdbgServer* server)
+{
+    uint8_t byte;
+    ssize_t r;
+again:
+    r = read(server->fd, &byte, 1);
+    if (r == 0 || (r == -1 && errno == EAGAIN))
+        goto again;
+    else
+        return byte;
+}
+
 static void write_byte_pc(FdbgServer* server, uint8_t data)
 {
     write(server->fd, &data, 1);
@@ -477,7 +477,7 @@ bool fdbg_server_init_pc(FdbgServer* server, uint16_t machine_id, uint32_t baud)
     if (configure_terminal_settings(fd, baud) < 0)
         return false;
 
-    fdbg_server_init(server, machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, write_byte_pc });
+    fdbg_server_init(server, machine_id, (FdbgServerIOCallbacks) { read_byte_async_pc, read_byte_sync_pc, write_byte_pc });
     server->fd = fd;
     snprintf(server->port, sizeof server->port, "%s", serial_port);
 
