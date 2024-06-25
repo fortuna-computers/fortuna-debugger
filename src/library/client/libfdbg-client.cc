@@ -55,6 +55,11 @@ void FdbgClient::connect(std::string const& port, uint32_t baudrate)
     configure_terminal_settings(fd_, baudrate);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(machine_.uc_wait));
+
+    // clear queue
+    char u;
+    ssize_t r;
+    do { r = read(fd_, &u, 1); } while (r == 1);
 }
 
 FdbgClient::~FdbgClient()
