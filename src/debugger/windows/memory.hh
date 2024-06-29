@@ -16,7 +16,7 @@ public:
     std::string name() const override { return window_name_; }
     bool is_debugging_window() const override { return true; }
 
-    void go_to_page_number(int64_t page);
+    void go_to_page_number(ssize_t page);
 
 private:
     uint8_t nr_;

@@ -112,14 +112,14 @@ void Model::update()
     ++update_count_;
 }
 
-void Model::change_memory_page(uint8_t nr, int64_t page)
+void Model::change_memory_page(uint8_t nr, ssize_t page)
 {
     auto& memory = memories.at(nr);
 
-    if (page >= (int64_t) memory.pages)
+    if (page >= (ssize_t) memory.pages)
         page = 0;
     if (page < 0)
-        page = ((int64_t) memory.pages) - 1;
+        page = (ssize_t) memory.pages - 1;
 
     for (auto& byte : memory.data)
         byte = {};

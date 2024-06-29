@@ -11,31 +11,33 @@ void Memory::draw()
     if (ImGui::Begin(title_.c_str(), &visible_, ImGuiWindowFlags_NoResize)) {
 
         ImGui::AlignTextToFramePadding();
-        ImGui::Text("Page: (PgUp)");
+        ImGui::Text("Page: ");
         ImGui::SameLine();
 
         disable_on_run([&]() {
-            if (ImGui::Button("<") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageUp)))
-                go_to_page_number(((int64_t) memory.current_page) - 1);
-            ImGui::SameLine();
-
-            char buf[10];
-            snprintf(buf, 10, "%02zX", memory.current_page);
-            ImGui::PushItemWidth(48.0f);
+            char buf[18];
+            snprintf(buf, 18, "%zX", memory.current_page);
+            ImGui::PushItemWidth(64.0f);
             ImGui::InputText("##page", buf, sizeof buf, ImGuiInputTextFlags_CallbackEdit,
                              [](ImGuiInputTextCallbackData* data) {
                                  auto* m = reinterpret_cast<Memory*>(data->UserData);
-                                 unsigned long new_page = strtoul(data->Buf, nullptr, 16);
+                                 size_t new_page = strtoul(data->Buf, nullptr, 16);
                                  if (new_page != ULONG_MAX)
                                      m->go_to_page_number(new_page);
                                  return 0;
                              }, this);
             ImGui::PopItemWidth();
             ImGui::SameLine();
-            if (ImGui::Button(">") || (!ImGui::GetIO().KeyCtrl && ImGui::IsKeyPressed(Key::PageDown)))
-                go_to_page_number(memory.current_page + 1);
+
+            ImGui::PushButtonRepeat(true);
+            if (ImGui::ArrowButton("##left", ImGuiDir_Left)) {
+                go_to_page_number(memory.current_page - 1);
+            }
             ImGui::SameLine();
-            ImGui::Text("(PgDown)");
+            if (ImGui::ArrowButton("##right", ImGuiDir_Right)) {
+                go_to_page_number(memory.current_page + 1);
+            }
+            ImGui::PopButtonRepeat();
         });
 
         draw_memory_table();
@@ -123,7 +125,7 @@ void Memory::draw_stack() const
     ImGui::Text("%s", stack);
 }
 
-void Memory::go_to_page_number(int64_t page)
+void Memory::go_to_page_number(ssize_t page)
 {
     model.change_memory_page(nr_, page);
 }

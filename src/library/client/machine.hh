@@ -27,7 +27,7 @@ public:
     std::vector<Register>    cycle_bytes;
     std::vector<std::string> cycle_bits;
 
-    struct Memory { std::string name; uint64_t size; };
+    struct Memory { std::string name; size_t size; };
     std::vector<Memory> memories;
 
     int         uc_baudrate;
@@ -42,7 +42,7 @@ private:
 
     bool                     get_field(const char* field, bool mandatory=true) const;
     bool                     field_bool(const char* field, bool mandatory=true) const;
-    int                      field_int(const char* field, bool mandatory=true) const;
+    ssize_t                  field_int(const char* field, bool mandatory=true) const;
     std::string              field_str(const char* field, bool mandatory=true) const;
     std::vector<uint8_t>     field_byte_array(const char* field, bool mandatory=true) const;
     std::vector<std::string> field_string_array(const char* field, bool mandatory=true) const;

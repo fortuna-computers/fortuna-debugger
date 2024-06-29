@@ -41,10 +41,10 @@ bool Machine::field_bool(const char *field_name, bool mandatory) const
     return value;
 }
 
-int Machine::field_int(const char* field_name, bool mandatory) const
+ssize_t Machine::field_int(const char* field_name, bool mandatory) const
 {
     get_field(field_name, mandatory);
-    int value = lua_isnil(L, -1) ? 0 : luaL_checkinteger(L, -1);
+    ssize_t value = lua_isnil(L, -1) ? 0 : luaL_checkinteger(L, -1);
     lua_pop(L, 1);
     return value;
 }
@@ -175,7 +175,7 @@ void Machine::load_user_definition(std::string const &filename)
             lua_rawgeti(L, -1, (lua_Integer) i + 1);
             memories.push_back({
                     .name = field_str("name"),
-                    .size = (uint64_t) field_int("size")
+                    .size = (size_t) field_int("size")
             });
             lua_pop(L, 1);
         }

@@ -55,7 +55,7 @@ public:
 
     // user events
 
-    void change_memory_page(uint8_t nr, int64_t page);
+    void change_memory_page(uint8_t nr, ssize_t page);
     void reset();
     void step(bool full);
     void add_breakpoint(uint64_t addr);
