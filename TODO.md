@@ -193,6 +193,17 @@
   - [x] Adjust README
 - [ ] Fix tests
 
+# Refactor 5
+
+- [ ] Separate library in a different repo
+- [ ] Fix tabs in the editor
+- [ ] Backspace not deleting previous character
+- [ ] Restart debugger
+- [ ] Add breakpoint while running
+- [ ] Save if last execution was emulator or real hardware
+- [ ] Better syntax highlighting (?)
+- [ ] Documentation
+
 # Video
 
 # Someday, likely never
